@@ -6,7 +6,6 @@ app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
 @app.route('/', methods=["GET"])
 def index():
-  print(33)
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
   return render_template('page.html', time=now)
 
