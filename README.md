@@ -5,7 +5,12 @@
 $ make build
 ```
 
-## Build TeX document
+## Run local server
+```
+$ make run-server
+```
+
+## Tips: Build TeX documents
 ```
 $ make run-bash
 # cd /var/apps/docs
