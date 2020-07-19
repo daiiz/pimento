@@ -1,0 +1,76 @@
+\begin{filecontents*}{\jobname.xmpdata}
+  \Title{sample}
+\end{filecontents*}
+
+\documentclass[b5paper,10.5pt,titlepage,openany]{ltjsbook}
+\usepackage{graphicx}
+\usepackage[pdfbox]{gentombow}
+\usepackage[x-1a]{pdfx}
+
+\usepackage{url}
+\usepackage{listings}
+\usepackage{bm}
+\usepackage{amsmath}
+\let\maketitle\relax
+\usepackage{mytitle}
+
+\usepackage{titlesec}
+\lstset{
+  backgroundcolor={\color[gray]{.95}},
+  basicstyle={\small\ttfamily},
+  lineskip=0truemm,
+}
+
+\renewcommand{\lstlistingname}{リスト}
+\renewcommand{\figurename}{図}
+% \renewcommand{\baselinestretch}{0.95}
+
+\usepackage{luatexja-fontspec}
+% https://fonts.google.com/specimen/Noto+Sans+JP
+\setsansfont[
+   UprightFont = *-Regular,
+   BoldFont = *-Bold
+ ]{NotoSansJP}
+ \setsansjfont[
+   UprightFont = *-Regular,
+   BoldFont = *-Bold
+ ]{NotoSansJP}
+
+% ページの左右余白比の調整
+\setlength{\marginparwidth}{0pt}
+\setlength{\marginparsep}{0pt}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+
+% \setlength\intextsep{2truemm}
+% \setlength\abovecaptionskip{1truemm}
+
+\makeatletter
+\renewcommand{\title}[1]{\gdef\@title{\bfseries\sffamily\gtfamily{#1}}}
+\renewcommand{\author}[1]{\gdef\@author{\bfseries\sffamily\gtfamily{#1}}}
+\renewcommand{\date}[1]{\gdef\@date{\bfseries\sffamily\gtfamily{#1}}}
+\makeatother
+
+\title{Sample document}
+\author{daiiz\thanks{Twitter: \tt{@daizplus}, Scrapbox: \url{https://scrapbox.io/daiiz}}}
+\date{2019冬 初版}
+
+\hypersetup{final}
+
+\begin{document}
+\maketitle
+
+\chapter{はじめてのLua\TeX-ja}
+ちゃんと日本語が出るかな？
+gentombowのv0.9kを使ったらうまくいったよ！
+\section{出たかな？}
+長い文章を入力するとちゃんと右端のところで折り返されるかな？
+大丈夫そうな気がするけど。ちょっと不安だけど何事も挑戦だよね。
+これはパンケーキの写真です。
+  \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.75\linewidth]{./cmyk-gray-gyazo-images/retina_pancake.jpg}
+        \caption{hoge}
+      \end{center}
+  \end{figure}
+\end{document}
