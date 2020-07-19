@@ -21,7 +21,7 @@ RUN apt-get install -y \
 RUN tlmgr init-usertree
 RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/
 # RUN tlmgr install gentombow
-RUN tlmgr install bxpapersize
+# RUN tlmgr install bxpapersize
 RUN tlmgr install pdfx
 RUN tlmgr install xmpincl
 RUN tlmgr install etoolbox
