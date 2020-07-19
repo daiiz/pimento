@@ -1,5 +1,5 @@
 from flask import Flask, render_template, send_file, jsonify, request, abort
-import os, subprocess, datetime, hashlib
+import os, subprocess, datetime, hashlib, json
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -21,6 +21,8 @@ def build():
 
 @app.route('/api/convert/images', methods=["POST"])
 def convert_images():
+  data = json.loads(request.data.decode('utf-8'))
+  print(data)
   return jsonify({ "image_urls": [] }), 200
 
 @app.route('/api/convert/tex', methods=["POST"])
