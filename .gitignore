@@ -1,5 +1,6 @@
-otf/*.otf
+static/js/*.js
 
+otf/*.otf
 docs/*-images/*
 docs/pdf/*.pdf
 docs/*.pdf
