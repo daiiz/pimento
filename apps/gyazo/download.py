@@ -4,10 +4,11 @@ import os
 # from logger import push_log
 
 def download_images(gyazo_ids = []):
-  res = {}
+  saved_gyazo_ids = []
   for gyazo_id in gyazo_ids:
-    res[gyazo_id] = download_image(gyazo_id)
-  return res
+    download_image(gyazo_id)
+    saved_gyazo_ids.append(gyazo_id)
+  return saved_gyazo_ids
 
 def download_image(gyazo_id):
   if (len(gyazo_id) != 32): return ''
@@ -16,7 +17,7 @@ def download_image(gyazo_id):
   distPath = './docs/gyazo-images/' + gyazo_id
 
   if (os.path.exists(distPath)):
-    print('> Hit cache: ' + gyazo_id, 'fetchGyazoImage')
+    print('> Hit local file:', gyazo_id)
     return distPath
 
   try:
@@ -25,8 +26,6 @@ def download_image(gyazo_id):
     ext = http_header.get_content_subtype()
     if (http_header.get_content_maintype() != 'image'):
       return ''
-    if (os.path.exists(distPath)):
-      return distPath
     data = res.read()
     with open(distPath, mode="wb") as f:
       f.write(data)

@@ -24,10 +24,13 @@ def build():
 @app.route('/api/convert/images', methods=["POST"])
 def convert_images():
   data = json.loads(request.data.decode('utf-8'))
-  image_paths = gyazo.download.download_images(data['gyazoIds'] or [])
-  print('#############', image_paths)
-
-  return jsonify({ "image_paths": image_paths }), 200
+  # Gyazo画像を保存する
+  saved_gyazo_ids = gyazo.download.download_images(data['gyazoIds'] or [])
+  # CMYK, Grayに変換して保存する
+  dirnames = []
+  dirnames.append(gyazo.convert.convert_to_cmyk(saved_gyazo_ids))
+  dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids))
+  return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
 
 @app.route('/api/convert/tex', methods=["POST"])
 def convert_tex_document():
