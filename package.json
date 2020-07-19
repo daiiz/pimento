@@ -1,0 +1,27 @@
+{
+  "name": "pimento",
+  "version": "1.0.0",
+  "description": "",
+  "engine": {
+    "node": "12.14.1"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/browserify client/index.js -o static/js/bundle.js -v",
+    "watch": "./node_modules/.bin/watchify client/index.js -o static/js/bundle.js -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daiiz/pimento.git"
+  },
+  "author": "daiiz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daiiz/pimento/issues"
+  },
+  "homepage": "https://github.com/daiiz/pimento#readme",
+  "private": true,
+  "devDependencies": {
+    "browserify": "^16.5.1",
+    "watchify": "^3.11.1"
+  }
+}
