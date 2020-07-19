@@ -16,3 +16,8 @@ $ make run-bash
 # cd /var/apps/docs
 # lualatex tex/sample.tex
 ```
+
+## Tips: Develop client app
+```
+$ npm run watch
+```
