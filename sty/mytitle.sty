@@ -1,0 +1,34 @@
+\newcommand{\maketitle}{%
+  \begin{titlepage}%
+    \let\footnotesize\small
+    \let\footnoterule\relax
+    \let\footnote\thanks
+    \null\vfil
+    %\vskip 0\jsc@mpt %60
+    \begin{center}%
+      {\Huge \@title \par}%
+      \vskip 15em% 3
+      {\LARGE
+        \lineskip .75em
+        \begin{tabular}[t]{c}%
+          \@author 著
+        \end{tabular}\par}%
+      \vskip 15em %1.5
+      {\Large \@date \ 発行 \par}%
+    \end{center}%
+
+    \par
+    \@thanks\vfil\null
+  \end{titlepage}%
+  \setcounter{footnote}{0}%
+  \global\let\thanks\relax
+  \global\let\maketitle\relax
+  \global\let\@thanks\@empty
+  \global\let\@author\@empty
+  \global\let\@date\@empty
+  \global\let\@title\@empty
+  \global\let\title\relax
+  \global\let\author\relax
+  \global\let\date\relax
+  \global\let\and\relax
+}%
