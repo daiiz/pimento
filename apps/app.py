@@ -1,7 +1,8 @@
-from flask import Flask, render_template, send_file, request, abort
+from flask import Flask, render_template, send_file, jsonify, request, abort
 import os, subprocess, datetime, hashlib
 
 app = Flask(__name__)
+app.config["JSON_AS_ASCII"] = False
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
 @app.route('/', methods=["GET"])
@@ -17,6 +18,10 @@ def build():
   except:
     return send_file('./docs/' + texFilePath, mimetype='text/plain')
   return send_file('./docs/sample.pdf', mimetype='application/pdf')
+
+@app.route('/api/convert/images', methods=["POST"])
+def convert_images():
+  return jsonify({ "image_urls": [] }), 200
 
 # for debug
 if __name__ == "__main__":
