@@ -23,6 +23,10 @@ def build():
 def convert_images():
   return jsonify({ "image_urls": [] }), 200
 
+@app.route('/api/convert/tex', methods=["POST"])
+def convert_tex_document():
+  return jsonify({ "pdf_file_url": "" }), 200
+
 # for debug
 if __name__ == "__main__":
   app.run()
