@@ -23,5 +23,8 @@
   "devDependencies": {
     "browserify": "^16.5.1",
     "watchify": "^3.11.1"
+  },
+  "dependencies": {
+    "@progfay/scrapbox-parser": "^4.0.2"
   }
 }
