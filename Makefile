@@ -3,6 +3,7 @@ TIMEZONE := Asia/Tokyo
 
 build:
 	rm -f ./apps/app.sock
+	npm run build
 	docker build -t daiiz/pimento:$(VERSION) .
 
 run-server:
@@ -10,6 +11,7 @@ run-server:
 		-e TZ=$(TIMEZONE) \
 		-v `pwd`/apps:/var/apps \
 		-v `pwd`/docs:/var/apps/docs \
+		-v `pwd`/static:/var/apps/static \
 		-v `pwd`/otf:/usr/share/fonts/otf \
 		-p 5000:80 \
 		daiiz/pimento:$(VERSION)
