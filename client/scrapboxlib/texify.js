@@ -1,11 +1,4 @@
-const crypto = require('crypto')
-
-const calcPageTitleHash = title => {
-  const md5 = crypto.createHash('md5')
-  return md5.update(title.toLowerCase(), 'binary').digest('hex')
-}
-
-const pageRefs = Object.create(null)
+const { addToPageRefs, backSlash } = require('./lib')
 
 const Texify = node => {
   if (typeof node === 'string') return node
@@ -15,26 +8,23 @@ const Texify = node => {
   if (!node) return null
   switch (node.type) {
     case 'decoration': {
+      if (node.decos.length === 0) return Texify(node.nodes)
       const decos = node.decos.join('') // XXXX: いいのかこれで
       return `(${decos}${Texify(node.nodes)})`
-      break
     }
     case 'code': {
       return '`' + node.text + '`'
-      break
     }
     case 'image': {
       return `[${node.src}]`
-      break
     }
     case 'link': {
       const { pathType, href } = node
       if (pathType === 'relative') {
-        const hash = calcPageTitleHash(href)
-        pageRefs[hash] = href
-        return`[[R:${hash}]]`
+        const hash = addToPageRefs(href)
+        return `${backSlash}ref{` + `textBlock-${hash}` + '}' // `[[R:${hash}]]`
       } else if (pathType === 'absolute') {
-        return`[[A:${href}]]`
+        return `[[A:${href}]]`
       }
       break
     }
@@ -43,11 +33,6 @@ const Texify = node => {
   return Texify(node.text)
 }
 
-const getPageRefs = () => {
-  return Object.freeze(pageRefs)
-}
-
 module.exports = {
-  Texify,
-  getPageRefs
+  Texify
 }

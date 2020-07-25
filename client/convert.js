@@ -11,7 +11,7 @@ const convertImages = async ({ gyazoIds }) => {
   })
   if (!res.ok) throw new Error('Response is not ok')
   const data = await res.json()
-  console.log(data)
+  console.log('imageData:', data)
 }
 
 const convertTexDocument = async () => {
@@ -22,7 +22,7 @@ const convertTexDocument = async () => {
   })
   if (!res.ok) throw new Error('Response is not ok')
   const data = await res.json()
-  console.log(data)
+  console.log('pdfData:', data)
 }
 
 module.exports = {

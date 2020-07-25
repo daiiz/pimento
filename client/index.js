@@ -1,17 +1,26 @@
-const { parseScrapboxPage } = require('./scrapboxlib/')
+const { backSlashExp } = require('./scrapboxlib/lib')
+const { parseScrapboxPage, getPageRefs } = require('./scrapboxlib/')
 const { convertImages, convertTexDocument } = require('./convert')
 console.log('pimento v2')
 
-let received = false
+window.funcs = Object.create(null)
 
 const main = ({ type, body }) => {
+  let texts = []
   switch (type) {
     case 'page': {
       const { id, lines, title } = body
-      parseScrapboxPage({ lines })
+      texts = parseScrapboxPage({ lines })
       break
     }
   }
+
+  const funcBody = 'return `' + texts.join('\n') + '`'
+  window.funcs.entry = function (level) {
+    return new Function('level', 'showNumber', funcBody)(level)
+  }
+  console.log('pageRefs:', getPageRefs())
+  console.log(format(funcs.entry(1)))
 }
 
 window.addEventListener('load', async event => {
@@ -19,12 +28,14 @@ window.addEventListener('load', async event => {
   await convertTexDocument()
 }, false)
 
+let received = false
+
 window.onmessage = function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
   const { task, type, body } = data
 
   if (received) {
-    console.log('Already received:', task)
+    // console.log('Already received:', task)
     if (task === 'close') this.close()
     return
   }
@@ -32,9 +43,12 @@ window.onmessage = function ({ origin, data }) {
 
   switch (task) {
     case 'transfer-data': {
-      console.log('>>>>!', type, body)
       main({ type, body })
       break
     }
   }
+}
+
+window.format = text => {
+  return text.replace(backSlashExp, '\\')
 }

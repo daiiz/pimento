@@ -1,3 +1,5 @@
+const { getGyazoImageId } = require('./lib')
+
 // ブロック情報を付け足す
 const addBlockInfo = lines => {
   if (lines.length === 0) return []
@@ -28,6 +30,8 @@ const addBlockInfo = lines => {
     if (i === 0) {
       // skip
       currentLine.nodes = []
+      // ページタイトル行の処理
+      currentLine._type = 'title'
       res.push(currentLine)
       continue
     }
@@ -40,8 +44,17 @@ const addBlockInfo = lines => {
       continue
     }
 
+    // 改行のための空行を挿入するための目印をつける
+    if (currentLine.type === 'line' && currentIndent === 0 && prevLine.indent === 0) {
+      if (!currentLine.nodes || currentLine.nodes.length === 0) {
+        prevLine._nextLineIsEmpty = true
+      }
+    }
+
     // 画像のキャプションをimage nodeに取り込む
     if (prevLine.nodes.length === 1 && prevLine.nodes[0].type === 'image' && currentLine.nodes.length > 0) {
+      prevLine._srcUrl = prevLine.nodes[0].src
+      prevLine._gyazoImageId = getGyazoImageId(prevLine._srcUrl)
       prevLine._captionNodes = currentLine.nodes
       prevLine._type = 'image'
       continue
