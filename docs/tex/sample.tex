@@ -60,8 +60,8 @@
 \begin{document}
 \maketitle
 
-\chapter{テスト} % Scrapbox page title line"
-\label{textBlock-443b76e4bceb48ea2bca52261a1da542}
+\chapter{サンプルドキュメント} % Scrapbox page title line"
+\label{textBlock-89d459014adec40260a60f54fd4771b7}
 \section{Title}
 先のRFCのSection. 3に「File Structure」の説明があるのでこれを読み、整理するとだいたい次のようになります。
 \begin{itemize}
@@ -83,6 +83,12 @@
     \end{itemize}
   \end{itemize}
 \end{itemize}
+\begin{itemize}
+  \item まずはじめに、PNG画像のバイナリデータの全体像を把握しましょう。
+  \item RFC 2083\footnote{\url{https://tools.ietf.org/html/rfc2083}}でPNGの仕様が定められているのでこれを眺めてみます。
+  \item この本の原稿は \url{https://scrapbox.io/product} で書かれています。
+  \item daiiz/png-dpi-reader-writer\footnote{\url{https://github.com/daiiz/png-dpi-reader-writer}}\footnote{Deno版 \url{https://github.com/daiiz/deno-png-dpi-reader-writer} もあります。}
+\end{itemize}
 
 ふがー
 \begin{itemize}
@@ -91,25 +97,39 @@
 \end{itemize}
 
 一般にXML文書は、専用のXSLTスタイルシートを適用することでSVGを含む他形式の文書に変換することができます。この処理はサーバー側とクライアント側の両方で行えるため、サーバーから配信されるスクリーンショット画像はXML形式とSVG形式のどちらでも選択可能となります。
-オリジナルデータを参照しながら描画をカスタマイズしつつCustomElementなどで表示する場合はXMLデータを、img要素で直接表示したい場合はSVGデータを要求する、といった具合でクライアント側の都合に応じて使い分けられます。\\
+オリジナルデータを参照しながら描画をカスタマイズしつつCustomElementなどで表示する場合はXMLデータを、{\tt img}要素で直接表示したい場合はSVGデータを要求する、といった具合でクライアント側の都合に応じて使い分けられます。\\
 
 \begin{figure}[h]
   \begin{center}
-     \includegraphics[width=0.7\linewidth]{./cmyk-gray-gyazo-images/retina_pancake.jpg}
+     \includegraphics[width=0.5\linewidth]{./cmyk-gray-gyazo-images/e8c5fe835beab7ea29144238c1b2ec86.jpg}
      \caption{箇条書きの処理は結構大変}
-     \label{xslt-story}
+     \label{fig:xslt-story}
   \end{center}
 \end{figure}
-いい画像でしょ。『Implement Client-Hints HTTP header』(Firefox)\\
 
-これはコードブロック
-\begin{lstlisting}[frame=tb,label=my-first-code,caption=my\_first\_code.c]
+いい画像でしょ。『Implement Client-Hints HTTP header』(Firefox)\par
+ところでこれはコードブロックです。リスト\ref{code:my-first-code}は著者がはじめて書いたCプログラムです。
+\begin{lstlisting}[frame=tb,label=code:my-first-code,caption=my\_first\_code.c]
 #include<stdio.h>
 int main(){
    printf("Hello world!");
 }
 \end{lstlisting}
 
-いいですね。\\
+いいですね。
+続いてテーブルです。表\ref{table:dpr}に著者が所有している端末のDPRをまとめました。
+\begin{table}[htb]
+\begin{center}
+  \caption{デバイスとDPRの対応表}
+  \label{table:dpr}
+  \begin{tabular}{|l|l|} \hline
+     & DPR \\ \hline
+    MacBook Air 2014 & 1.0 \\
+    MacBook Pro 2017 Retina、iPad Pro 10.5インチ & 2.0 \\
+    Pixel Slate & 2.25 \\
+    Pixel 3a & 2.75 \\ \hline
+  \end{tabular}
+\end{center}
+\end{table}
 
 \end{document}

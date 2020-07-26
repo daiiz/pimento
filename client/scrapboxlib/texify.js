@@ -18,10 +18,15 @@ const Texify = node => {
     case 'decoration': {
       if (node.decos.length === 0) return Texify(node.nodes)
       const decos = node.decos.join('') // XXXX: いいのかこれで
-      // 参照記法
+      // 参照記法「.」
       if (decos.includes('.') && node.nodes.length === 1) {
         const [kind, label] = Texify(node.nodes[0]).split(':')
         return `${getKindName(kind)}${backSlash}ref{${kind}:` + label + '}'
+      }
+      // 脚注記法「!」
+      if (decos.includes('!')) {
+        const texts = Texify(node.nodes)
+        return `${backSlash}footnote{` + texts.join('').trim() + '}'
       }
       return `(${decos}${Texify(node.nodes)})`
     }
