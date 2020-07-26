@@ -2,7 +2,8 @@ const { parse } = require('@progfay/scrapbox-parser')
 const { getGyazoImageId, indentStr, backSlash } = require('./lib')
 const { addBlockInfo, normalizeTextBlockLevels } = require('./blockify')
 const { Texify } = require('./texify')
-const { handleSpecialLines } = require('./special-nodes')
+const { handleScrapboxBlockNode } = require('./block-nodes')
+const { handleSpecialLine } = require('./special-nodes')
 
 // XXX: 別途どこかに適宜
 // levelに対応するテキストブロックの名称を返す
@@ -31,12 +32,12 @@ const parseScrapboxPage = ({ lines }) => {
   for (const line of lineObjects) {
     // 独自に追加した特殊なタイプを処理
     if (line._type) {
-      texts.push(...handleSpecialLines(line))
+      texts.push(...handleSpecialLine(line))
       continue
     }
-    //
+    // ブロックノードを処理
     if (!line.nodes) {
-      texts.push(line.type)
+      texts.push(...handleScrapboxBlockNode(line))
       continue
     }
 
@@ -48,7 +49,7 @@ const parseScrapboxPage = ({ lines }) => {
   }
 
   // 最終生成物
-  console.log('&&', texts)
+  // console.log('&&', texts)
   texts.push(`\$\{window.a(2)\}`)
   return texts
 }

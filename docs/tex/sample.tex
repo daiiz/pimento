@@ -23,7 +23,7 @@
 
 \renewcommand{\lstlistingname}{リスト}
 \renewcommand{\figurename}{図}
-% \renewcommand{\baselinestretch}{0.95}
+\renewcommand{\baselinestretch}{0.95}
 
 \usepackage{luatexja-fontspec}
 % https://fonts.google.com/specimen/Noto+Sans+JP
@@ -60,9 +60,9 @@
 \begin{document}
 \maketitle
 
-\part{テスト} % Scrapbox page title line"
+\chapter{テスト} % Scrapbox page title line"
 \label{textBlock-443b76e4bceb48ea2bca52261a1da542}
-\chapter{Title}
+\section{Title}
 先のRFCのSection. 3に「File Structure」の説明があるのでこれを読み、整理するとだいたい次のようになります。
 \begin{itemize}
   \item 111
@@ -103,6 +103,13 @@
 いい画像でしょ。『Implement Client-Hints HTTP header』(Firefox)\\
 
 これはコードブロック
-codeBlock
+\begin{lstlisting}[frame=tb,label=my-first-code,caption=my\_first\_code.c]
+#include<stdio.h>
+int main(){
+   printf("Hello world!");
+}
+\end{lstlisting}
+
+いいですね。\\
 
 \end{document}

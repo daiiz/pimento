@@ -31,11 +31,26 @@ const indentStr = (indent, showItemLabel = false) => {
   return '  '.repeat(indent - 1) + (showItemLabel ? `  ${backSlash}item ` : '')
 }
 
+const buildOptions = (info, excludeKeys = []) => {
+  const options = []
+  for (const key of Object.keys(info)) {
+    if (!info[key] || excludeKeys.includes(key)) continue
+    options.push(`${key}=${info[key]}`)
+  }
+  return options
+}
+
+const texEscape = str => {
+  return str.replace(/_/g, backSlash + '_')
+}
+
 module.exports = {
   getGyazoImageId,
   addToPageRefs,
   getPageRefs,
   indentStr,
+  buildOptions,
+  texEscape,
   backSlash,
   backSlashExp
 }

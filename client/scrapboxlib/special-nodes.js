@@ -1,7 +1,7 @@
-const { addToPageRefs, indentStr, backSlash } = require('./lib')
+const { addToPageRefs, indentStr, buildOptions, backSlash } = require('./lib')
 const { Texify} = require('./texify')
 
-const handleSpecialLines = (line) => {
+const handleSpecialLine = (line) => {
   switch (line._type) {
     case 'title': {
       const hash = addToPageRefs(line.text)
@@ -54,11 +54,7 @@ const handleSpecialLines = (line) => {
       }
 
       const renderIncludegraphics = () => {
-        const options = []
-        for (const key of ['width']) {
-          if (!info[key]) continue
-          options.push(`${key}=${info[key]}`)
-        }
+        const options = buildOptions(info, ['ref'])
         // TODO: 画像ディレクトリを変更可能にする
         // const srcUrl = `./cmyk-gray-gyazo-images/${line._gyazoImageId}.jpg`
         const srcUrl = './cmyk-gray-gyazo-images/retina_pancake.jpg'
@@ -86,5 +82,5 @@ const handleSpecialLines = (line) => {
 }
 
 module.exports = {
-  handleSpecialLines
+  handleSpecialLine
 }
