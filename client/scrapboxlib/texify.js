@@ -13,10 +13,7 @@ const Texify = node => {
       return `(${decos}${Texify(node.nodes)})`
     }
     case 'code': {
-      return '`' + node.text + '`'
-    }
-    case 'image': {
-      return `[${node.src}]`
+      return `{${backSlash}tt ` + node.text + '}'
     }
     case 'link': {
       const { pathType, href } = node
