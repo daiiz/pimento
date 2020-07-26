@@ -25,6 +25,9 @@ const Texify = node => {
       }
       return `(${decos}${Texify(node.nodes)})`
     }
+    case 'blank': {
+      return ''
+    }
     case 'code': {
       return `{${backSlash}tt ` + node.text + '}'
     }

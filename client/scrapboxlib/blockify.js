@@ -47,7 +47,11 @@ const addBlockInfo = lines => {
     // 改行のための空行を挿入するための目印をつける
     if (currentLine.type === 'line' && currentIndent === 0 && prevLine.indent === 0) {
       if (!currentLine.nodes || currentLine.nodes.length === 0) {
-        prevLine._nextLineIsEmpty = true
+        // 強制的な改行
+        prevLine._requireNewLine = true
+      } else if (currentLine.nodes[0].type === 'blank') {
+        // 新規の段落
+        prevLine._requireNewParagraph = true
       }
     }
 

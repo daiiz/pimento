@@ -27,8 +27,14 @@ const parseScrapboxPage = ({ lines }) => {
     }
 
     let texLine = Texify(line.nodes).join('')
-    if (line._nextLineIsEmpty) {
-      texLine += backSlash.repeat(2) // 改行
+
+    // 改行を処理
+    if (texLine.length > 0) {
+      if (line._requireNewParagraph) {
+        texLine += `${backSlash}par`
+      } else if (line._requireNewLine) {
+        texLine += `${backSlash}${backSlash}`
+      }
     }
     texts.push(indentStr(line.indent, true) + texLine)
   }
