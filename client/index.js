@@ -21,7 +21,9 @@ const main = ({ type, body }) => {
     return new Function('level', 'showNumber', funcBody)(level)
   }
   console.log('pageRefs:', getPageRefs())
-  console.log(format(funcs.entry(1)))
+  const texDocument = format(funcs.entry(1))
+  // console.log(format(funcs.entry(1)))
+  document.getElementById('pre').innerText = texDocument
 }
 
 window.addEventListener('load', async event => {
