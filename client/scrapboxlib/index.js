@@ -5,21 +5,6 @@ const { Texify } = require('./texify')
 const { handleScrapboxBlockNode } = require('./block-nodes')
 const { handleSpecialLine } = require('./special-nodes')
 
-// XXX: 別途どこかに適宜
-// levelに対応するテキストブロックの名称を返す
-window.textBlockName = (level, showNumber = true) => {
-  const brace = showNumber ? '{' : '*{'
-  switch (parseInt(level)) {
-    case 0: return backSlash + 'part' + brace // 部
-    case 1: return backSlash + 'chapter' + brace // 章
-    case 2: return backSlash + 'section' + brace // 節
-    case 3: return backSlash + 'subsection' + brace // 小節
-    case 4: return backSlash + 'subsubsection' + brace // 小々節
-  }
-  console.error('Invalid level:', level)
-  return ''
-}
-
 const parseScrapboxPage = ({ lines }) => {
   const lineTexts = lines.map(line => line.text)
   let lineObjects = parse(lineTexts.join('\n'))
