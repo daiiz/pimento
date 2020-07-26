@@ -22,7 +22,7 @@ const Texify = node => {
       const { pathType, href } = node
       if (pathType === 'relative') {
         const hash = addToPageRefs(href)
-        return `${backSlash}ref{` + `textBlock-${hash}` + '}' // `[[R:${hash}]]`
+        return `${backSlash}ref{` + `textBlock-${hash}` + '}'
       } else if (pathType === 'absolute') {
         return `[[A:${href}]]`
       }

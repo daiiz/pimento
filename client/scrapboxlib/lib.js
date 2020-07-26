@@ -26,10 +26,16 @@ const getGyazoImageId = srcUrl => {
   return srcUrl.replace(gyazoOrigin, '').split('/')[0]
 }
 
+const indentStr = (indent, showItemLabel = false) => {
+  if (!indent || indent <= 0) return ''
+  return '  '.repeat(indent - 1) + (showItemLabel ? `  ${backSlash}item ` : '')
+}
+
 module.exports = {
   getGyazoImageId,
   addToPageRefs,
   getPageRefs,
+  indentStr,
   backSlash,
   backSlashExp
 }

@@ -1,5 +1,6 @@
 const { backSlashExp } = require('./scrapboxlib/lib')
-const { parseScrapboxPage, getPageRefs } = require('./scrapboxlib/')
+const { parseScrapboxPage } = require('./scrapboxlib/')
+const { getPageRefs } = require('./scrapboxlib/lib')
 const { convertImages, convertTexDocument } = require('./convert')
 console.log('pimento v2')
 
