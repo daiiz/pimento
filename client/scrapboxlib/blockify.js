@@ -68,7 +68,6 @@ const addBlockInfo = lines => {
       res.push({ indent: prevIndent, _type: 'itemizeTail', nodes: [] })
       closePrevItemizes(currentIndent)
     }
-
     // Open
     prevIndent = getRecentIndent()
     if (currentIndent > prevIndent) {

@@ -66,7 +66,7 @@ const handleSpecialLine = (line) => {
       }
       const renderLabel = () => {
         if (!info.ref) return ''
-        return `${backSlash}label{` + info.ref + '}'
+        return `${backSlash}label{fig:` + info.ref + '}'
       }
       return [
         `${backSlash}begin{figure}[h]`,

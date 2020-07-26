@@ -43,7 +43,7 @@ const handleScrapboxBlockNode = (line) => {
       info.frame = 'tb'
       if (codeHeadPattern.test(fileName)) {
         const [, ref, caption] = fileName.trim().match(codeHeadPattern)
-        info.label = ref
+        info.label = `code:${ref}`
         info.caption = texEscape(caption)
       }
       return [
@@ -65,7 +65,7 @@ const handleScrapboxBlockNode = (line) => {
         `${backSlash}begin{table}[htb]`, // [tbh]
         `${backSlash}begin{center}`,
         `  ${backSlash}caption{${caption}}`,
-        label ? `  ${backSlash}label{${label}}` : '',
+        label ? `  ${backSlash}label{table:${label}}` : '',
         `  ${backSlash}begin{tabular}{${colDef}} ${hr}`,
         ...renderTableRows(cells).map(row => `    ${row}`),
         `  ${backSlash}end{tabular}`,
