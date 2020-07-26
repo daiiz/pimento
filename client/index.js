@@ -6,12 +6,15 @@ console.log('pimento v2')
 
 window.funcs = Object.create(null)
 
-const main = ({ type, body }) => {
+const main = async ({ type, body }) => {
   let texts = []
+  let gyazoIds = []
   switch (type) {
     case 'page': {
       const { id, lines, title } = body
-      texts = parseScrapboxPage({ lines })
+      const res = parseScrapboxPage({ lines })
+      texts = res.texts
+      gyazoIds = res.gyazoIds
       break
     }
   }
@@ -21,19 +24,21 @@ const main = ({ type, body }) => {
     return new Function('level', 'showNumber', funcBody)(level)
   }
   console.log('pageRefs:', getPageRefs())
+  console.log('gyazoIds:', gyazoIds)
   const texDocument = format(funcs.entry(1))
-  // console.log(format(funcs.entry(1)))
+
+  await convertImages({ gyazoIds })
   document.getElementById('pre').innerText = texDocument
 }
 
-window.addEventListener('load', async event => {
-  await convertImages({ gyazoIds: ['dc220ec3da67354f35d5a30aafcdf2f6', 'ddb8f03e5a404862c866d2b95563cd67'] })
-  await convertTexDocument()
-}, false)
+// window.addEventListener('load', async event => {
+  // await convertImages({ gyazoIds: ['dc220ec3da67354f35d5a30aafcdf2f6', 'ddb8f03e5a404862c866d2b95563cd67'] })
+  // await convertTexDocument()
+// }, false)
 
 let received = false
 
-window.onmessage = function ({ origin, data }) {
+window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
   const { task, type, body } = data
 
@@ -46,7 +51,7 @@ window.onmessage = function ({ origin, data }) {
 
   switch (task) {
     case 'transfer-data': {
-      main({ type, body })
+      await main({ type, body })
       break
     }
   }

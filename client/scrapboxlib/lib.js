@@ -20,6 +20,22 @@ const addToPageRefs = (title) => {
   return hash
 }
 
+const extractGyazoIds = lines => {
+  const gayzoIds = []
+  // XXX: 本当は再帰的に見ていくべきだが、いまは雑にやる
+  for (const line of lines) {
+    const { nodes, type } = line
+    if (!nodes) continue
+    for (const node of nodes) {
+      if (node.type === 'image') {
+        const gayzoId = getGyazoImageId(node.src)
+        if (gayzoId) gayzoIds.push(gayzoId)
+      }
+    }
+  }
+  return gayzoIds
+}
+
 const getGyazoImageId = srcUrl => {
   const gyazoOrigin = 'https://gyazo.com/'
   if (!srcUrl.startsWith(gyazoOrigin)) return null
@@ -45,6 +61,7 @@ const texEscape = str => {
 }
 
 module.exports = {
+  extractGyazoIds,
   getGyazoImageId,
   addToPageRefs,
   getPageRefs,

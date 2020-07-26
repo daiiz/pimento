@@ -33,7 +33,7 @@ const parseTableHead = text => {
 
 const handleScrapboxBlockNode = (line) => {
   const info = Object.create(null)
-  console.log(`${line.type}:`, line.fileName)
+  // console.log(`${line.type}:`, line.fileName)
   switch (line.type) {
     case 'codeBlock': {
       // line: https://gyazo.com/2e694ee4369d3140ea5c1d73de0a73ac

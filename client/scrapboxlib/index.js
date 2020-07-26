@@ -1,5 +1,5 @@
 const { parse } = require('@progfay/scrapbox-parser')
-const { getGyazoImageId, indentStr, backSlash } = require('./lib')
+const { extractGyazoIds, getGyazoImageId, indentStr, backSlash } = require('./lib')
 const { addBlockInfo, normalizeTextBlockLevels } = require('./blockify')
 const { Texify } = require('./texify')
 const { handleScrapboxBlockNode } = require('./block-nodes')
@@ -51,7 +51,7 @@ const parseScrapboxPage = ({ lines }) => {
   // 最終生成物
   // console.log('&&', texts)
   texts.push(`\$\{window.a(2)\}`)
-  return texts
+  return { texts, gyazoIds }
 }
 
 window.a = (m) => {
@@ -69,22 +69,6 @@ window.b = (n) => {
   ]
   const funcBody = 'return `' + texts.join('\n') + '`'
   return new Function(funcBody)()
-}
-
-const extractGyazoIds = lines => {
-  const gayzoIds = []
-  // XXX: 本当は再帰的に見ていくべきだが、いまは雑にやる
-  for (const line of lines) {
-    const { nodes, type } = line
-    if (!nodes) continue
-    for (const node of nodes) {
-      if (node.type === 'image') {
-        const gayzoId = getGyazoImageId(node.src)
-        if (gayzoId) gayzoIds.push(gayzoId)
-      }
-    }
-  }
-  return gayzoIds
 }
 
 module.exports = {

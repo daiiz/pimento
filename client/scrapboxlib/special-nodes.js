@@ -56,8 +56,8 @@ const handleSpecialLine = (line) => {
       const renderIncludegraphics = () => {
         const options = buildOptions(info, ['ref'])
         // TODO: 画像ディレクトリを変更可能にする
-        // const srcUrl = `./cmyk-gray-gyazo-images/${line._gyazoImageId}.jpg`
-        const srcUrl = './cmyk-gray-gyazo-images/retina_pancake.jpg'
+        const srcUrl = `./cmyk-gray-gyazo-images/${line._gyazoImageId}.jpg`
+        // const srcUrl = './cmyk-gray-gyazo-images/retina_pancake.jpg'
         if (options.length > 0) {
           return `${backSlash}includegraphics[${options.join(',')}]{${srcUrl}}`
         } else {
