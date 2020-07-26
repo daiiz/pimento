@@ -50,25 +50,8 @@ const parseScrapboxPage = ({ lines }) => {
 
   // 最終生成物
   // console.log('&&', texts)
-  texts.push(`\$\{window.a(2)\}`)
+  texts.push(`\$\{window.funcs.a(2)\}`)
   return { texts, gyazoIds }
-}
-
-window.a = (m) => {
-  const texts = [
-    `${backSlash}daiiz-a`,
-    `\$\{window.b(N)\}`
-  ]
-  const funcBody = 'return `' + texts.join('\n') + '`'
-  return new Function('N', funcBody)(m * 3)
-}
-
-window.b = (n) => {
-  const texts = [
-    backSlash + 'b'.repeat(n)
-  ]
-  const funcBody = 'return `' + texts.join('\n') + '`'
-  return new Function(funcBody)()
 }
 
 module.exports = {

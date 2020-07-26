@@ -1,10 +1,27 @@
-const { backSlashExp } = require('./scrapboxlib/lib')
+const { backSlash, backSlashExp } = require('./scrapboxlib/lib')
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, addToPageRefs } = require('./scrapboxlib/lib')
 const { convertImages, convertTexDocument } = require('./convert')
 console.log('pimento v2')
 
 window.funcs = Object.create(null)
+
+window.funcs.a = (m) => {
+  const texts = [
+    `${backSlash}daiiz-a`,
+    `\$\{window.funcs.b(N)\}`
+  ]
+  const funcBody = 'return `' + texts.join('\n') + '`'
+  return new Function('N', funcBody)(m * 3)
+}
+
+window.funcs.b = (n) => {
+  const texts = [
+    backSlash + 'b'.repeat(n)
+  ]
+  const funcBody = 'return `' + texts.join('\n') + '`'
+  return new Function(funcBody)()
+}
 
 const main = async ({ type, body }) => {
   let texts = []
@@ -30,7 +47,7 @@ const main = async ({ type, body }) => {
     return new Function('level', 'showNumber', funcBody)(level)
   }
   console.log('pageRefs:', getPageRefs())
-  console.log('gyazoIds:', gyazoIds)
+  // console.log('gyazoIds:', gyazoIds)
   const texDocument = format(funcs.entry(1))
 
   await convertImages({ gyazoIds })
