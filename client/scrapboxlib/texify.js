@@ -1,4 +1,4 @@
-const { addToPageRefs, backSlash } = require('./lib')
+const { addToPageRefs, texEscape,backSlash } = require('./lib')
 
 const getKindName = kind => {
   switch (kind) {
@@ -34,7 +34,11 @@ const Texify = node => {
         const hash = addToPageRefs(href)
         return `${backSlash}ref{` + `textBlock-${hash}` + '}'
       } else if (pathType === 'absolute') {
-        return `[[A:${href}]]`
+        if (node.content) {
+          return `${node.content}${backSlash}footnote{${backSlash}url{` + texEscape(href) + '}}'
+        } else {
+          return `${backSlash}url{` + texEscape(href) + '}'
+        }
       }
       break
     }
