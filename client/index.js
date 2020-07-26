@@ -1,6 +1,6 @@
 const { backSlashExp } = require('./scrapboxlib/lib')
 const { parseScrapboxPage } = require('./scrapboxlib/')
-const { getPageRefs } = require('./scrapboxlib/lib')
+const { getPageRefs, addToPageRefs } = require('./scrapboxlib/lib')
 const { convertImages, convertTexDocument } = require('./convert')
 console.log('pimento v2')
 
@@ -9,17 +9,23 @@ window.funcs = Object.create(null)
 const main = async ({ type, body }) => {
   let texts = []
   let gyazoIds = []
+  let pageHash = null
   switch (type) {
     case 'page': {
       const { id, lines, title } = body
       const res = parseScrapboxPage({ lines })
+      pageHash = addToPageRefs(lines[0].text)
       texts = res.texts
       gyazoIds = res.gyazoIds
       break
     }
   }
 
+  // ページ変換関数を登録
   const funcBody = 'return `' + texts.join('\n') + '`'
+  window.funcs[`page_${pageHash}`] = function (level) {
+    return new Function('level', 'showNumber', funcBody)(level)
+  }
   window.funcs.entry = function (level) {
     return new Function('level', 'showNumber', funcBody)(level)
   }
@@ -30,11 +36,6 @@ const main = async ({ type, body }) => {
   await convertImages({ gyazoIds })
   document.getElementById('pre').innerText = texDocument
 }
-
-// window.addEventListener('load', async event => {
-  // await convertImages({ gyazoIds: ['dc220ec3da67354f35d5a30aafcdf2f6', 'ddb8f03e5a404862c866d2b95563cd67'] })
-  // await convertTexDocument()
-// }, false)
 
 let received = false
 
