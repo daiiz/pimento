@@ -1,4 +1,4 @@
-const { addToPageRefs, texEscape,backSlash } = require('./lib')
+const { addToPageRefs, texEscape, backSlash } = require('./lib')
 
 const getKindName = kind => {
   switch (kind) {
@@ -32,6 +32,10 @@ const Texify = node => {
     }
     case 'blank': {
       return ''
+    }
+    case 'formula': {
+      if (!node.formula) return ''
+      return '$' + node.formula + '$'
     }
     case 'code': {
       return `{${backSlash}tt ` + node.text + '}'
