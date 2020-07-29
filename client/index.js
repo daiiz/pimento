@@ -9,6 +9,7 @@ const main = async ({ type, body }) => {
   let gyazoIds = []
   let pageHash = null
   switch (type) {
+    // 単一ページのプレビュー
     case 'page': {
       const { id, lines, title } = body
       const res = parseScrapboxPage({ lines })
@@ -16,6 +17,12 @@ const main = async ({ type, body }) => {
       texts = res.texts
       gyazoIds = res.gyazoIds
       break
+    }
+    // 製本
+    case 'whole-pages': {
+      const pages = body // { pageId: { title, lines } }
+      console.log('###', pages)
+      return
     }
   }
 
