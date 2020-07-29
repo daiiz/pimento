@@ -5,9 +5,14 @@ const pageRefs = Object.create(null)
 const backSlash = '__TEX_BACKSLASH__'
 const backSlashExp = new RegExp(backSlash, 'g')
 
+// UserScriptと挙動を揃える
+const toTitleLc = title => {
+  return title.toLowerCase().replace(/\s/g, '_')
+}
+
 const calcPageTitleHash = title => {
   const md5 = crypto.createHash('md5')
-  return md5.update(title.toLowerCase(), 'binary').digest('hex')
+  return md5.update(toTitleLc(title), 'binary').digest('hex')
 }
 
 const getPageRefs = () => {
