@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage[pdfbox]{gentombow}
 \usepackage[x-1a]{pdfx}
+\usepackage{hyperref}
 
 \usepackage{url}
 \usepackage{listings}
@@ -44,6 +45,19 @@
 
 % \setlength\intextsep{2truemm}
 % \setlength\abovecaptionskip{1truemm}
+
+% autorefの設定
+\def\equationautorefname~#1\null{式(#1)\null}
+\def\figureautorefname~#1\null{図#1\null}
+\def\subfigureautorefname#1\null{図#1\null}
+\def\tableautorefname~#1{表#1}
+\def\lstlistingautorefname~#1{リスト#1}
+\def\partautorefname#1\null{第#1部\null}
+\def\chapterautorefname#1\null{第#1章\null}
+\def\sectionautorefname#1\null{#1節}
+\def\subsectionautorefname~#1\null{#1節}
+\def\subsubsectionautorefname#1\null{#1節}
+\def\appendixautorefname#1\null{付録#1\null}
 
 \makeatletter
 \renewcommand{\title}[1]{\gdef\@title{\bfseries\sffamily\gtfamily{#1}}}
@@ -108,8 +122,8 @@
   \end{center}
 \end{figure}
 
-いい画像でしょ。『Implement Client-Hints HTTP header』(Firefox)\par
-ところでこれはコードブロックです。リスト\ref{code:my-first-code}は著者がはじめて書いたCプログラムです。
+どうですか、\autoref{fig:xslt-story}はいい画像でしょ。『Implement Client-Hints HTTP header』(Firefox)\par
+ところでこれはコードブロックです。\autoref{code:my-first-code}は著者がはじめて書いたCプログラムです。
 \begin{lstlisting}[frame=tb,label=code:my-first-code,caption=my\_first\_code.c]
 #include<stdio.h>
 int main(){
@@ -118,7 +132,7 @@ int main(){
 \end{lstlisting}
 
 いいですね。
-続いてテーブルです。表\ref{table:dpr}に著者が所有している端末のDPRをまとめました。
+続いてテーブルです。\autoref{table:dpr}に著者が所有している端末のDPRをまとめました。
 \begin{table}[htb]
 \begin{center}
   \caption{デバイスとDPRの対応表}
@@ -132,5 +146,10 @@ int main(){
   \end{tabular}
 \end{center}
 \end{table}
+
+続く\autoref{textBlock-801528e58c60ecd8740ad0c0c3515884}も読んでくださいね。\\
+
+\chapter{サンプルドキュメント2}
+\label{textBlock-801528e58c60ecd8740ad0c0c3515884}
 
 \end{document}
