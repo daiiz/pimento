@@ -1,13 +1,5 @@
 const { addToPageRefs, texEscape, backSlash } = require('./lib')
 
-const getKindName = kind => {
-  switch (kind) {
-    case 'table': return '表'
-    case 'fig': return '図'
-    case 'code': return 'リスト'
-  }
-}
-
 const Texify = node => {
   if (typeof node === 'string') return node
   if (node instanceof Array) {
@@ -21,7 +13,7 @@ const Texify = node => {
       // 参照記法「.」
       if (decos.includes('.') && node.nodes.length === 1) {
         const [kind, label] = Texify(node.nodes[0]).split(':')
-        return `${getKindName(kind)}${backSlash}ref{${kind}:` + label + '}'
+        return `${backSlash}autoref{${kind}:` + label + '}'
       }
       // 脚注記法「!」
       if (decos.includes('!')) {
@@ -43,8 +35,10 @@ const Texify = node => {
     case 'link': {
       const { pathType, href } = node
       if (pathType === 'relative') {
+        // TODO:『xxxx (第N章)』『xxxx (付録X)』の形式を出し分ける必要がある
+        // 括弧内の表現は\autorefを使うといい感じに解決される
         const hash = addToPageRefs(href)
-        return `${backSlash}ref{` + `textBlock-${hash}` + '}'
+        return `${backSlash}autoref{` + `textBlock-${hash}` + '}'
       } else if (pathType === 'absolute') {
         if (node.content) {
           return `${node.content}${backSlash}footnote{${backSlash}url{` + texEscape(href) + '}}'
