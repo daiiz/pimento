@@ -3,6 +3,7 @@ const { backSlash } = require('./scrapboxlib/lib')
 // levelに対応するテキストブロックの名称を返す
 window.textBlockName = (level, showNumber = true) => {
   const brace = showNumber ? '{' : '*{'
+  // TODO: level === 0かつ目次に存在しない場合は付録
   switch (parseInt(level)) {
     case 0: return backSlash + 'part' + brace // 部
     case 1: return backSlash + 'chapter' + brace // 章
