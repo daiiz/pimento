@@ -30,17 +30,16 @@ const Texify = node => {
       return '$' + node.formula + '$'
     }
     case 'code': {
-      return `{${backSlash}tt ` + node.text + '}'
+      return `{${backSlash}tt ` + texEscape(node.text) + '}'
     }
     case 'link': {
       const { pathType, href } = node
       if (pathType === 'relative') {
-        // 『xxxx (第N章)』『xxxx (付録X)』の形式を出し分ける
-        // TODO: xxxxを省略するオプションも必要
+        // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
         const hash = addToPageRefs(href)
         const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
-        return `『${texEscape(href)} {${backSlash}scriptsize ${refStr}}』`
+        return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
       } else if (pathType === 'absolute') {
         if (node.content) {
           return `${node.content}${backSlash}footnote{${backSlash}url{` + texEscape(href) + '}}'

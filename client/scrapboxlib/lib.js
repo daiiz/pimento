@@ -62,7 +62,40 @@ const buildOptions = (info, excludeKeys = []) => {
 }
 
 const texEscape = str => {
-  return str.replace(/_/g, backSlash + '_')
+  return str
+    .replace(/_/g, backSlash + '_')
+    .replace(/\$/g, backSlash + '$')
+}
+
+// すべての行の変換が完了してはじめてできる調整処理
+const finalAdjustment = texts => {
+  const newTexts = []
+  for (let i = 0; i < texts.length; i++) {
+    let currentLine = texts[i]
+    // console.log('>>>>!',  currentLine)
+    const oneAheadLine = texts[i + 1]
+    const twoAheadLine = texts[i + 2]
+    if (oneAheadLine === undefined || twoAheadLine === undefined) {
+      newTexts.push(currentLine)
+      continue
+    }
+    // 以下の場合、0行目の末尾の改行は不要
+    // ['...\\', '', '\begin{']
+    // ['...\\', '', '${window.textBlockName(']
+    // など
+    if (oneAheadLine === '') {
+      if (twoAheadLine.startsWith(`${backSlash}begin{`)
+        || twoAheadLine.startsWith('${window.textBlockName(')
+        || twoAheadLine.startsWith('${window.funcs.page_')) {
+        const tailNewLineMark = new RegExp(backSlash + backSlash + '$')
+        currentLine = currentLine.replace(tailNewLineMark, '')
+        // console.log('###########', currentLine)
+      }
+    }
+    newTexts.push(currentLine)
+  }
+
+  return newTexts
 }
 
 module.exports = {
@@ -73,6 +106,7 @@ module.exports = {
   indentStr,
   buildOptions,
   texEscape,
+  finalAdjustment,
   backSlash,
   backSlashExp
 }

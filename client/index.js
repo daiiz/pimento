@@ -1,6 +1,5 @@
-const { backSlashExp } = require('./scrapboxlib/lib')
 const { parseScrapboxPage } = require('./scrapboxlib/')
-const { getPageRefs, addToPageRefs } = require('./scrapboxlib/lib')
+const { backSlashExp, getPageRefs, addToPageRefs, finalAdjustment } = require('./scrapboxlib/lib')
 const { convertImages, convertTexDocument } = require('./convert')
 const { uploadTexDocument } = require('./upload')
 require('./globals')
@@ -33,7 +32,7 @@ const main = async ({ type, body }) => {
   }
 
   // ページ変換関数を登録
-  const funcBody = 'return `' + texts.join('\n') + '`'
+  const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
   window.funcs[`page_${pageHash}`] = function (level) {
     return new Function('level', 'showNumber', funcBody)(level)
   }
