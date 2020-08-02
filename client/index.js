@@ -2,16 +2,19 @@ const { backSlashExp } = require('./scrapboxlib/lib')
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, addToPageRefs } = require('./scrapboxlib/lib')
 const { convertImages, convertTexDocument } = require('./convert')
+const { uploadTexDocument } = require('./upload')
 require('./globals')
 
 const main = async ({ type, body }) => {
   let texts = []
   let gyazoIds = []
   let pageHash = null
+  let pageTitle = null
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
       const { id, lines, title } = body
+      pageTitle = title
       const res = parseScrapboxPage({ lines })
       pageHash = addToPageRefs(lines[0].text)
       texts = res.texts
@@ -41,11 +44,11 @@ const main = async ({ type, body }) => {
   const texDocument = format(funcs.entry(1))
   await convertImages({ gyazoIds })
   document.getElementById('pre').innerText = texDocument
-  return texDocument
-}
-
-const upload = async texDocument => {
-  const apiUrl = '/api/page'
+  return {
+    pageTitle,
+    pageTitleHash: pageHash,
+    pageText: texDocument
+  }
 }
 
 let received = false
@@ -63,8 +66,8 @@ window.onmessage = async function ({ origin, data }) {
 
   switch (task) {
     case 'transfer-data': {
-      const texDocument = await main({ type, body })
-      await upload(texDocument)
+      const { pageTitle, pageTitleHash, pageText } = await main({ type, body })
+      await uploadTexDocument({ pageTitle, pageTitleHash, pageText })
       break
     }
   }

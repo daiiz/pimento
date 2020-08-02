@@ -32,6 +32,20 @@ def convert_images():
   dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids))
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
 
+@app.route('/api/upload/page', methods=["POST"])
+def upload_page():
+  data = json.loads(request.data.decode('utf-8'))
+  file_name = 'page_' + data['pageTitleHash'] + '.tex'
+  file_path = './docs/tex/' + file_name
+  with open(file_path, 'w') as f:
+    f.write(data['pageText'])
+  # ページ単位でのTeXドキュメントを保存する
+  return jsonify({
+    "page_title_hash": data['pageTitleHash'],
+    "tex_file_name": file_name
+  })
+
+# 不要かも?
 @app.route('/api/convert/tex', methods=["POST"])
 def convert_tex_document():
   return jsonify({ "pdf_file_url": "" }), 200
