@@ -9,7 +9,7 @@ const Texify = node => {
   switch (node.type) {
     case 'decoration': {
       if (node.decos.length === 0) return Texify(node.nodes)
-      const decos = node.decos.join('') // XXXX: いいのかこれで
+      const decos = node.decos.join('')
       // 参照記法「.」
       if (decos.includes('.') && node.nodes.length === 1) {
         const [kind, label] = Texify(node.nodes[0]).split(':')
@@ -41,6 +41,7 @@ const Texify = node => {
       if (pathType === 'relative') {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
+        // TODO: テキスト省略オプション
         const hash = addToPageRefs(href)
         const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
         return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
