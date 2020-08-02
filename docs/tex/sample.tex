@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage[pdfbox]{gentombow}
 \usepackage[x-1a]{pdfx}
+\usepackage{hyperref}
 
 \usepackage{url}
 \usepackage{listings}
@@ -23,7 +24,7 @@
 
 \renewcommand{\lstlistingname}{リスト}
 \renewcommand{\figurename}{図}
-% \renewcommand{\baselinestretch}{0.95}
+\renewcommand{\baselinestretch}{0.95}
 
 \usepackage{luatexja-fontspec}
 % https://fonts.google.com/specimen/Noto+Sans+JP
@@ -45,6 +46,19 @@
 % \setlength\intextsep{2truemm}
 % \setlength\abovecaptionskip{1truemm}
 
+% autorefの設定
+\def\equationautorefname~#1\null{式(#1)\null}
+\def\figureautorefname~#1\null{図#1\null}
+\def\subfigureautorefname#1\null{図#1\null}
+\def\tableautorefname~#1{表#1}
+\def\lstlistingautorefname~#1{リスト#1}
+\def\partautorefname#1\null{第#1部\null}
+\def\chapterautorefname#1\null{第#1章\null}
+\def\sectionautorefname#1\null{#1節}
+\def\subsectionautorefname~#1\null{#1節}
+\def\subsubsectionautorefname#1\null{#1節}
+\def\appendixautorefname#1\null{付録#1\null}
+
 \makeatletter
 \renewcommand{\title}[1]{\gdef\@title{\bfseries\sffamily\gtfamily{#1}}}
 \renewcommand{\author}[1]{\gdef\@author{\bfseries\sffamily\gtfamily{#1}}}
@@ -60,17 +74,89 @@
 \begin{document}
 \maketitle
 
-\chapter{はじめてのLua\TeX-ja}
-ちゃんと日本語が出るかな？
-gentombowのv0.9kを使ったらうまくいったよ！
-\section{出たかな？}
-長い文章を入力するとちゃんと右端のところで折り返されるかな？
-大丈夫そうな気がするけど。ちょっと不安だけど何事も挑戦だよね。
-これはパンケーキの写真です。
-  \begin{figure}[h!]
-      \begin{center}
-        \includegraphics[width=0.75\linewidth]{./cmyk-gray-gyazo-images/retina_pancake.jpg}
-        \caption{hoge}
-      \end{center}
-  \end{figure}
+\chapter{サンプルドキュメント} % Scrapbox page title line"
+\label{textBlock-89d459014adec40260a60f54fd4771b7}
+\section{Title}
+先のRFCのSection. 3に「File Structure」の説明があるのでこれを読み、整理するとだいたい次のようになります。
+\begin{itemize}
+  \item 111
+  \begin{itemize}
+    \item 222
+  \end{itemize}
+  \item 111
+  \begin{itemize}
+    \item 222
+    \begin{itemize}
+      \item 333
+      \item 333!
+    \end{itemize}
+    \item 2222
+    \begin{itemize}
+      \item 3333
+      \item 3333
+      \item このときの$x_1$の値は$5.01$です。
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+\begin{itemize}
+  \item まずはじめに、PNG画像のバイナリデータの全体像を把握しましょう。
+  \item RFC 2083\footnote{\url{https://tools.ietf.org/html/rfc2083}}でPNGの仕様が定められているのでこれを眺めてみます。
+  \item この本の原稿は \url{https://scrapbox.io/product} で書かれています。
+  \item daiiz/png-dpi-reader-writer\footnote{\url{https://github.com/daiiz/png-dpi-reader-writer}}\footnote{Deno版 \url{https://github.com/daiiz/deno-png-dpi-reader-writer} もあります。}
+\end{itemize}
+
+ふがー
+\begin{itemize}
+  \item 1111
+  \item XML文書に対する描画スタイルを関する情報は、XSL (Extensible Stylesheet Language) という言語を用いて記述されます。スタイルシートというものの、CSSのように各要素に対する見た目を定義するものではなく、ソースとなるXMLツリーの任意のノードに着目してこれらに対する変換処理を書いていくため、テンプレート言語に近い存在です。
+\end{itemize}
+
+一般にXML文書は、専用のXSLTスタイルシートを適用することでSVGを含む他形式の文書に変換することができます。この処理はサーバー側とクライアント側の両方で行えるため、サーバーから配信されるスクリーンショット画像はXML形式とSVG形式のどちらでも選択可能となります。
+オリジナルデータを参照しながら描画をカスタマイズしつつCustomElementなどで表示する場合はXMLデータを、{\tt img}要素で直接表示したい場合はSVGデータを要求する、といった具合でクライアント側の都合に応じて使い分けられます。\\
+
+\begin{figure}[h]
+  \begin{center}
+     \includegraphics[width=0.5\linewidth]{./cmyk-gray-gyazo-images/e8c5fe835beab7ea29144238c1b2ec86.jpg}
+     \caption{箇条書きの処理は結構大変}
+     \label{fig:xslt-story}
+  \end{center}
+\end{figure}
+
+どうですか、\autoref{fig:xslt-story}はいい画像でしょ。『Implement Client-Hints HTTP header』(Firefox)\par
+ところでこれはコードブロックです。\autoref{code:my-first-code}は著者がはじめて書いたCプログラムです。
+\begin{lstlisting}[frame=tb,label=code:my-first-code,caption=my\_first\_code.c]
+#include<stdio.h>
+int main(){
+   printf("Hello world!");
+}
+\end{lstlisting}
+
+いいですね。
+続いてテーブルです。\autoref{table:dpr}に著者が所有している端末のDPRをまとめました。
+\begin{table}[htb]
+\begin{center}
+  \caption{デバイスとDPRの対応表}
+  \label{table:dpr}
+  \begin{tabular}{|l|l|} \hline
+     & DPR \\ \hline
+    MacBook Air 2014 & 1.0 \\
+    MacBook Pro 2017 Retina、iPad Pro 10.5インチ & 2.0 \\
+    Pixel Slate & 2.25 \\
+    Pixel 3a & 2.75 \\ \hline
+  \end{tabular}
+\end{center}
+\end{table}
+
+引き続き『daiizコメント {\scriptsize (\autoref{textBlock-801528e58c60ecd8740ad0c0c3515884})}』も読んでくださいね！\\
+
+\subsection{ScrapLens} % tentative definitions by Pimento
+\label{textBlock-4f160c041eb4f5555ab8406fe41f5941}
+Work in progress!
+
+\subsection{Scrapbox}
+史上最強の『Wiki {\scriptsize (\autoref{textBlock-d54b7ba27571a2f00b38ed9273b974f2})}』です。\\
+
+\section{実験}
+予習資料に目を通しておきましょう。\\
+
 \end{document}
