@@ -12,12 +12,27 @@ def index():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
   return render_template('page.html', time=now)
 
+@app.route('/build/pages/<string:page_title_hash>', methods=["GET"])
+def build_page(page_title_hash):
+  if len(page_title_hash) != 32:
+    return jsonify({ 'message': 'Invalid page_title_hash' }), 400
+  docDir = './docs/'
+  texFileName = 'page_' + page_title_hash
+  texFilePath = 'tex/' + texFileName + '.tex'
+  try:
+    subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
+  except:
+    # TODO: redirect
+    return send_file('./docs/' + texFilePath, mimetype='text/plain')
+  return send_file(docDir + texFileName + '.pdf')
+
 @app.route('/build', methods=["GET"])
 def build():
   texFilePath = 'tex/sample.tex'
   try:
-    proc = subprocess.call(['lualatex', texFilePath], shell=False, cwd='./docs')
+    subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
   except:
+    # TODO: redirect
     return send_file('./docs/' + texFilePath, mimetype='text/plain')
   return send_file('./docs/sample.pdf', mimetype='application/pdf')
 
@@ -37,13 +52,14 @@ def upload_page():
   data = json.loads(request.data.decode('utf-8'))
   file_name = 'page_' + data['pageTitleHash'] + '.tex'
   file_path = './docs/tex/' + file_name
+  texDocument = data['pageHead'] + '\n\n' + data['pageText'] + '\n\n' + data['pageTail']
   with open(file_path, 'w') as f:
-    f.write(data['pageText'])
+    f.write(texDocument)
   # ページ単位でのTeXドキュメントを保存する
   return jsonify({
     "page_title_hash": data['pageTitleHash'],
     "tex_file_name": file_name
-  })
+  }), 200
 
 # 不要かも?
 @app.route('/api/convert/tex', methods=["POST"])

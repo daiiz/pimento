@@ -10,6 +10,8 @@ const main = async ({ type, body }) => {
   let gyazoIds = []
   let pageHash = null
   let pageTitle = null
+  let includeCover = false
+
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
@@ -25,6 +27,7 @@ const main = async ({ type, body }) => {
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
       console.log('###', pages)
+      includeCover = true
       return
     }
   }
@@ -40,14 +43,15 @@ const main = async ({ type, body }) => {
   console.log('pageRefs:', getPageRefs())
   // 未定義の章などをいい感じに仮定義する
   window.makeTentativeDefinitions()
-  // console.log('gyazoIds:', gyazoIds)
+
   const texDocument = format(funcs.entry(1))
   await convertImages({ gyazoIds })
   document.getElementById('pre').innerText = texDocument
   return {
     pageTitle,
     pageTitleHash: pageHash,
-    pageText: texDocument
+    pageText: texDocument,
+    includeCover
   }
 }
 
@@ -55,19 +59,26 @@ let received = false
 
 window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
-  const { task, type, body } = data
+  const { task, type, body, template } = data
 
   if (received) {
-    // console.log('Already received:', task)
     if (task === 'close') this.close()
     return
   }
-  received = true
+  const previewElem = document.getElementById('preview')
 
+  received = true
   switch (task) {
     case 'transfer-data': {
-      const { pageTitle, pageTitleHash, pageText } = await main({ type, body })
-      await uploadTexDocument({ pageTitle, pageTitleHash, pageText })
+      const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, body })
+      await uploadTexDocument({
+        includeCover,
+        pageTitle,
+        pageTitleHash,
+        pageText,
+        pageTemplate: template
+      })
+      previewElem.setAttribute('data', `/build/pages/${pageTitleHash}?r=${Math.floor(Math.random() * 100000000)}`)
       break
     }
   }
