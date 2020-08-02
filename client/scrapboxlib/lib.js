@@ -4,6 +4,17 @@ const pageRefs = Object.create(null)
 
 const backSlash = '__TEX_BACKSLASH__'
 const backSlashExp = new RegExp(backSlash, 'g')
+const backQuote = '__TEX_BACKQUOTE__'
+const backQuoteExp = new RegExp(backQuote, 'g')
+const dollar = '__TEX__DOLLAR__'
+const dollarExp = new RegExp(dollar, 'g')
+
+const formatMarks = text => {
+  return text
+    .replace(backSlashExp, '\\')
+    .replace(backQuoteExp, '`')
+    .replace(dollarExp, '$')
+}
 
 // UserScriptと挙動を揃える
 const toTitleLc = title => {
@@ -63,8 +74,23 @@ const buildOptions = (info, excludeKeys = []) => {
 
 const texEscape = str => {
   return str
-    .replace(/_/g, backSlash + '_')
+    .replace(/\_/g, backSlash + '_')
     .replace(/\$/g, backSlash + '$')
+    .replace(/\&/g, backSlash + '&')
+    .replace(/\%/g, backSlash + '%')
+    .replace(/\#/g, backSlash + '#')
+    .replace(/\{/g, backSlash + '{')
+    .replace(/\}/g, backSlash + '}')
+    .replace(/\~/g, backSlash + '~')
+    .replace(/\^/g, backSlash + '^')
+    .replace(/\\/g, backSlash + backSlash)
+    .replace(/\`/g, backQuote)
+}
+
+const texEscapeForCodeBlock = str => {
+  return str
+    .replace(/\`/g, backQuote)
+    .replace(/\$/g, dollar)
 }
 
 // すべての行の変換が完了してはじめてできる調整処理
@@ -106,7 +132,8 @@ module.exports = {
   indentStr,
   buildOptions,
   texEscape,
+  texEscapeForCodeBlock,
   finalAdjustment,
-  backSlash,
-  backSlashExp
+  formatMarks,
+  backSlash
 }

@@ -54,8 +54,14 @@ const Texify = node => {
       }
       break
     }
+    case 'plain': {
+      // OK?
+      return Texify(texEscape(node.text))
+    }
+    case 'image': {
+      return `${backSlash}url{` + texEscape(node.src) + '}'
+    }
   }
-  // plain
   return Texify(node.text)
 }
 

@@ -1,4 +1,4 @@
-const { indentStr,buildOptions, texEscape, backSlash } = require('./lib')
+const { indentStr,buildOptions, texEscape, texEscapeForCodeBlock, backSlash } = require('./lib')
 const { Texify } = require('./texify')
 
 const codeHeadPattern = /^(?:ref|label)=([^\s,]+),\s*([^\s,]+)$/
@@ -48,7 +48,7 @@ const handleScrapboxBlockNode = (line) => {
       }
       return [
         `${backSlash}begin{lstlisting}[${buildOptions(info).join(',')}]`,
-        ...contentLines,
+        ...contentLines.map(line => texEscapeForCodeBlock(line)),
         `${backSlash}end{lstlisting}`
       ]
     }
