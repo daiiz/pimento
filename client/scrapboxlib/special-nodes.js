@@ -11,7 +11,13 @@ const handleSpecialLine = (line) => {
       ]
     }
     case 'textBlockHead': {
-      return [`\$\{window.textBlockName(level + 1 +  ${line._level}, showNumber)\}${line._text}}`]
+      if (line._embed) {
+        // https://scrapbox.io/teamj/pimento_v2:_節の埋め込み記法
+        const hash = addToPageRefs(line._text)
+        return [`\$\{window.funcs.page_${hash}(level + 1 + ${line._level})\}`]
+      } else {
+        return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${line._text}}`]
+      }
       break
     }
     case 'itemizeHead': {

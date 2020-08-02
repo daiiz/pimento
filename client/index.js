@@ -35,6 +35,9 @@ const main = async ({ type, body }) => {
     return new Function('level', 'showNumber', funcBody)(level)
   }
   console.log('pageRefs:', getPageRefs())
+  // 未定義の章などをいい感じに仮定義する
+  window.makeTentativeDefinitions()
+
   // console.log('gyazoIds:', gyazoIds)
   const texDocument = format(funcs.entry(1))
 

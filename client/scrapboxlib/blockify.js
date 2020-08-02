@@ -115,7 +115,24 @@ const normalizeTextBlockLevels = lines => {
     if (line._type !== 'textBlockHead') continue
     // レベルが小さいほど大きいセクション
     line._level = maxNum - line._num
-    line._text = line.nodes[0].nodes[0].text
+    // XXX: deco記法内部のfirstChildNode.typeに応じて宣言方法が変わる
+    // https://scrapbox.io/teamj/pimento_v2:_節の埋め込み記法
+    const firstChildNode = line.nodes[0].nodes[0]
+    switch (firstChildNode.type) {
+      // https://gyazo.com/5e4d0dbdc74a911477841b71572567e2
+      case 'plain': {
+        line._text = firstChildNode.text
+        break
+      }
+      case 'link': {
+        if (firstChildNode.pathType === 'relative') {
+          line._text = firstChildNode.href
+          line._embed = true
+        }
+        break
+      }
+    }
+    console.log("####", line)
     delete line._num
   }
 }
