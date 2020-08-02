@@ -2,11 +2,11 @@ const crypto = require('crypto')
 
 const pageRefs = Object.create(null)
 
-const backSlash = '__TEX_BACKSLASH__'
+const backSlash = '---TEX-BACKSLASH---'
 const backSlashExp = new RegExp(backSlash, 'g')
-const backQuote = '__TEX_BACKQUOTE__'
+const backQuote = '---TEX-BACKQUOTE---'
 const backQuoteExp = new RegExp(backQuote, 'g')
-const dollar = '__TEX__DOLLAR__'
+const dollar = '---TEX-DOLLAR---'
 const dollarExp = new RegExp(dollar, 'g')
 
 const formatMarks = text => {
@@ -74,6 +74,9 @@ const buildOptions = (info, excludeKeys = []) => {
 
 const texEscape = str => {
   return str
+    .replace(/\\/g, backSlash + 'textbackslash')
+    .replace(/\~/g, backSlash + 'textasciitilde')
+    .replace(/\^/g, backSlash + 'textasciicircum')
     .replace(/\_/g, backSlash + '_')
     .replace(/\$/g, backSlash + '$')
     .replace(/\&/g, backSlash + '&')
@@ -81,16 +84,18 @@ const texEscape = str => {
     .replace(/\#/g, backSlash + '#')
     .replace(/\{/g, backSlash + '{')
     .replace(/\}/g, backSlash + '}')
-    .replace(/\~/g, backSlash + '~')
-    .replace(/\^/g, backSlash + '^')
-    .replace(/\\/g, backSlash + backSlash)
     .replace(/\`/g, backQuote)
 }
 
 const texEscapeForCodeBlock = str => {
   return str
+    .replace(/\\/g, backSlash)
     .replace(/\`/g, backQuote)
     .replace(/\$/g, dollar)
+}
+
+const texEscapeForFormula = str => {
+  return str.replace(/\\/g, backSlash)
 }
 
 // すべての行の変換が完了してはじめてできる調整処理
@@ -115,7 +120,6 @@ const finalAdjustment = texts => {
         || twoAheadLine.startsWith('${window.funcs.page_')) {
         const tailNewLineMark = new RegExp(backSlash + backSlash + '$')
         currentLine = currentLine.replace(tailNewLineMark, '')
-        // console.log('###########', currentLine)
       }
     }
     newTexts.push(currentLine)
@@ -133,6 +137,7 @@ module.exports = {
   buildOptions,
   texEscape,
   texEscapeForCodeBlock,
+  texEscapeForFormula,
   finalAdjustment,
   formatMarks,
   backSlash

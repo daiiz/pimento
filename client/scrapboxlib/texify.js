@@ -1,4 +1,4 @@
-const { addToPageRefs, texEscape, backSlash } = require('./lib')
+const { addToPageRefs, texEscape, texEscapeForFormula, backSlash } = require('./lib')
 
 const Texify = node => {
   if (typeof node === 'string') return node
@@ -31,7 +31,7 @@ const Texify = node => {
     }
     case 'formula': {
       if (!node.formula) return ''
-      return '$' + node.formula + '$'
+      return '$' + texEscapeForFormula(node.formula) + '$'
     }
     case 'code': {
       return `{${backSlash}tt ` + texEscape(node.text) + '}'
