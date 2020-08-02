@@ -42,9 +42,11 @@ const handleScrapboxBlockNode = (line) => {
       const contentLines = content.split('\n').map(line => indentStr(0) + line)
       info.frame = 'tb'
       if (codeHeadPattern.test(fileName)) {
-        const [, ref, caption] = fileName.trim().match(codeHeadPattern)
+        const [, ref, caption] = fileName.match(codeHeadPattern)
         info.label = `code:${ref}`
         info.caption = texEscape(caption)
+      } else {
+        info.caption = texEscape(fileName)
       }
       return [
         `${backSlash}begin{lstlisting}[${buildOptions(info).join(',')}]`,
