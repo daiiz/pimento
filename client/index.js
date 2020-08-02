@@ -37,12 +37,15 @@ const main = async ({ type, body }) => {
   console.log('pageRefs:', getPageRefs())
   // 未定義の章などをいい感じに仮定義する
   window.makeTentativeDefinitions()
-
   // console.log('gyazoIds:', gyazoIds)
   const texDocument = format(funcs.entry(1))
-
   await convertImages({ gyazoIds })
   document.getElementById('pre').innerText = texDocument
+  return texDocument
+}
+
+const upload = async texDocument => {
+  const apiUrl = '/api/page'
 }
 
 let received = false
@@ -60,7 +63,8 @@ window.onmessage = async function ({ origin, data }) {
 
   switch (task) {
     case 'transfer-data': {
-      await main({ type, body })
+      const texDocument = await main({ type, body })
+      await upload(texDocument)
       break
     }
   }
