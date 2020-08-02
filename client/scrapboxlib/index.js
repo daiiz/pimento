@@ -41,7 +41,7 @@ const parseScrapboxPage = ({ lines }) => {
 
   // 最終生成物
   // console.log('&&', texts)
-  texts.push(`\$\{window.funcs.a(2)\}`)
+  // texts.push(`\$\{window.funcs.a(2)\}`)
   return { texts, gyazoIds }
 }
 

@@ -6,7 +6,7 @@ const handleSpecialLine = (line) => {
     case 'title': {
       const hash = addToPageRefs(line.text)
       return [
-        `\$\{window.textBlockName(level, showNumber)\}${line.text}} % Scrapbox page title line"`,
+        `\$\{window.textBlockName(level, showNumber)\}${line.text}} % Scrapbox page title line`,
         `${backSlash}label{textBlock-${hash}}`
       ]
     }
