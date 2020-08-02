@@ -20,6 +20,10 @@ const Texify = node => {
         const texts = Texify(node.nodes)
         return `${backSlash}footnote{` + texts.join('').trim() + '}'
       }
+      // コメント記法「#」は無視
+      if (decos.includes('#')) {
+        return ''
+      }
       return `(${decos}${Texify(node.nodes)})`
     }
     case 'blank': {
