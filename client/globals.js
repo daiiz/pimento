@@ -14,7 +14,8 @@ window.textBlockName = (level, showNumber = true) => {
     case 4: return backSlash + 'subsubsection' + brace // 小々節
   }
   console.error('Invalid level:', level)
-  return ''
+  // とりあえず小々節を返しておく
+  return backSlash + 'subsubsection' + brace
 }
 
 // 動的に生成されるページ変換関数などを生やす場所

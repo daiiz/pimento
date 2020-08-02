@@ -33,8 +33,8 @@ const main = async ({ type, body }) => {
 
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
-  window.funcs[`page_${pageHash}`] = function (level) {
-    return new Function('level', 'showNumber', funcBody)(level)
+  window.funcs[`page_${pageHash}`] = function (level, showNumber) {
+    return new Function('level', 'showNumber', funcBody)(level, showNumber)
   }
   window.funcs.entry = function (level) {
     return new Function('level', 'showNumber', funcBody)(level)
@@ -54,6 +54,26 @@ const main = async ({ type, body }) => {
   }
 }
 
+// XXX: たぶんいい感じにmainと共通化できる
+// refs: [{ title, lines }]
+const buidRefPages = async refs => {
+  console.log("REFS:", refs)
+  const gyazoIds = []
+  for (let { title, lines } of refs) {
+    lines = lines.map(text => ({ text }))
+    const res = parseScrapboxPage({ lines })
+    const pageHash = addToPageRefs(title)
+    const texts = ['%------------------------------', ...res.texts]
+    gyazoIds.push(...(res.gyazoIds || []))
+    // ページ変換関数を登録
+    const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
+    window.funcs[`page_${pageHash}`] = function (level, showNumber) {
+      return new Function('level', 'showNumber', funcBody)(level, showNumber)
+    }
+  }
+  await convertImages({ gyazoIds })
+}
+
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
@@ -64,10 +84,13 @@ window.onmessage = async function ({ origin, data }) {
     if (task === 'close') this.close()
     return
   }
-  console.log("####!!!", refs)
+  received = true
+
+  if (refs && refs.length > 0) {
+    await buidRefPages(refs)
+  }
   const previewElem = document.getElementById('preview')
 
-  received = true
   switch (task) {
     case 'transfer-data': {
       const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, body })
