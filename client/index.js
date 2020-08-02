@@ -14,7 +14,7 @@ const main = async ({ type, body }) => {
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
-      const { id, lines, title } = body
+      const { lines, title } = body
       pageTitle = title
       const res = parseScrapboxPage({ lines })
       pageHash = addToPageRefs(lines[0].text)
@@ -58,12 +58,13 @@ let received = false
 
 window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
-  const { task, type, body, template } = data
+  const { task, type, body, template, refs } = data
 
   if (received) {
     if (task === 'close') this.close()
     return
   }
+  console.log("####!!!", refs)
   const previewElem = document.getElementById('preview')
 
   received = true
