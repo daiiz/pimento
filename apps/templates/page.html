@@ -1,13 +1,41 @@
-
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
+    <title>Preview</title>
     <style>
-      pre { font-size: 9pt; }
+      html, body {
+        margin: 0;
+        overflow: hidden;
+      }
+      pre {
+        box-sizing: border-box;
+        padding: 0 8px;
+        display: block;
+        font-size: 9pt;
+        overflow-x: auto;
+        overflow-y: auto;
+        width: 40vw;
+        height: 100vh;
+        color: #333;
+      }
+      object {
+        display: block;
+        width: 60vw;
+        height: 100vh;
+        background-color: #525659;
+      }
+      .container {
+        display: flex;
+      }
     </style>
   </head>
-  <h1>Hello!! ({{time}})</h1>
-  <pre id="pre"></pre>
+  <!-- <h1>Hello!! ({{time}})</h1> -->
+  <div class='container'>
+    <pre id="pre"></pre>
+    <object id='preview' data='' type='application/pdf'>
+      <pre>Compiling...</pre>
+    </object>
+  </div>
   <script src='/static/js/bundle.js'></script>
 </html>

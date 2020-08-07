@@ -2,8 +2,19 @@ const crypto = require('crypto')
 
 const pageRefs = Object.create(null)
 
-const backSlash = '__TEX_BACKSLASH__'
+const backSlash = '---TEX-BACKSLASH---'
 const backSlashExp = new RegExp(backSlash, 'g')
+const backQuote = '---TEX-BACKQUOTE---'
+const backQuoteExp = new RegExp(backQuote, 'g')
+const dollar = '---TEX-DOLLAR---'
+const dollarExp = new RegExp(dollar, 'g')
+
+const formatMarks = text => {
+  return text
+    .replace(backSlashExp, '\\')
+    .replace(backQuoteExp, '`')
+    .replace(dollarExp, '$')
+}
 
 // UserScriptと挙動を揃える
 const toTitleLc = title => {
@@ -62,7 +73,59 @@ const buildOptions = (info, excludeKeys = []) => {
 }
 
 const texEscape = str => {
-  return str.replace(/_/g, backSlash + '_')
+  return str
+    .replace(/\\/g, backSlash + 'textbackslash')
+    .replace(/\~/g, backSlash + 'textasciitilde')
+    .replace(/\^/g, backSlash + 'textasciicircum')
+    .replace(/\_/g, backSlash + '_')
+    .replace(/\$/g, backSlash + '$')
+    .replace(/\&/g, backSlash + '&')
+    .replace(/\%/g, backSlash + '%')
+    .replace(/\#/g, backSlash + '#')
+    .replace(/\{/g, backSlash + '{')
+    .replace(/\}/g, backSlash + '}')
+    .replace(/\`/g, backQuote)
+}
+
+const texEscapeForCodeBlock = str => {
+  return str
+    .replace(/\\/g, backSlash)
+    .replace(/\`/g, backQuote)
+    .replace(/\$/g, dollar)
+}
+
+const texEscapeForFormula = str => {
+  return str.replace(/\\/g, backSlash)
+}
+
+// すべての行の変換が完了してはじめてできる調整処理
+const finalAdjustment = texts => {
+  const newTexts = []
+  for (let i = 0; i < texts.length; i++) {
+    let currentLine = texts[i]
+    // console.log('>>>>!',  currentLine)
+    const oneAheadLine = texts[i + 1]
+    const twoAheadLine = texts[i + 2]
+    if (oneAheadLine === undefined || twoAheadLine === undefined) {
+      newTexts.push(currentLine)
+      continue
+    }
+    // 以下の場合、0行目の末尾の改行は不要
+    // ['...\\', '', '\begin{']
+    // ['...\\', '', '${window.textBlockName(']
+    // など
+    if (oneAheadLine === '') {
+      if (twoAheadLine.startsWith(`${backSlash}begin{`)
+        || twoAheadLine.startsWith('${window.textBlockName(')
+        || twoAheadLine.startsWith('${window.funcs.page_')) {
+        const tailNewLineMark = new RegExp(backSlash + backSlash + '$')
+        currentLine = currentLine.replace(tailNewLineMark, '')
+      }
+    }
+    newTexts.push(currentLine)
+  }
+
+  return newTexts
 }
 
 module.exports = {
@@ -73,6 +136,9 @@ module.exports = {
   indentStr,
   buildOptions,
   texEscape,
-  backSlash,
-  backSlashExp
+  texEscapeForCodeBlock,
+  texEscapeForFormula,
+  finalAdjustment,
+  formatMarks,
+  backSlash
 }

@@ -1,4 +1,4 @@
-const { addToPageRefs, texEscape, backSlash } = require('./lib')
+const { addToPageRefs, texEscape, texEscapeForFormula, backSlash } = require('./lib')
 
 const Texify = node => {
   if (typeof node === 'string') return node
@@ -9,7 +9,7 @@ const Texify = node => {
   switch (node.type) {
     case 'decoration': {
       if (node.decos.length === 0) return Texify(node.nodes)
-      const decos = node.decos.join('') // XXXX: いいのかこれで
+      const decos = node.decos.join('')
       // 参照記法「.」
       if (decos.includes('.') && node.nodes.length === 1) {
         const [kind, label] = Texify(node.nodes[0]).split(':')
@@ -20,6 +20,10 @@ const Texify = node => {
         const texts = Texify(node.nodes)
         return `${backSlash}footnote{` + texts.join('').trim() + '}'
       }
+      // コメント記法「#」は無視
+      if (decos.includes('#')) {
+        return ''
+      }
       return `(${decos}${Texify(node.nodes)})`
     }
     case 'blank': {
@@ -27,20 +31,20 @@ const Texify = node => {
     }
     case 'formula': {
       if (!node.formula) return ''
-      return '$' + node.formula + '$'
+      return '$' + texEscapeForFormula(node.formula) + '$'
     }
     case 'code': {
-      return `{${backSlash}tt ` + node.text + '}'
+      return `{${backSlash}tt ` + texEscape(node.text) + '}'
     }
     case 'link': {
       const { pathType, href } = node
       if (pathType === 'relative') {
-        // 『xxxx (第N章)』『xxxx (付録X)』の形式を出し分ける
-        // TODO: xxxxを省略するオプションも必要
+        // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
+        // TODO: テキスト省略オプション
         const hash = addToPageRefs(href)
         const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
-        return `『${texEscape(href)} {${backSlash}scriptsize ${refStr}}』`
+        return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
       } else if (pathType === 'absolute') {
         if (node.content) {
           return `${node.content}${backSlash}footnote{${backSlash}url{` + texEscape(href) + '}}'
@@ -50,8 +54,14 @@ const Texify = node => {
       }
       break
     }
+    case 'plain': {
+      // OK?
+      return Texify(texEscape(node.text))
+    }
+    case 'image': {
+      return `${backSlash}url{` + texEscape(node.src) + '}'
+    }
   }
-  // plain
   return Texify(node.text)
 }
 

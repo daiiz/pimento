@@ -132,7 +132,6 @@ const normalizeTextBlockLevels = lines => {
         break
       }
     }
-    console.log("####", line)
     delete line._num
   }
 }

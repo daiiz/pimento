@@ -2,6 +2,7 @@ static/js/*.js
 otf/*.otf
 docs/*-images/*
 docs/pdf/*.pdf
+docs/tex/*.tex
 docs/*.pdf
 docs/*.xmpdata
 

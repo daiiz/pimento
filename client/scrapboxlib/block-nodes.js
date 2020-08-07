@@ -1,4 +1,4 @@
-const { indentStr,buildOptions, texEscape, backSlash } = require('./lib')
+const { indentStr,buildOptions, texEscape, texEscapeForCodeBlock, backSlash } = require('./lib')
 const { Texify } = require('./texify')
 
 const codeHeadPattern = /^(?:ref|label)=([^\s,]+),\s*([^\s,]+)$/
@@ -33,7 +33,6 @@ const parseTableHead = text => {
 
 const handleScrapboxBlockNode = (line) => {
   const info = Object.create(null)
-  // console.log(`${line.type}:`, line.fileName)
   switch (line.type) {
     case 'codeBlock': {
       // line: https://gyazo.com/2e694ee4369d3140ea5c1d73de0a73ac
@@ -42,13 +41,15 @@ const handleScrapboxBlockNode = (line) => {
       const contentLines = content.split('\n').map(line => indentStr(0) + line)
       info.frame = 'tb'
       if (codeHeadPattern.test(fileName)) {
-        const [, ref, caption] = fileName.trim().match(codeHeadPattern)
+        const [, ref, caption] = fileName.match(codeHeadPattern)
         info.label = `code:${ref}`
         info.caption = texEscape(caption)
+      } else {
+        info.caption = texEscape(fileName)
       }
       return [
         `${backSlash}begin{lstlisting}[${buildOptions(info).join(',')}]`,
-        ...contentLines,
+        ...contentLines.map(line => texEscapeForCodeBlock(line)),
         `${backSlash}end{lstlisting}`
       ]
     }
