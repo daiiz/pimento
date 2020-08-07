@@ -4,33 +4,7 @@ const { convertImages, convertTexDocument } = require('./convert')
 const { uploadTexDocument } = require('./upload')
 require('./globals')
 
-const main = async ({ type, body }) => {
-  let texts = []
-  let gyazoIds = []
-  let pageHash = null
-  let pageTitle = null
-  let includeCover = false
-
-  switch (type) {
-    // 単一ページのプレビュー
-    case 'page': {
-      const { lines, title } = body
-      pageTitle = title
-      const res = parseScrapboxPage({ lines })
-      pageHash = addToPageRefs(lines[0].text)
-      texts = res.texts
-      gyazoIds = res.gyazoIds
-      break
-    }
-    // 製本
-    case 'whole-pages': {
-      const pages = body // { pageId: { title, lines } }
-      console.log('###', pages)
-      includeCover = true
-      return
-    }
-  }
-
+const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // ページ変換関数を登録
   console.log("#####", texts)
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
@@ -51,7 +25,30 @@ const main = async ({ type, body }) => {
     pageTitle,
     pageTitleHash: pageHash,
     pageText: texDocument,
-    includeCover
+    includeCover: false
+  }
+}
+
+const main = async ({ type, body }) => {
+  switch (type) {
+    // 単一ページのプレビュー
+    case 'page': {
+      const { lines, title } = body
+      const res = parseScrapboxPage({ lines })
+      return taskPage({
+        texts: res.texts,
+        pageTitle: title,
+        pageHash: addToPageRefs(lines[0].text),
+        gyazoIds: res.gyazoIds
+      })
+    }
+    // 製本
+    case 'whole-pages': {
+      const pages = body // { pageId: { title, lines } }
+      console.log('###', pages)
+      // includeCover = true
+      return
+    }
   }
 }
 
