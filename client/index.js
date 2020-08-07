@@ -5,8 +5,8 @@ const { uploadTexDocument } = require('./upload')
 require('./globals')
 
 const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
-  // ページ変換関数を登録
   console.log("#####", texts)
+  // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
   window.funcs[`page_${pageHash}`] = function (level, showNumber) {
     return new Function('level', 'showNumber', funcBody)(level, showNumber)
@@ -18,7 +18,7 @@ const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // 未定義の章などをいい感じに仮定義する
   window.makeTentativeDefinitions()
 
-  const texDocument = format(funcs.entry(1))
+  const texDocument = format(funcs.entry(1)) // Chapter level
   await convertImages({ gyazoIds })
   document.getElementById('pre').innerText = texDocument
   return {
@@ -29,24 +29,27 @@ const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   }
 }
 
-const main = async ({ type, body }) => {
+const taskWholePages = async ({ pages, bookTitle }) => {
+  console.log('###', bookTitle, pages)
+}
+
+const main = async ({ type, bookTitle, body }) => {
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
-      const { lines, title } = body
+      const { title, lines } = body
       const res = parseScrapboxPage({ lines })
       return taskPage({
-        texts: res.texts,
         pageTitle: title,
         pageHash: addToPageRefs(lines[0].text),
+        texts: res.texts,
         gyazoIds: res.gyazoIds
       })
     }
     // 製本
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
-      console.log('###', pages)
-      // includeCover = true
+      await taskWholePages({ pages, bookTitle })
       return
     }
   }
@@ -54,7 +57,7 @@ const main = async ({ type, body }) => {
 
 // XXX: たぶんいい感じにmainと共通化できる
 // refs: [{ title, lines }]
-const buidRefPages = async refs => {
+const buildRefPages = async refs => {
   console.log("REFS:", refs)
   const gyazoIds = []
   for (let { title, lines } of refs) {
@@ -76,7 +79,7 @@ let received = false
 
 window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
-  const { task, type, body, template, refs } = data
+  const { task, type, body, template, bookTitle, refs } = data
 
   if (received) {
     if (task === 'close') this.close()
@@ -85,13 +88,13 @@ window.onmessage = async function ({ origin, data }) {
   received = true
 
   if (refs && refs.length > 0) {
-    await buidRefPages(refs)
+    await buildRefPages(refs)
   }
   const previewElem = document.getElementById('preview')
 
   switch (task) {
     case 'transfer-data': {
-      const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, body })
+      const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, bookTitle, body })
       await uploadTexDocument({
         includeCover,
         pageTitle,
