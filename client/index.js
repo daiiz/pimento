@@ -31,9 +31,16 @@ const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
 
 const taskWholePages = async ({ pages, bookTitle }) => {
   console.log('###', bookTitle, pages)
+  if (pages.length === 0) {
+    throw new Error('pages is empty')
+  }
+  await buildRefPages(Object.values(pages))
+  return {
+    includeCover: true
+  }
 }
 
-const main = async ({ type, bookTitle, body }) => {
+const main = async ({ type, body, bookTitle, toc }) => {
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
@@ -49,7 +56,8 @@ const main = async ({ type, bookTitle, body }) => {
     // 製本
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
-      await taskWholePages({ pages, bookTitle })
+      const data = await taskWholePages({ pages, bookTitle })
+      console.log("###", toc)
       return
     }
   }
@@ -79,7 +87,7 @@ let received = false
 
 window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
-  const { task, type, body, template, bookTitle, refs } = data
+  const { task, type, body, template, refs, bookTitle, toc } = data
 
   if (received) {
     if (task === 'close') this.close()
@@ -93,8 +101,9 @@ window.onmessage = async function ({ origin, data }) {
   const previewElem = document.getElementById('preview')
 
   switch (task) {
+    // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {
-      const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, bookTitle, body })
+      const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, body, bookTitle, toc })
       await uploadTexDocument({
         includeCover,
         pageTitle,
