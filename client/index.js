@@ -1,6 +1,6 @@
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
-const { convertImages, convertTexDocument } = require('./convert')
+const { convertImages } = require('./images')
 const { uploadTexDocument } = require('./upload')
 require('./globals')
 
