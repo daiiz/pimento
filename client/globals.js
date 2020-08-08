@@ -21,23 +21,6 @@ window.textBlockName = (level, showNumber = true) => {
 // 動的に生成されるページ変換関数などを生やす場所
 window.funcs = Object.create(null)
 
-// window.funcs.a = (m) => {
-//   const texts = [
-//     `${backSlash}daiiz-a`,
-//     `\$\{window.funcs.b(N)\}`
-//   ]
-//   const funcBody = 'return `' + texts.join('\n') + '`'
-//   return new Function('N', funcBody)(m * 3)
-// }
-
-// window.funcs.b = (n) => {
-//   const texts = [
-//     backSlash + 'b'.repeat(n)
-//   ]
-//   const funcBody = 'return `' + texts.join('\n') + '`'
-//   return new Function(funcBody)()
-// }
-
 // 欠損しているpage関数を仮定義する
 window.makeTentativeDefinitions = () => {
   const pageHashs = getPageRefs()
