@@ -5,7 +5,7 @@
 $ make build
 ```
 
-## Run local server
+## Run local server on docker
 ```
 $ make run-server
 ```
