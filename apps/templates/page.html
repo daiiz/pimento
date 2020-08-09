@@ -8,7 +8,37 @@
         margin: 0;
         overflow: hidden;
       }
-      pre {
+      #pre-header {
+        position: sticky;
+        display: flex;
+        left: 0;
+        top: 0;
+        background-color: #323639;
+        color: #f1f1f1;
+        padding: 8px;
+        border-radius: 4px;
+      }
+      #pre-header a {
+        cursor: default;
+        font-weight: bold;
+        margin: 0 8px;
+        color: #ababab;
+        user-select: none;
+      }
+      #pre-header a[href^="/"] {
+        cursor: pointer;
+        color: #f1f1f1;
+        text-decoration: underline;
+      }
+      #pre-header .item.tex,
+      #pre-header .item.pdf {
+        text-align: center;
+      }
+      #pre-header .item.message {
+        flex-grow: 1;
+        text-align: right;
+      }
+      #pre {
         box-sizing: border-box;
         margin: 0;
         padding: 8px;
@@ -33,9 +63,15 @@
   </head>
   <!-- <h1>Hello!! ({{time}})</h1> -->
   <div class='container'>
-    <pre id="pre"></pre>
+    <div id='pre'>
+      <div id='pre-header'>
+        <a class='item tex' target='_blank'>TeX</a>
+        <a class='item pdf' target='_blank'>PDF</a>
+        <span class='item message'>Compiling...</span>
+      </div>
+      <pre id='pre-text'></pre>
+    </div>
     <object id='preview' data='' type='application/pdf'>
-      <pre>Compiling...</pre>
     </object>
   </div>
   <script src='/static/js/bundle.js'></script>
