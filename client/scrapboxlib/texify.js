@@ -34,6 +34,9 @@ const Texify = node => {
       return '$' + texEscapeForFormula(node.formula) + '$'
     }
     case 'code': {
+      if (/https?:\/\//.test(node.text)) {
+        return `${backSlash}url{` + texEscape(node.text) + '}'
+      }
       return `{${backSlash}tt ` + texEscape(node.text) + '}'
     }
     case 'link': {
@@ -63,7 +66,11 @@ const Texify = node => {
       return Texify(texEscape(node.text))
     }
     case 'image': {
-      return `${backSlash}url{` + texEscape(node.src) + '}'
+      const { link, src } = node
+      if (node.link) {
+        return `${texEscape(link)}${backSlash}footnote{${backSlash}url{` + src + '}}'
+      }
+      return `${backSlash}url{` + texEscape(src) + '}'
     }
   }
   return Texify(node.text)
