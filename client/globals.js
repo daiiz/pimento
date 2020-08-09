@@ -4,9 +4,12 @@ const { texEscape, backSlash } = require('./scrapboxlib/lib')
 const { getPageRefs } = require('./scrapboxlib/lib')
 
 window.textBlockName = (level, showNumber = true) => {
-  const brace = showNumber ? '{' : '*{'
-  // TODO: level === 0かつ目次に存在しない場合は付録
-  switch (parseInt(level)) {
+  level = parseInt(level)
+  let brace = showNumber ? '{' : '*{'
+  if (window.funcs._isInAppendix && level > 1) {
+    brace = '*{'
+  }
+  switch (level) {
     case 0: return backSlash + 'part' + brace // 部
     case 1: return backSlash + 'chapter' + brace // 章
     case 2: return backSlash + 'section' + brace // 節
@@ -20,6 +23,8 @@ window.textBlockName = (level, showNumber = true) => {
 
 // 動的に生成されるページ変換関数などを生やす場所
 window.funcs = Object.create(null)
+window.funcs.refPageHashs = []
+window.funcs.appendixPageHashs = []
 
 // 欠損しているpage関数を仮定義する
 window.makeTentativeDefinitions = () => {

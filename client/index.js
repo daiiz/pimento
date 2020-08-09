@@ -1,7 +1,7 @@
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
 const { convertImages } = require('./images')
-const { createBook } = require('./book')
+const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
 require('./globals')
 
@@ -46,8 +46,9 @@ const main = async ({ type, body, bookTitle, toc }) => {
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
       await buildRefPages(Object.values(pages))
-      const book = createBook({ toc })
-      const texDocument = format(window.funcs.bookContent())
+      createBook({ toc })
+      createBookAppendix({ toc })
+      const texDocument = format(window.funcs.bookContent()) + '\n' + format(window.funcs.appendixContent())
       return {
         pageTitle: bookTitle,
         pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
@@ -116,6 +117,8 @@ window.onmessage = async function ({ origin, data }) {
       break
     }
   }
+
+  console.log('funcs:', window.funcs)
 }
 
 window.format = text => {
