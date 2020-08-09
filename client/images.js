@@ -14,17 +14,6 @@ const convertImages = async ({ gyazoIds }) => {
   console.log('imageData:', data)
 }
 
-// const convertTexDocument = async () => {
-//   const res = await fetch('/api/convert/tex', {
-//     method: 'POST',
-//     headers,
-//     body: JSON.stringify({ gyazoIds: [] })
-//   })
-//   if (!res.ok) throw new Error('Response is not ok')
-//   const data = await res.json()
-//   console.log('pdfData:', data)
-// }
-
 module.exports = {
   convertImages
 }

@@ -82,7 +82,7 @@ const addBlockInfo = lines => {
 
     res.push(currentLine)
   }
-  console.log("$", res)
+  // console.log("$", res)
   if (itemizeIndentStack.length > 0) {
     console.error('itemizeIndentStack is not empty.')
   }

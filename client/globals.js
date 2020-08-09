@@ -5,7 +5,6 @@ const { getPageRefs } = require('./scrapboxlib/lib')
 
 window.textBlockName = (level, showNumber = true) => {
   const brace = showNumber ? '{' : '*{'
-  // TODO: level === 0かつ目次に存在しない場合は付録
   switch (parseInt(level)) {
     case 0: return backSlash + 'part' + brace // 部
     case 1: return backSlash + 'chapter' + brace // 章
@@ -20,23 +19,8 @@ window.textBlockName = (level, showNumber = true) => {
 
 // 動的に生成されるページ変換関数などを生やす場所
 window.funcs = Object.create(null)
-
-window.funcs.a = (m) => {
-  const texts = [
-    `${backSlash}daiiz-a`,
-    `\$\{window.funcs.b(N)\}`
-  ]
-  const funcBody = 'return `' + texts.join('\n') + '`'
-  return new Function('N', funcBody)(m * 3)
-}
-
-window.funcs.b = (n) => {
-  const texts = [
-    backSlash + 'b'.repeat(n)
-  ]
-  const funcBody = 'return `' + texts.join('\n') + '`'
-  return new Function(funcBody)()
-}
+window.funcs.refPageHashs = []
+window.funcs.appendixPageHashs = []
 
 // 欠損しているpage関数を仮定義する
 window.makeTentativeDefinitions = () => {

@@ -43,11 +43,15 @@ const Texify = node => {
         // 括弧内の表現は\autorefを使うといい感じに解決される
         // TODO: テキスト省略オプション
         const hash = addToPageRefs(href)
+        // 参照実績を記録
+        if (!window.funcs.refPageHashs.includes(hash)) {
+          window.funcs.refPageHashs.push(hash)
+        }
         const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
         return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
       } else if (pathType === 'absolute') {
         if (node.content) {
-          return `${node.content}${backSlash}footnote{${backSlash}url{` + texEscape(href) + '}}'
+          return `${texEscape(node.content)}${backSlash}footnote{${backSlash}url{` + href + '}}'
         } else {
           return `${backSlash}url{` + texEscape(href) + '}'
         }
