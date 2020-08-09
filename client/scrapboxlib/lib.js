@@ -101,8 +101,10 @@ const texEscapeForFormula = str => {
 // すべての行の変換が完了してはじめてできる調整処理
 const finalAdjustment = texts => {
   const newTexts = []
+
   for (let i = 0; i < texts.length; i++) {
     let currentLine = texts[i]
+    let prevLine = i > 0 ? texts[i - 1] : null
     // console.log('>>>>!',  currentLine)
     const oneAheadLine = texts[i + 1]
     const twoAheadLine = texts[i + 2]
@@ -120,6 +122,15 @@ const finalAdjustment = texts => {
         || twoAheadLine.startsWith('${window.funcs.page_')) {
         const tailNewLineMark = new RegExp(backSlash + backSlash + '$')
         currentLine = currentLine.replace(tailNewLineMark, '')
+      }
+    }
+
+    // 箇条書きとコードブロックの間の空行を除去
+    // ['\end{itemize}', '', '\begin{lstlisting}...']
+    if (currentLine === '') {
+      if (prevLine.endsWith(`${backSlash}end{itemize}`) && oneAheadLine.startsWith(`${backSlash}begin{lstlisting}`)) {
+        newTexts.push('% Omitted blank line (itemize-lstlisting)')
+        continue
       }
     }
     newTexts.push(currentLine)

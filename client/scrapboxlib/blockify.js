@@ -1,5 +1,14 @@
 const { getGyazoImageId } = require('./lib')
 
+const isCommentLine = line => {
+  return line.indent === 0 && line.nodes.length === 1
+    && line.nodes[0].decos && line.nodes[0].decos.includes('#')
+}
+
+const isEmptyLine = line => {
+  return line.indent === 0 && line.nodes.length === 0
+}
+
 // ブロック情報を付け足す
 const addBlockInfo = lines => {
   if (lines.length === 0) return []
@@ -42,6 +51,13 @@ const addBlockInfo = lines => {
       closePrevItemizes(currentIndent)
       res.push(currentLine)
       continue
+    }
+
+    // 連続した空行やコメント行
+    if (currentIndent === 0 && prevLine.indent === 0 && currentLine.type === 'line' && prevLine.type === 'line') {
+      if (isEmptyLine(currentLine) || isCommentLine(currentLine)) {
+        if (isEmptyLine(prevLine) || isCommentLine(prevLine)) continue
+      }
     }
 
     // 改行のための空行を挿入するための目印をつける
