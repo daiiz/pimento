@@ -12,7 +12,7 @@ def index():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
   return render_template('page.html', time=now)
 
-@app.route('/build/pages/<string:page_title_hash>', methods=["GET"])
+@app.route('/build/pages/<string:page_title_hash>', methods=["POST"])
 def build_page(page_title_hash):
   if len(page_title_hash) != 32:
     return jsonify({ 'message': 'Invalid page_title_hash' }), 400

@@ -119,7 +119,11 @@ window.onmessage = async function ({ origin, data }) {
       if (type === 'whole-pages') {
         buildUrl += '&whole=1'
       }
-      previewElem.setAttribute('data', buildUrl)
+      await fetch(buildUrl, { method: 'POST' })
+
+      const docType = type === 'whole-pages' ? 'books' : 'pages'
+      const previewUrl = `/${docType}/pdf/${pageTitleHash}?r=${Math.floor(Math.random() * 100000000)}`
+      previewElem.setAttribute('data', previewUrl)
       break
     }
   }

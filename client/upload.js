@@ -30,7 +30,7 @@ const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTempl
 
   for (let i = 0; i < pageHead.length; i++) {
     const line = trimTexLine(pageHead[i])
-    if (line === '\\title{}') {
+    if (/\\title\{[^\{\}\\]+\}/.test(line)) {
       // 「\title{}」行にpageTitleを挿入する
       pageHead[i] = '\\title{' + pageTitle + '}'
     }
