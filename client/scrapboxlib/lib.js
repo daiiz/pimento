@@ -131,6 +131,7 @@ const finalAdjustment = texts => {
 module.exports = {
   extractGyazoIds,
   getGyazoImageId,
+  calcPageTitleHash,
   addToPageRefs,
   getPageRefs,
   indentStr,

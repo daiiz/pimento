@@ -16,25 +16,30 @@ def index():
 def build_page(page_title_hash):
   if len(page_title_hash) != 32:
     return jsonify({ 'message': 'Invalid page_title_hash' }), 400
+  isWhole = request.args.get('whole') == '1'
   docDir = './docs/'
-  texFileName = 'page_' + page_title_hash
+  prefix = 'book_' if isWhole else 'page_'
+  texFileName = prefix + page_title_hash
   texFilePath = 'tex/' + texFileName + '.tex'
   try:
     subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
+    if isWhole:
+      # TeX文書内の参照番号解決のため、二度実行する
+      subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
   except:
     # TODO: redirect
     return send_file('./docs/' + texFilePath, mimetype='text/plain')
   return send_file(docDir + texFileName + '.pdf')
 
-@app.route('/build', methods=["GET"])
-def build():
-  texFilePath = 'tex/sample.tex'
-  try:
-    subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
-  except:
-    # TODO: redirect
-    return send_file('./docs/' + texFilePath, mimetype='text/plain')
-  return send_file('./docs/sample.pdf', mimetype='application/pdf')
+# @app.route('/build', methods=["GET"])
+# def build():
+#   texFilePath = 'tex/sample.tex'
+#   try:
+#     subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
+#   except:
+#     # TODO: redirect
+#     return send_file('./docs/' + texFilePath, mimetype='text/plain')
+#   return send_file('./docs/sample.pdf', mimetype='application/pdf')
 
 @app.route('/api/convert/images', methods=["POST"])
 def convert_images():
@@ -50,7 +55,9 @@ def convert_images():
 @app.route('/api/upload/page', methods=["POST"])
 def upload_page():
   data = json.loads(request.data.decode('utf-8'))
-  file_name = 'page_' + data['pageTitleHash'] + '.tex'
+  isWhole = request.args.get('whole') == '1'
+  prefix = 'book_' if isWhole else 'page_'
+  file_name = prefix + data['pageTitleHash'] + '.tex'
   file_path = './docs/tex/' + file_name
   texDocument = data['pageHead'] + '\n\n' + data['pageText'] + '\n\n' + data['pageTail']
   with open(file_path, 'w') as f:

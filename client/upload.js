@@ -2,6 +2,10 @@ const headers = {
   'Content-Type': 'application/json; charset=utf-8',
 }
 
+const trimTexLine = line => {
+  return line.replace(/\%.+$/, '').trim()
+}
+
 const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTemplate, includeCover }) => {
   // maketitle
   if (!pageTitle || !pageTitleHash || !pageText) {
@@ -16,9 +20,26 @@ const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTempl
   ]
   const pageTail = pageTemplate.tailLines || []
   if (!includeCover) {
-    pageHead = pageHead.filter(line => line.trim() !== '\\maketitle')
+    const ignoreLines = [
+      '\\maketitle',
+      '\\tableofcontents'
+    ]
+    pageHead = pageHead
+      .filter(line => !ignoreLines.includes(trimTexLine(line)))
   }
-  const apiUrl = '/api/upload/page'
+
+  for (let i = 0; i < pageHead.length; i++) {
+    const line = trimTexLine(pageHead[i])
+    if (line === '\\title{}') {
+      // 「\title{}」行にpageTitleを挿入する
+      pageHead[i] = '\\title{' + pageTitle + '}'
+    }
+  }
+
+  let apiUrl = '/api/upload/page'
+  if (includeCover) {
+    apiUrl += '?whole=1'
+  }
   const res = await fetch(apiUrl, {
     method: 'POST',
     headers,

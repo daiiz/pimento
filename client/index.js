@@ -1,6 +1,7 @@
 const { parseScrapboxPage } = require('./scrapboxlib/')
-const { getPageRefs, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
+const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
 const { convertImages } = require('./images')
+const { createBook } = require('./book')
 const { uploadTexDocument } = require('./upload')
 require('./globals')
 
@@ -11,32 +12,20 @@ const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   window.funcs[`page_${pageHash}`] = function (level, showNumber) {
     return new Function('level', 'showNumber', funcBody)(level, showNumber)
   }
-  window.funcs.entry = function (level) {
+  window.funcs.pageContent = function (level) {
     return new Function('level', 'showNumber', funcBody)(level)
   }
   console.log('pageRefs:', getPageRefs())
   // 未定義の章などをいい感じに仮定義する
   window.makeTentativeDefinitions()
 
-  const texDocument = format(funcs.entry(1)) // Chapter level
+  const texDocument = format(funcs.pageContent(1)) // Chapter level
   await convertImages({ gyazoIds })
-  document.getElementById('pre').innerText = texDocument
   return {
     pageTitle,
     pageTitleHash: pageHash,
     pageText: texDocument,
     includeCover: false
-  }
-}
-
-const taskWholePages = async ({ pages, bookTitle }) => {
-  console.log('###', bookTitle, pages)
-  if (pages.length === 0) {
-    throw new Error('pages is empty')
-  }
-  await buildRefPages(Object.values(pages))
-  return {
-    includeCover: true
   }
 }
 
@@ -56,9 +45,15 @@ const main = async ({ type, body, bookTitle, toc }) => {
     // 製本
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
-      const data = await taskWholePages({ pages, bookTitle })
-      console.log("###", toc)
-      return
+      await buildRefPages(Object.values(pages))
+      const book = createBook({ toc })
+      const texDocument = format(window.funcs.bookContent())
+      return {
+        pageTitle: bookTitle,
+        pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
+        pageText: texDocument,
+        includeCover: true
+      }
     }
   }
 }
@@ -104,6 +99,7 @@ window.onmessage = async function ({ origin, data }) {
     // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {
       const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, body, bookTitle, toc })
+      document.getElementById('pre').innerText = pageText
       await uploadTexDocument({
         includeCover,
         pageTitle,
@@ -111,7 +107,12 @@ window.onmessage = async function ({ origin, data }) {
         pageText,
         pageTemplate: template
       })
-      previewElem.setAttribute('data', `/build/pages/${pageTitleHash}?r=${Math.floor(Math.random() * 100000000)}`)
+
+      let buildUrl = `/build/pages/${pageTitleHash}?r=${Math.floor(Math.random() * 100000000)}`
+      if (type === 'whole-pages') {
+        buildUrl += '&whole=1'
+      }
+      previewElem.setAttribute('data', buildUrl)
       break
     }
   }
