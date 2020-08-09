@@ -44,6 +44,8 @@ const handleSpecialLine = (line) => {
         }
         case 1: {
           captionText = Texify(line._captionNodes[0])
+          info.width = `0.5${backSlash}linewidth`
+          info.ref = `gyazo-id-${line._gyazoImageId}`
           break
         }
         case 2: {
