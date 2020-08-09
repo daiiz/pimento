@@ -31,16 +31,6 @@ def build_page(page_title_hash):
     return send_file('./docs/' + texFilePath, mimetype='text/plain')
   return send_file(docDir + texFileName + '.pdf')
 
-# @app.route('/build', methods=["GET"])
-# def build():
-#   texFilePath = 'tex/sample.tex'
-#   try:
-#     subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
-#   except:
-#     # TODO: redirect
-#     return send_file('./docs/' + texFilePath, mimetype='text/plain')
-#   return send_file('./docs/sample.pdf', mimetype='application/pdf')
-
 @app.route('/api/convert/images', methods=["POST"])
 def convert_images():
   data = json.loads(request.data.decode('utf-8'))
@@ -67,11 +57,6 @@ def upload_page():
     "page_title_hash": data['pageTitleHash'],
     "tex_file_name": file_name
   }), 200
-
-# 不要かも?
-@app.route('/api/convert/tex', methods=["POST"])
-def convert_tex_document():
-  return jsonify({ "pdf_file_url": "" }), 200
 
 # for debug
 if __name__ == "__main__":
