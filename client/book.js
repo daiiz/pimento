@@ -47,10 +47,7 @@ const insertChapFunction = (lines, titleHash, showNumber = true) => {
 
 const createBook = ({ toc }) => {
   const { parts, flatChaps } = toc
-  const bookLines = [
-    '% Built by Pimento 2.0',
-    ''
-  ]
+  const bookLines = []
   // 単独の章を解決する
   for (const chapTitle of flatChaps) {
     insertChapFunction(bookLines, calcPageTitleHash(chapTitle))

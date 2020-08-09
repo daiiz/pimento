@@ -6,7 +6,6 @@ const { uploadTexDocument } = require('./upload')
 require('./globals')
 
 const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
-  console.log("#####", texts)
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
   window.funcs[`page_${pageHash}`] = function (level, showNumber) {
@@ -48,7 +47,14 @@ const main = async ({ type, body, bookTitle, toc }) => {
       await buildRefPages(Object.values(pages))
       createBook({ toc })
       createBookAppendix({ toc })
-      const texDocument = format(window.funcs.bookContent()) + '\n' + format(window.funcs.appendixContent())
+      const texDocument = [
+        '% Built by Pimento 2.0',
+        '',
+        ...toc.preface,
+        format(window.funcs.bookContent()),
+        format(window.funcs.appendixContent()),
+        ...toc.postscript
+      ].join('\n')
       return {
         pageTitle: bookTitle,
         pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
