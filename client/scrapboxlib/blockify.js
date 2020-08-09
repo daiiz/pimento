@@ -56,7 +56,7 @@ const addBlockInfo = lines => {
     }
 
     // 画像のキャプションをimage nodeに取り込む
-    if (prevLine.nodes.length === 1 && prevLine.nodes[0].type === 'image' && currentLine.nodes.length > 0) {
+    if (prevLine.nodes.length === 1 && prevLine.nodes[0].type === 'image') {
       prevLine._srcUrl = prevLine.nodes[0].src
       prevLine._gyazoImageId = getGyazoImageId(prevLine._srcUrl)
       prevLine._captionNodes = currentLine.nodes

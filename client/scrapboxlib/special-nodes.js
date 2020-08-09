@@ -30,7 +30,10 @@ const handleSpecialLine = (line) => {
     }
     case 'image': {
       let captionText = ''
-      let info = Object.create(null)
+      let info = {
+        width: `0.5${backSlash}linewidth`,
+        ref: `gyazo-id-${line._gyazoImageId}`
+      }
       const captionNodes = []
 
       if (!line._gyazoImageId) {
@@ -40,7 +43,7 @@ const handleSpecialLine = (line) => {
 
       switch (line._captionNodes.length) {
         case 0: {
-          return []
+          break
         }
         case 1: {
           captionText = Texify(line._captionNodes[0])

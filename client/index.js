@@ -6,7 +6,6 @@ const { uploadTexDocument } = require('./upload')
 require('./globals')
 
 const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
-  console.log("#####", texts)
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
   window.funcs[`page_${pageHash}`] = function (level, showNumber) {
@@ -48,7 +47,14 @@ const main = async ({ type, body, bookTitle, toc }) => {
       await buildRefPages(Object.values(pages))
       createBook({ toc })
       createBookAppendix({ toc })
-      const texDocument = format(window.funcs.bookContent()) + '\n' + format(window.funcs.appendixContent())
+      const texDocument = [
+        '% Built by Pimento 2.0',
+        '',
+        ...toc.preface,
+        format(window.funcs.bookContent()),
+        format(window.funcs.appendixContent()),
+        ...toc.postscript
+      ].join('\n')
       return {
         pageTitle: bookTitle,
         pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
@@ -94,13 +100,20 @@ window.onmessage = async function ({ origin, data }) {
   if (refs && refs.length > 0) {
     await buildRefPages(refs)
   }
-  const previewElem = document.getElementById('preview')
+
+  const previewElement = document.querySelector('#preview')
+  const anchorTex = document.querySelector('#pre-header > a.tex')
+  const anchorPdf = document.querySelector('#pre-header > a.pdf')
+  const message = document.querySelector('#pre-header > span.message')
+
+  const rand = Math.floor(Math.random() * 100000000)
+  const docType = type === 'whole-pages' ? 'books' : 'pages'
 
   switch (task) {
     // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {
       const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, body, bookTitle, toc })
-      document.getElementById('pre').innerText = pageText
+      document.getElementById('pre-text').innerText = pageText
       await uploadTexDocument({
         includeCover,
         pageTitle,
@@ -109,11 +122,17 @@ window.onmessage = async function ({ origin, data }) {
         pageTemplate: template
       })
 
-      let buildUrl = `/build/pages/${pageTitleHash}?r=${Math.floor(Math.random() * 100000000)}`
+      let buildUrl = `/build/pages/${pageTitleHash}?r=${rand}`
       if (type === 'whole-pages') {
         buildUrl += '&whole=1'
       }
-      previewElem.setAttribute('data', buildUrl)
+      await fetch(buildUrl, { method: 'POST' })
+
+      const previewUrl = `/${docType}/pdf/${pageTitleHash}?r=${rand}`
+      previewElement.setAttribute('data', previewUrl)
+      anchorPdf.href = previewUrl
+      anchorTex.href = `/${docType}/tex/${pageTitleHash}?r=${rand}`
+      message.innerText = ''
       break
     }
   }

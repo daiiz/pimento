@@ -40,6 +40,14 @@ const handleScrapboxBlockNode = (line) => {
       fileName = fileName.trim()
       const contentLines = content.split('\n').map(line => indentStr(0) + line)
       info.frame = 'tb'
+      if (fileName === 'tex') {
+        // ユーザーが書いたTeXドキュメントを直接埋め込む
+        return [
+          '%===== <user-tex> =====',
+          ...contentLines.map(line => texEscapeForCodeBlock(line)),
+          '%===== </user-tex> ====='
+        ]
+      }
       if (codeHeadPattern.test(fileName)) {
         const [, ref, caption] = fileName.match(codeHeadPattern)
         info.label = `code:${ref}`
