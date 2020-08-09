@@ -58,6 +58,24 @@ def upload_page():
     "tex_file_name": file_name
   }), 200
 
+# コンパイルせずに既存のファイルを返すだけ
+@app.route('/<string:doc_type>s/<string:file_type>/<string:page_title_hash>', methods=["GET"])
+def show_page(doc_type, file_type, page_title_hash):
+  if len(page_title_hash) != 32:
+    return jsonify({ 'message': 'Invalid page_title_hash' }), 400
+  if file_type not in ['tex', 'pdf']:
+    return jsonify({ 'message': 'Invalid file_type' }), 400
+  if doc_type not in ['page', 'book']:
+    return jsonify({ 'message': 'Invalid doc_type' }), 400
+
+  filePath = './docs/' + file_type + '/' + doc_type + '_' + page_title_hash + '.' + file_type
+  if file_type == 'pdf':
+    filePath = './docs/' + doc_type + '_' + page_title_hash + '.pdf'
+  try:
+    return send_file(filePath)
+  except:
+    return jsonify({ 'message': 'Not found' }), 404
+
 # for debug
 if __name__ == "__main__":
   app.run()
