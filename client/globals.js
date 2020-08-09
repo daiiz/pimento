@@ -4,12 +4,8 @@ const { texEscape, backSlash } = require('./scrapboxlib/lib')
 const { getPageRefs } = require('./scrapboxlib/lib')
 
 window.textBlockName = (level, showNumber = true) => {
-  level = parseInt(level)
-  let brace = showNumber ? '{' : '*{'
-  if (window.funcs._isInAppendix && level > 1) {
-    brace = '*{'
-  }
-  switch (level) {
+  const brace = showNumber ? '{' : '*{'
+  switch (parseInt(level)) {
     case 0: return backSlash + 'part' + brace // 部
     case 1: return backSlash + 'chapter' + brace // 章
     case 2: return backSlash + 'section' + brace // 節
