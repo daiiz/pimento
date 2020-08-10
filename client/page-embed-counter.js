@@ -12,7 +12,15 @@ const initPageEmbedCounter = titles => {
 }
 
 const incrementPageEmbedCounter = title => {
-  // TODO
+  const pageTitleHash = calcPageTitleHash(title)
+  if (!existsPage(pageTitleHash)) {
+    throw new Error(`Page does not exist: ${title}`)
+  }
+  const currentCount = window.rawData.pageEmbedCounter[pageTitleHash]
+  if (currentCount >= 1) {
+    throw new Error(`Cannot embed the same chapter/section multiple times: "${title}"`)
+  }
+  window.rawData.pageEmbedCounter[pageTitleHash] += 1
 }
 
 const existsPage = pageTitleHash => {
@@ -21,5 +29,6 @@ const existsPage = pageTitleHash => {
 
 module.exports = {
   initPageEmbedCounter,
+  incrementPageEmbedCounter,
   existsPage
 }

@@ -1,4 +1,5 @@
 const { addToPageRefs, indentStr, buildOptions, backSlash } = require('./lib')
+const { incrementPageEmbedCounter } = require('../page-embed-counter')
 const { Texify} = require('./texify')
 
 const handleSpecialLine = (line) => {
@@ -13,6 +14,7 @@ const handleSpecialLine = (line) => {
     case 'textBlockHead': {
       if (line._embed) {
         // https://scrapbox.io/teamj/pimento_v2:_節の埋め込み記法
+        incrementPageEmbedCounter(line._text)
         const hash = addToPageRefs(line._text)
         return [`\$\{window.funcs.page_${hash}(level + 1 + ${line._level})\}`]
       } else {

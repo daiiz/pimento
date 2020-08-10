@@ -92,18 +92,18 @@ window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
   const { task, type, body, template, refs, bookTitle, toc } = data
 
+  if (received) {
+    if (task === 'close') this.close()
+    return
+  }
+  received = true
+
   // XXX: 引数形式揃えたい
   if (type === 'whole-pages') {
     initPageEmbedCounter(Object.values(body).map(page => page.title))
   } else if (type === 'page' && refs) {
     initPageEmbedCounter(refs.map(page => page.title))
   }
-
-  if (received) {
-    if (task === 'close') this.close()
-    return
-  }
-  received = true
 
   if (refs && refs.length > 0) {
     await buildRefPages(refs)
