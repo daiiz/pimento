@@ -1,21 +1,9 @@
 const { calcPageTitleHash, texEscape, backSlash } = require('./scrapboxlib/lib')
+const { incrementPageEmbedCounter, getAppendixPages } = require('./page-embed-counter')
 
-const detectAppendixPageHashs = ({ toc }) => {
-  // 本文に収録されている章
-  const contentChapters = new Set([
-    ...toc.flatChaps.map(title => calcPageTitleHash(title)),
-    ...Object.values(toc.parts).flat().map(title => calcPageTitleHash(title))
-  ])
-  for (const refHash of window.funcs.refPageHashs) {
-    // TODO (daiiz): 節や小節の確認もするべき
-    if (contentChapters.has(refHash)) continue
-    window.funcs.appendixPageHashs.push(refHash)
-  }
-}
-
-const createBookAppendix = ({ toc }) => {
-  detectAppendixPageHashs({ toc })
-  const appendixHashs = window.funcs.appendixPageHashs
+const createBookAppendix = (toc = { parts: {} }) => {
+  const appendixHashs = getAppendixPages()
+  console.log('APPENDIXS:', appendixHashs)
   if (appendixHashs.length === 0) {
     window.funcs.appendixContent = () => {
       return new Function('return ""')()
@@ -37,15 +25,16 @@ const createBookAppendix = ({ toc }) => {
   }
 }
 
-const insertChapFunction = (lines, titleHash, showNumber = true) => {
+const insertChapFunction = (lines, titleHash) => {
   const pageFuncName = `page_${titleHash}`
   if (!window.funcs[pageFuncName]) {
     throw new Error(`Not found chapter: ${titleHash}`)
   }
-  lines.push(`\$\{window.funcs.${pageFuncName}(1, ${showNumber})\}`)
+  incrementPageEmbedCounter(titleHash)
+  lines.push(`\$\{window.funcs.${pageFuncName}(1)\}`)
 }
 
-const createBook = ({ toc }) => {
+const createBook = (toc) => {
   const { parts, flatChaps } = toc
   const bookLines = []
   // 単独の章を解決する

@@ -24,8 +24,6 @@ window.textBlockName = (level, showNumber = true) => {
 
 // 動的に生成されるページ変換関数などを生やす場所
 window.funcs = Object.create(null)
-window.funcs.refPageHashs = []
-window.funcs.appendixPageHashs = []
 
 // postMessageで受信したデータに基づく情報
 window.rawData = Object.create(null)
@@ -38,7 +36,7 @@ window.makeTentativeDefinitions = () => {
     const fName = `page_${hash}`
     if (window.funcs[fName]) continue
     // 仮定義
-    window.funcs[fName] = (level, showNumber) => {
+    window.funcs[fName] = function (level, showNumber, tentative = true) {
       const pageTitle = texEscape(pageHashs[hash])
       const texts = [
         `\$\{window.textBlockName(level, showNumber)\}${pageTitle}} % tentative definitions by Pimento`,

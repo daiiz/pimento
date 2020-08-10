@@ -6,20 +6,21 @@ const { uploadTexDocument } = require('./upload')
 const { initPageEmbedCounter } = require('./page-embed-counter')
 require('./globals')
 
-const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
+const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
-  window.funcs[`page_${pageHash}`] = function (level, showNumber) {
-    return new Function('level', 'showNumber', funcBody)(level, showNumber)
-  }
   window.funcs.pageContent = function (level) {
     return new Function('level', 'showNumber', funcBody)(level)
   }
-  console.log('pageRefs:', getPageRefs())
+  console.log('REFS:', getPageRefs())
   // 未定義の章などをいい感じに仮定義する
   window.makeTentativeDefinitions()
-
-  const texDocument = format(funcs.pageContent(1)) // Chapter level
+  createBookAppendix()
+  // 章レベルで描画
+  const texDocument = [
+    format(funcs.pageContent(1)),
+    format(funcs.appendixContent())
+  ].join('\n')
   await convertImages({ gyazoIds })
   return {
     pageTitle,
@@ -35,7 +36,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
     case 'page': {
       const { title, lines } = body
       const res = parseScrapboxPage({ lines })
-      return taskPage({
+      return createPage({
         pageTitle: title,
         pageHash: addToPageRefs(lines[0].text),
         texts: res.texts,
@@ -46,8 +47,9 @@ const main = async ({ type, body, bookTitle, toc }) => {
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
       await buildRefPages(Object.values(pages))
-      createBook({ toc })
-      createBookAppendix({ toc })
+      createBook(toc)
+      createBookAppendix(toc)
+      console.log('REFS:', getPageRefs())
       const texDocument = [
         '% Built by Pimento 2.0',
         '',
@@ -69,7 +71,6 @@ const main = async ({ type, body, bookTitle, toc }) => {
 // XXX: たぶんいい感じにmainと共通化できる
 // refs: [{ title, lines }]
 const buildRefPages = async refs => {
-  console.log("REFS:", refs)
   const gyazoIds = []
   for (let { title, lines } of refs) {
     lines = lines.map(text => ({ text }))
@@ -92,18 +93,18 @@ window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
   const { task, type, body, template, refs, bookTitle, toc } = data
 
+  if (received) {
+    if (task === 'close') this.close()
+    return
+  }
+  received = true
+
   // XXX: 引数形式揃えたい
   if (type === 'whole-pages') {
     initPageEmbedCounter(Object.values(body).map(page => page.title))
   } else if (type === 'page' && refs) {
     initPageEmbedCounter(refs.map(page => page.title))
   }
-
-  if (received) {
-    if (task === 'close') this.close()
-    return
-  }
-  received = true
 
   if (refs && refs.length > 0) {
     await buildRefPages(refs)
