@@ -13,7 +13,9 @@ const initPageEmbedCounter = titles => {
 
 const incrementPageEmbedCounter = pageTitleHash => {
   if (!existsPage(pageTitleHash)) {
-    throw new Error(`Page does not exist: ${pageTitleHash}`)
+    // XXX: 仮定義付き単ページプレビュー機能時に確実にエラーになるのでログ出力に留める
+    console.error(`Page does not exist: ${pageTitleHash}`)
+    return
   }
   const currentCount = window.rawData.pageEmbedCounter[pageTitleHash]
   if (currentCount >= 1) {

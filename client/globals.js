@@ -36,7 +36,7 @@ window.makeTentativeDefinitions = () => {
     const fName = `page_${hash}`
     if (window.funcs[fName]) continue
     // 仮定義
-    window.funcs[fName] = (level, showNumber) => {
+    window.funcs[fName] = function (level, showNumber, tentative = true) {
       const pageTitle = texEscape(pageHashs[hash])
       const texts = [
         `\$\{window.textBlockName(level, showNumber)\}${pageTitle}} % tentative definitions by Pimento`,
