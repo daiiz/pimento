@@ -6,7 +6,7 @@ const { uploadTexDocument } = require('./upload')
 const { initPageEmbedCounter } = require('./page-embed-counter')
 require('./globals')
 
-const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
+const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
   window.funcs.pageContent = function (level) {
@@ -15,8 +15,12 @@ const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   console.log('REFS:', getPageRefs())
   // 未定義の章などをいい感じに仮定義する
   window.makeTentativeDefinitions()
+  createBookAppendix()
   // 章レベルで描画
-  const texDocument = format(funcs.pageContent(1))
+  const texDocument = [
+    format(funcs.pageContent(1)),
+    format(funcs.appendixContent())
+  ].join('\n')
   await convertImages({ gyazoIds })
   return {
     pageTitle,
@@ -32,7 +36,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
     case 'page': {
       const { title, lines } = body
       const res = parseScrapboxPage({ lines })
-      return taskPage({
+      return createPage({
         pageTitle: title,
         pageHash: addToPageRefs(lines[0].text),
         texts: res.texts,
