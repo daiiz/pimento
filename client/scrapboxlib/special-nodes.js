@@ -80,7 +80,7 @@ const handleSpecialLine = (line) => {
         return `${backSlash}label{fig:` + info.ref + '}'
       }
       return [
-        `${backSlash}begin{figure}[h]`,
+        `${backSlash}begin{figure}[tbh]`, // [h]
         `  ${backSlash}begin{center}`,
         `     ${renderIncludegraphics()}`,
         `     ${backSlash}caption{${captionText.trim()}}`,
