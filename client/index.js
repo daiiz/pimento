@@ -9,9 +9,6 @@ require('./globals')
 const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
-  // window.funcs[`page_${pageHash}`] = function (level, showNumber) {
-  //   return new Function('level', 'showNumber', funcBody)(level, showNumber)
-  // }
   window.funcs.pageContent = function (level) {
     return new Function('level', 'showNumber', funcBody)(level)
   }
@@ -71,10 +68,10 @@ const main = async ({ type, body, bookTitle, toc }) => {
 // refs: [{ title, lines }]
 const buildRefPages = async refs => {
   const gyazoIds = []
-  for (const ref of refs) {
-    const lines = ref.lines.map(text => ({ text }))
+  for (let { title, lines } of refs) {
+    lines = lines.map(text => ({ text }))
     const res = parseScrapboxPage({ lines })
-    const pageHash = addToPageRefs(ref.title)
+    const pageHash = addToPageRefs(title)
     const texts = ['%------------------------------', ...res.texts]
     gyazoIds.push(...(res.gyazoIds || []))
     // ページ変換関数を登録

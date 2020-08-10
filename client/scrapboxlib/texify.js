@@ -46,10 +46,6 @@ const Texify = node => {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
         const hash = addToPageRefs(href)
-        // 参照実績を記録
-        // if (!window.funcs.refPageHashs.includes(hash)) {
-        //   window.funcs.refPageHashs.push(hash)
-        // }
         // pageEmbedCounterを用いて参照可能性を判定する
         if (existsPage(hash)) {
           // TODO: テキスト省略オプション
