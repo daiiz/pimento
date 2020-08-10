@@ -1,13 +1,13 @@
-const { addToPageRefs, indentStr, buildOptions, backSlash } = require('./lib')
+const { addToPageRefs, indentStr, buildOptions, texEscape, backSlash } = require('./lib')
 const { incrementPageEmbedCounter } = require('../page-embed-counter')
-const { Texify} = require('./texify')
+const { Texify } = require('./texify')
 
 const handleSpecialLine = (line) => {
   switch (line._type) {
     case 'title': {
       const hash = addToPageRefs(line.text)
       return [
-        `\$\{window.textBlockName(level, showNumber)\}${line.text}} % Scrapbox page title line`,
+        `\$\{window.textBlockName(level, showNumber)\}${texEscape(line.text)}} % Scrapbox page title line`,
         `${backSlash}label{textBlock-${hash}}`
       ]
     }
