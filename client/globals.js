@@ -27,6 +27,10 @@ window.funcs = Object.create(null)
 window.funcs.refPageHashs = []
 window.funcs.appendixPageHashs = []
 
+// postMessageで受信したデータに基づく情報
+window.rawData = Object.create(null)
+window.rawData.pageEmbedCounter = Object.create(null)
+
 // 欠損しているpage関数を仮定義する
 window.makeTentativeDefinitions = () => {
   const pageHashs = getPageRefs()
@@ -39,7 +43,7 @@ window.makeTentativeDefinitions = () => {
       const texts = [
         `\$\{window.textBlockName(level, showNumber)\}${pageTitle}} % tentative definitions by Pimento`,
         `${backSlash}label{textBlock-${hash}}`,
-        'Work in progress!'
+        `{${backSlash}tt Tentative definitions by Pimento}${backSlash}${backSlash}`
       ]
       const funcBody = 'return `' + texts.join('\n') + '`'
       return new Function('level', 'showNumber', funcBody)(level, showNumber)

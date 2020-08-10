@@ -3,6 +3,7 @@ const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMa
 const { convertImages } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
+const { initPageEmbedCounter } = require('./page-embed-counter')
 require('./globals')
 
 const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
@@ -90,6 +91,13 @@ let received = false
 window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
   const { task, type, body, template, refs, bookTitle, toc } = data
+
+  // XXX: 引数形式揃えたい
+  if (type === 'whole-pages') {
+    initPageEmbedCounter(Object.values(body).map(page => page.title))
+  } else if (type === 'page' && refs) {
+    initPageEmbedCounter(refs.map(page => page.title))
+  }
 
   if (received) {
     if (task === 'close') this.close()
