@@ -10,6 +10,12 @@ $ make build
 $ make run-server
 ```
 
+## Scrapbox UserScript
+```js
+// script.js
+import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js"
+```
+
 ## Tips: Build TeX documents
 ```
 $ make run-bash
