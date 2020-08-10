@@ -29,7 +29,7 @@ window.funcs.appendixPageHashs = []
 
 // postMessageで受け取ったデータ置き場
 window.rawData = Object.create(null)
-window.rawData.pageTitles = []
+window.rawData.pageEmbedCounter = Object.create(null)
 
 // 欠損しているpage関数を仮定義する
 window.makeTentativeDefinitions = () => {

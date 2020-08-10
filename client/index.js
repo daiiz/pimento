@@ -85,6 +85,12 @@ const buildRefPages = async refs => {
   await convertImages({ gyazoIds })
 }
 
+const initPageEmbedCounter = titles => {
+  for (const title of titles) {
+    window.rawData.pageEmbedCounter[calcPageTitleHash(title)] = 0
+  }
+}
+
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
@@ -93,9 +99,9 @@ window.onmessage = async function ({ origin, data }) {
 
   // XXX: 引数形式揃えたい
   if (type === 'whole-pages') {
-    window.rawData.pageTitles = Object.values(body).map(page => page.title)
+    initPageEmbedCounter(Object.values(body).map(page => page.title))
   } else if (type === 'page' && refs) {
-    window.rawData.pageTitles = refs.map(page => page.title)
+    initPageEmbedCounter(refs.map(page => page.title))
   }
 
   if (received) {
