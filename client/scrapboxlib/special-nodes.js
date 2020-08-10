@@ -14,8 +14,8 @@ const handleSpecialLine = (line) => {
     case 'textBlockHead': {
       if (line._embed) {
         // https://scrapbox.io/teamj/pimento_v2:_節の埋め込み記法
-        incrementPageEmbedCounter(line._text)
         const hash = addToPageRefs(line._text)
+        incrementPageEmbedCounter(hash)
         return [`\$\{window.funcs.page_${hash}(level + 1 + ${line._level})\}`]
       } else {
         return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${line._text}}`]

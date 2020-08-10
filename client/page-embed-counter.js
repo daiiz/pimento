@@ -11,14 +11,13 @@ const initPageEmbedCounter = titles => {
   }
 }
 
-const incrementPageEmbedCounter = title => {
-  const pageTitleHash = calcPageTitleHash(title)
+const incrementPageEmbedCounter = pageTitleHash => {
   if (!existsPage(pageTitleHash)) {
-    throw new Error(`Page does not exist: ${title}`)
+    throw new Error(`Page does not exist: ${pageTitleHash}`)
   }
   const currentCount = window.rawData.pageEmbedCounter[pageTitleHash]
   if (currentCount >= 1) {
-    throw new Error(`Cannot embed the same chapter/section multiple times: "${title}"`)
+    throw new Error(`Cannot embed the same chapter/section multiple times: ${pageTitleHash}`)
   }
   window.rawData.pageEmbedCounter[pageTitleHash] += 1
 }
@@ -27,8 +26,21 @@ const existsPage = pageTitleHash => {
   return pageTitleHash in window.rawData.pageEmbedCounter
 }
 
+// 本文中で埋め込まれていないページは付録として扱う
+const getAppendixPages = () => {
+  const pageTitleHashs = Object.keys(window.rawData.pageEmbedCounter) // Order?
+  const res = []
+  for (const hash of pageTitleHashs) {
+    if (window.rawData.pageEmbedCounter[hash] === 0) {
+      res.push(hash)
+    }
+  }
+  return res
+}
+
 module.exports = {
   initPageEmbedCounter,
   incrementPageEmbedCounter,
-  existsPage
+  existsPage,
+  getAppendixPages
 }

@@ -24,8 +24,8 @@ window.textBlockName = (level, showNumber = true) => {
 
 // 動的に生成されるページ変換関数などを生やす場所
 window.funcs = Object.create(null)
-window.funcs.refPageHashs = []
-window.funcs.appendixPageHashs = []
+// window.funcs.refPageHashs = []
+// window.funcs.appendixPageHashs = []
 
 // postMessageで受信したデータに基づく情報
 window.rawData = Object.create(null)

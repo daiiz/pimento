@@ -9,17 +9,17 @@ require('./globals')
 const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
-  window.funcs[`page_${pageHash}`] = function (level, showNumber) {
-    return new Function('level', 'showNumber', funcBody)(level, showNumber)
-  }
+  // window.funcs[`page_${pageHash}`] = function (level, showNumber) {
+  //   return new Function('level', 'showNumber', funcBody)(level, showNumber)
+  // }
   window.funcs.pageContent = function (level) {
     return new Function('level', 'showNumber', funcBody)(level)
   }
-  console.log('pageRefs:', getPageRefs())
+  console.log('REFS:', getPageRefs())
   // 未定義の章などをいい感じに仮定義する
   window.makeTentativeDefinitions()
-
-  const texDocument = format(funcs.pageContent(1)) // Chapter level
+  // 章レベルで描画
+  const texDocument = format(funcs.pageContent(1))
   await convertImages({ gyazoIds })
   return {
     pageTitle,
@@ -46,8 +46,9 @@ const main = async ({ type, body, bookTitle, toc }) => {
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
       await buildRefPages(Object.values(pages))
-      createBook({ toc })
-      createBookAppendix({ toc })
+      createBook(toc)
+      createBookAppendix(toc)
+      console.log('REFS:', getPageRefs())
       const texDocument = [
         '% Built by Pimento 2.0',
         '',
@@ -69,12 +70,11 @@ const main = async ({ type, body, bookTitle, toc }) => {
 // XXX: たぶんいい感じにmainと共通化できる
 // refs: [{ title, lines }]
 const buildRefPages = async refs => {
-  console.log("REFS:", refs)
   const gyazoIds = []
-  for (let { title, lines } of refs) {
-    lines = lines.map(text => ({ text }))
+  for (const ref of refs) {
+    const lines = ref.lines.map(text => ({ text }))
     const res = parseScrapboxPage({ lines })
-    const pageHash = addToPageRefs(title)
+    const pageHash = addToPageRefs(ref.title)
     const texts = ['%------------------------------', ...res.texts]
     gyazoIds.push(...(res.gyazoIds || []))
     // ページ変換関数を登録
