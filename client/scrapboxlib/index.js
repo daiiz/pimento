@@ -5,6 +5,28 @@ const { Texify } = require('./texify')
 const { handleScrapboxBlockNode } = require('./block-nodes')
 const { handleSpecialLine } = require('./special-nodes')
 
+const removeEmptyLinesBothEnds = lines => {
+  if (lines.length <= 2) return lines
+  // 記事先頭の空白行を除去
+  // [
+  //    "${window.textBlockName(level, showNumber)}Foo} % Scrapbox page title line",
+  //    "---TEX-BACKSLASH---label{textBlock-09b4d0c6beea8d7c14c3b86ffcd06bff}",
+  //    ...
+  // ]
+  // という構造なので、2行目から検査する
+  for (let l = 2; l < lines.length; l++) {
+    if (lines[l].length === 0) continue
+    lines = [lines[0], lines[1], ...lines.slice(l)]
+    break
+  }
+  // 記事末尾の空白行を除去
+  for (let l = lines.length - 1; l >= 0; l--) {
+    if (lines[l].length === 0) continue
+    return lines.slice(0, l + 1)
+  }
+  return []
+}
+
 const parseScrapboxPage = ({ lines }) => {
   const lineTexts = lines.map(line => line.text)
   let lineObjects = parse(lineTexts.join('\n'))
@@ -40,7 +62,10 @@ const parseScrapboxPage = ({ lines }) => {
   }
 
   // 最終生成物
-  return { texts, gyazoIds }
+  return {
+    texts: removeEmptyLinesBothEnds(texts),
+    gyazoIds
+  }
 }
 
 module.exports = {
