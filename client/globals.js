@@ -27,7 +27,7 @@ window.funcs = Object.create(null)
 window.funcs.refPageHashs = []
 window.funcs.appendixPageHashs = []
 
-// postMessageで受け取ったデータ置き場
+// postMessageで受信したデータに基づく情報
 window.rawData = Object.create(null)
 window.rawData.pageEmbedCounter = Object.create(null)
 

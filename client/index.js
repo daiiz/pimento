@@ -3,6 +3,7 @@ const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMa
 const { convertImages } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
+const { initPageEmbedCounter } = require('./page-embed-counter')
 require('./globals')
 
 const taskPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
@@ -83,12 +84,6 @@ const buildRefPages = async refs => {
     }
   }
   await convertImages({ gyazoIds })
-}
-
-const initPageEmbedCounter = titles => {
-  for (const title of titles) {
-    window.rawData.pageEmbedCounter[calcPageTitleHash(title)] = 0
-  }
 }
 
 let received = false

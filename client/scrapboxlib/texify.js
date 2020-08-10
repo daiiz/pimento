@@ -1,4 +1,5 @@
 const { addToPageRefs, texEscape, texEscapeForFormula, backSlash } = require('./lib')
+const { existsPage } = require('../page-embed-counter')
 
 const Texify = node => {
   if (typeof node === 'string') return node
@@ -44,15 +45,20 @@ const Texify = node => {
       if (pathType === 'relative') {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
-        // TODO: テキスト省略オプション
         const hash = addToPageRefs(href)
         // 参照実績を記録
         if (!window.funcs.refPageHashs.includes(hash)) {
           window.funcs.refPageHashs.push(hash)
         }
-        // TODO: rawData.pageTitlesを用いて参照可能性を判定する
-        const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
-        return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
+        // pageEmbedCounterを用いて参照可能性を判定する
+        if (existsPage(hash)) {
+          // TODO: テキスト省略オプション
+          const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
+          return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
+        } else {
+          // EmptyLinkやInterLinkへの参照はプレーンテキスト扱いする
+          return texEscape(href)
+        }
       } else if (pathType === 'absolute') {
         if (node.content) {
           return `${texEscape(node.content)}${backSlash}footnote{${backSlash}url{` + href + '}}'
