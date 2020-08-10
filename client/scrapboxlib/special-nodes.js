@@ -2,6 +2,9 @@ const { addToPageRefs, indentStr, buildOptions, texEscape, backSlash } = require
 const { incrementPageEmbedCounter } = require('../page-embed-counter')
 const { Texify } = require('./texify')
 
+const patternWidthRef = /^width=([\d\.]+),\s*(?:ref|label)=(.+)$/i
+const patternWidth = /^width=([\d\.]+),*\s*$/i
+
 const handleSpecialLine = (line) => {
   switch (line._type) {
     case 'title': {
@@ -55,11 +58,16 @@ const handleSpecialLine = (line) => {
           captionText = Texify(line._captionNodes[0])
           const infoNode = line._captionNodes[1]
           infoNode.decos = []
-          const infoText = Texify(infoNode)[0]
+          const infoText = Texify(infoNode)[0].trim()
           // 指定できる画像オプションを制限しておく
-          const [, width, ref] = infoText.trim().match(/^width=([\d\.]+),\s*(?:ref|label)=(.+)$/i)
-          info.width = width + `${backSlash}linewidth`
-          info.ref = ref
+          if (patternWidthRef.test(infoText)) {
+            const [, width, ref] = infoText.match(patternWidthRef)
+            info.width = width + `${backSlash}linewidth`
+            info.ref = ref
+          } else if (patternWidth.test(infoText)) {
+            const [, width] = infoText.match(patternWidth)
+            info.width = width + `${backSlash}linewidth`
+          }
           break
         }
       }
