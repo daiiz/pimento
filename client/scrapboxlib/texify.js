@@ -61,6 +61,9 @@ const Texify = node => {
         } else {
           return `${backSlash}url{` + texEscape(href) + '}'
         }
+      } else if (pathType === 'root') {
+        // 外部プロジェクトへの参照
+        return texEscape(href)
       }
       break
     }
