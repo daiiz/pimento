@@ -101,11 +101,9 @@ const texEscapeForFormula = str => {
 // すべての行の変換が完了してはじめてできる調整処理
 const finalAdjustment = texts => {
   const newTexts = []
-
   for (let i = 0; i < texts.length; i++) {
     let currentLine = texts[i]
     let prevLine = i > 0 ? texts[i - 1] : null
-    // console.log('>>>>!',  currentLine)
     const oneAheadLine = texts[i + 1]
     const twoAheadLine = texts[i + 2]
     if (oneAheadLine === undefined || twoAheadLine === undefined) {
