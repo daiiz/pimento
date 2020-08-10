@@ -43,7 +43,7 @@ window.makeTentativeDefinitions = () => {
       const texts = [
         `\$\{window.textBlockName(level, showNumber)\}${pageTitle}} % tentative definitions by Pimento`,
         `${backSlash}label{textBlock-${hash}}`,
-        'Work in progress!'
+        `{${backSlash}tt Tentative definitions by Pimento}${backSlash}${backSlash}`
       ]
       const funcBody = 'return `' + texts.join('\n') + '`'
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
