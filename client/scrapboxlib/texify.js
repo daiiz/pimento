@@ -50,6 +50,7 @@ const Texify = node => {
         if (!window.funcs.refPageHashs.includes(hash)) {
           window.funcs.refPageHashs.push(hash)
         }
+        // TODO: rawData.pageTitlesを用いて参照可能性を判定する
         const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
         return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
       } else if (pathType === 'absolute') {

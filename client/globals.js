@@ -27,6 +27,10 @@ window.funcs = Object.create(null)
 window.funcs.refPageHashs = []
 window.funcs.appendixPageHashs = []
 
+// postMessageで受け取ったデータ置き場
+window.rawData = Object.create(null)
+window.rawData.pageTitles = []
+
 // 欠損しているpage関数を仮定義する
 window.makeTentativeDefinitions = () => {
   const pageHashs = getPageRefs()
