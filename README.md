@@ -1,5 +1,7 @@
 # Pimento
 
+![Node.js CI](https://github.com/daiiz/pimento/workflows/Node.js%20CI/badge.svg)
+
 ## Build docker image
 ```
 $ make build
