@@ -31,13 +31,15 @@ const cases = [
     ]
   },
   {
-    name: 'indent with code, math and bold',
-    source: ['\t`A`', '\t[$ a_2 = \\pi]', '\t[* B]', ''],
+    name: 'indent with code, math, bold, italic and underline',
+    source: ['\t`A`', '\t[$ a_2 = \\pi]', '\t[* B]', '\t[/ daiiz]', '\tLook at the [_ Car]!', ''],
     expect: [
       '\\begin{itemize}',
       '  \\item {\\tt A}',
       '  \\item $a_2 = \\pi$',
       '  \\item {\\bf B}',
+      '  \\item {\\it daiiz}',
+      '  \\item Look at the \\underline{Car}!',
       '\\end{itemize}'
     ]
   },
