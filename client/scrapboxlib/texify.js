@@ -25,6 +25,10 @@ const Texify = node => {
       if (decos.includes('#')) {
         return ''
       }
+      // 太文字
+      if (decos.includes('*')) {
+        return `{${backSlash}bf ${Texify(node.nodes)}}`
+      }
       return `(${decos}${Texify(node.nodes)})`
     }
     case 'blank': {

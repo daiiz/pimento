@@ -29,7 +29,18 @@ const cases = [
       '  \\item C',
       '\\end{itemize}'
     ]
-  }
+  },
+  {
+    name: 'indent with code, math and bold',
+    source: ['\t`A`', '\t[$ a_2 = \\pi]', '\t[* B]', ''],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item {\\tt A}',
+      '  \\item $a_2 = \\pi$',
+      '  \\item {\\bf B}',
+      '\\end{itemize}'
+    ]
+  },
 ]
 
 runTest('Parse itemize', cases)
