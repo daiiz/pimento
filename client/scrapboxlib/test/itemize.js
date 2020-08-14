@@ -5,7 +5,7 @@ const window = global
 const cases = [
   {
     name: 'indent level 1',
-    source: ['\tA', '\tB', '\tC', ''],
+    source: ['\tA', '\tB', '\tC'],
     expect: [
       '\\begin{itemize}',
       '  \\item A',
@@ -70,6 +70,23 @@ const cases = [
       '\\end{itemize}'
     ]
   },
+  {
+    name: 'multiple bullet blocks',
+    source: ['\tA', '\tB', 'plain', '\tC', '\t\tD', ''],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item A',
+      '  \\item B',
+      '\\end{itemize}',
+      'plain',
+      '\\begin{itemize}',
+      '  \\item C',
+      '  \\begin{itemize}',
+      '    \\item D',
+      '  \\end{itemize}',
+      '\\end{itemize}'
+    ]
+  }
 ]
 
 runTest('Parse itemize', cases)
