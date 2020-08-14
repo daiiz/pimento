@@ -8,6 +8,7 @@ const Texify = node => {
   }
   if (!node) return null
   switch (node.type) {
+    // 装飾を翻訳
     case 'decoration': {
       if (node.decos.length === 0) return Texify(node.nodes)
       const decos = node.decos.join('')
@@ -24,6 +25,18 @@ const Texify = node => {
       // コメント記法「#」は無視
       if (decos.includes('#')) {
         return ''
+      }
+      // 太文字
+      if (decos.includes('*')) {
+        return `{${backSlash}bf ${Texify(node.nodes)}}`
+      }
+      // 斜体
+      if (decos.includes('/')) {
+        return `{${backSlash}it ${Texify(node.nodes)}}`
+      }
+      // 下線
+      if (decos.includes('_')) {
+        return `${backSlash}underline{${Texify(node.nodes)}}`
       }
       return `(${decos}${Texify(node.nodes)})`
     }

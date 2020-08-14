@@ -1,5 +1,5 @@
 const { parse } = require('@progfay/scrapbox-parser')
-const { extractGyazoIds, getGyazoImageId, indentStr, backSlash } = require('./lib')
+const { extractGyazoIds, indentStr, backSlash } = require('./lib')
 const { addBlockInfo, normalizeTextBlockLevels } = require('./blockify')
 const { Texify } = require('./texify')
 const { handleScrapboxBlockNode } = require('./block-nodes')
@@ -29,6 +29,10 @@ const removeEmptyLinesBothEnds = lines => {
 
 const parseScrapboxPage = ({ lines }) => {
   const lineTexts = lines.map(line => line.text)
+  // 最終行が空行になるよう調整する
+  if (lineTexts[lineTexts.length - 1] !== '') {
+    lineTexts.push('')
+  }
   let lineObjects = parse(lineTexts.join('\n'))
 
   const gyazoIds = extractGyazoIds(lineObjects)

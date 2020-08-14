@@ -1,5 +1,7 @@
 # Pimento
 
+![Converter](https://github.com/daiiz/pimento/workflows/Converter/badge.svg)
+
 ## Build docker image
 ```
 $ make build
