@@ -1,5 +1,5 @@
 # https://github.com/actions/starter-workflows/blob/master/ci/node.js.yml
-name: Node.js CI
+name: Converter
 
 on: [push]
 
