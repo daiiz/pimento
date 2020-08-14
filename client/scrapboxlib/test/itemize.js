@@ -15,7 +15,7 @@ const cases = [
     ]
   },
   {
-    name: 'indent level 1-2',
+    name: 'indent level 1, 2',
     source: ['\tA', '\t\ta', '\t\t', '\t\taa', '\tB', '\tC', ''],
     expect: [
       '\\begin{itemize}',
@@ -27,6 +27,33 @@ const cases = [
       '  \\end{itemize}',
       '  \\item B',
       '  \\item C',
+      '\\end{itemize}'
+    ]
+  },
+  {
+    name: 'indent level 1, 2, 3',
+    source: ['\tA', '\t\ta', '\t\txx', '\t\t\txxx', '\t\taa', '\tB', ''],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item A',
+      '  \\begin{itemize}',
+      '    \\item a',
+      '    \\item xx',
+      '    \\begin{itemize}',
+      '      \\item xxx',
+      '    \\end{itemize}',
+      '    \\item aa',
+      '  \\end{itemize}',
+      '  \\item B',
+      '\\end{itemize}'
+    ]
+  },
+  {
+    name: 'indent with URL',
+    source: ['\thttps://example.com/', ''],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item \\url{https://example.com/}',
       '\\end{itemize}'
     ]
   },
