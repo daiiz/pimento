@@ -1,8 +1,5 @@
 /* eslint-env mocha */
-const { assert } = require('chai')
-const { parseScrapboxPage } = require('../')
-const { formatMarks } = require('../lib')
-
+const { runTest } = require('./helper')
 const window = global
 
 const cases = [
@@ -16,26 +13,23 @@ const cases = [
       '  \\item C',
       '\\end{itemize}'
     ]
+  },
+  {
+    name: 'indent level 1-2',
+    source: ['\tA', '\t\ta', '\t\t', '\t\taa', '\tB', '\tC', ''],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item A',
+      '  \\begin{itemize}',
+      '    \\item a',
+      '    \\item ',
+      '    \\item aa',
+      '  \\end{itemize}',
+      '  \\item B',
+      '  \\item C',
+      '\\end{itemize}'
+    ]
   }
 ]
 
-// タイトル行と参照ラベル行以降の塊を返す
-const getBody = str => {
-  return str.split('\n').slice(2)
-}
-
-describe('Parse itemize', function () {
-  for (const testCase of cases) {
-    const name = testCase.name || 'test'
-    it(name, function (done) {
-      const lines = [
-        { text: 'PageTitle' },
-        ...testCase.source.map(text => ({ text }))
-      ]
-      const out = parseScrapboxPage({ lines })
-      const texts = formatMarks(out.texts.join('\n'))
-      assert.deepEqual(getBody(texts), testCase.expect)
-      done()
-    })
-  }
-})
+runTest('Parse itemize', cases)
