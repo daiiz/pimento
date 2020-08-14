@@ -16,7 +16,7 @@ const cases = [
   },
   {
     name: 'indent level 1, 2',
-    source: ['\tA', '\t\ta', '\t\t', '\t\taa', '\tB', '\tC', ''],
+    source: ['\tA', '\t\ta', '\t\t', '\t\taa', '\tB', '\tC'],
     expect: [
       '\\begin{itemize}',
       '  \\item A',
@@ -32,7 +32,7 @@ const cases = [
   },
   {
     name: 'indent level 1, 2, 3',
-    source: ['\tA', '\t\ta', '\t\txx', '\t\t\txxx', '\t\taa', '\tB', ''],
+    source: ['\tA', '\t\ta', '\t\txx', '\t\t\txxx', '\t\taa', '\tB'],
     expect: [
       '\\begin{itemize}',
       '  \\item A',
@@ -50,7 +50,7 @@ const cases = [
   },
   {
     name: 'indent with URL',
-    source: ['\thttps://example.com/', ''],
+    source: ['\thttps://example.com/'],
     expect: [
       '\\begin{itemize}',
       '  \\item \\url{https://example.com/}',
@@ -59,7 +59,7 @@ const cases = [
   },
   {
     name: 'indent with code, math, bold, italic and underline',
-    source: ['\t`A`', '\t[$ a_2 = \\pi]', '\t[* B]', '\t[/ daiiz]', '\tLook at the [_ Car]!', ''],
+    source: ['\t`A`', '\t[$ a_2 = \\pi]', '\t[* B]', '\t[/ daiiz]', '\tLook at the [_ Car]!'],
     expect: [
       '\\begin{itemize}',
       '  \\item {\\tt A}',
@@ -72,7 +72,7 @@ const cases = [
   },
   {
     name: 'multiple bullet blocks',
-    source: ['\tA', '\tB', 'plain', '\tC', '\t\tD', ''],
+    source: ['\tA', '\tB', 'plain', '\tC', '\t\tD'],
     expect: [
       '\\begin{itemize}',
       '  \\item A',
