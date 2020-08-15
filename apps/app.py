@@ -21,6 +21,10 @@ def build_page(page_title_hash):
   prefix = 'book_' if isWhole else 'page_'
   texFileName = prefix + page_title_hash
   texFilePath = 'tex/' + texFileName + '.tex'
+  # ビルド前にauxファイルを削除する
+  auxFilePath = docDir + texFileName + '.aux'
+  if os.path.isfile(auxFilePath):
+    os.remove(auxFilePath)
   try:
     subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
     if isWhole:
@@ -28,7 +32,7 @@ def build_page(page_title_hash):
       subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
   except:
     # TODO: redirect
-    return send_file('./docs/' + texFilePath, mimetype='text/plain')
+    return send_file(docDir + texFilePath, mimetype='text/plain')
   return send_file(docDir + texFileName + '.pdf')
 
 @app.route('/api/convert/images', methods=["POST"])
