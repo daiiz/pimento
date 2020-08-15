@@ -152,6 +152,38 @@ const cases = [
       '\\end{itemize}',
       'Great!\\\\'
     ]
+  },
+  {
+    name: 'series of images',
+    source: [
+      '[https://gyazo.com/33e0b9111e81fe75db1964cdcb27c345]',
+      '',
+      '[https://gyazo.com/54f4b18d87b2b6aff8a40fb9615ee26d]',
+      '[https://gyazo.com/76fd0f709df77170b1ffb123f05c6690]'
+    ],
+    expect: [
+      '\\begin{figure}[h]',
+      '  \\begin{center}',
+      '     \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/33e0b9111e81fe75db1964cdcb27c345.jpg}',
+      '     \\caption{}',
+      '     \\label{fig:gyazo-id-33e0b9111e81fe75db1964cdcb27c345}',
+      '  \\end{center}',
+      '\\end{figure}',
+      '\\begin{figure}[h]',
+      '  \\begin{center}',
+      '     \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/54f4b18d87b2b6aff8a40fb9615ee26d.jpg}',
+      '     \\caption{}',
+      '     \\label{fig:gyazo-id-54f4b18d87b2b6aff8a40fb9615ee26d}',
+      '  \\end{center}',
+      '\\end{figure}',
+      '\\begin{figure}[h]',
+      '  \\begin{center}',
+      '     \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/76fd0f709df77170b1ffb123f05c6690.jpg}',
+      '     \\caption{}',
+      '     \\label{fig:gyazo-id-76fd0f709df77170b1ffb123f05c6690}',
+      '  \\end{center}',
+      '\\end{figure}'
+    ]
   }
 ]
 
