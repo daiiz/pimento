@@ -71,7 +71,7 @@ const cases = [
   },
   {
     name: 'multiple bullet blocks',
-    source: ['\tA', '\tB', 'plain', '\tC', '\t\tD'],
+    source: ['\tA', '\tB', 'plain', '\tC', '\t\tD', '\t\t\tX', '\t\tE'],
     expect: [
       '\\begin{itemize}',
       '  \\item A',
@@ -82,6 +82,10 @@ const cases = [
       '  \\item C',
       '  \\begin{itemize}',
       '    \\item D',
+      '    \\begin{itemize}',
+      '      \\item X',
+      '    \\end{itemize}',
+      '    \\item E',
       '  \\end{itemize}',
       '\\end{itemize}'
     ]

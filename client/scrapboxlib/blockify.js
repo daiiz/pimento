@@ -9,20 +9,39 @@ const isEmptyLine = line => {
   return line.indent === 0 && line.nodes.length === 0
 }
 
+const headNumberPattern = /^\d+\.\s*/
+
+const isEnumerateLine = line => {
+  if (!line.nodes || line.indent === 0 || line.nodes.length === 0) return false
+  const node = line.nodes[0]
+  if (node.type !== 'plain') return false
+  return headNumberPattern.test(node.text)
+}
+
+const removeBulletNumber = line => {
+  if (!isEnumerateLine(line)) return
+  const node = line.nodes[0]
+  node.text = node.text.replace(headNumberPattern, '')
+}
+
 // ブロック情報を付け足す
 const addBlockInfo = lines => {
   if (lines.length === 0) return []
   const res = []
+  // TODO: 一つのStackにまとめたい
   const itemizeIndentStack = []
+  const itemizeEnumerateStack = []
 
   // 閉じていない箇条書きを閉じる
-  const closePrevItemizes = (current) => {
-    const stackLen = itemizeIndentStack.length
-    const lastLineIndent = res[res.length - 1].indent
+  const closePrevItemizes = currentIndent => {
     // 複数のジャンプがあるときに一気に閉じる
-    if (lastLineIndent - current > 1) {
-      for (let s = stackLen - 1; s >= 0; s--) {
-        res.push({ indent: itemizeIndentStack.pop(), _type: 'itemizeTail', nodes: [] })
+    while (itemizeIndentStack.length > 0) {
+      const lastLineIndent = res[res.length - 1].indent
+      if (lastLineIndent - currentIndent > 1) {
+        const _enumerate = itemizeEnumerateStack.pop()
+        res.push({ indent: itemizeIndentStack.pop(), _type: 'itemizeTail', _enumerate, nodes: [] })
+      } else {
+        break
       }
     }
   }
@@ -91,7 +110,8 @@ const addBlockInfo = lines => {
     let prevIndent = getRecentIndent()
     if (currentIndent < prevIndent) {
       itemizeIndentStack.pop()
-      res.push({ indent: prevIndent, _type: 'itemizeTail', nodes: [] })
+      const _enumerate = itemizeEnumerateStack.pop()
+      res.push({ indent: prevIndent, _type: 'itemizeTail', _enumerate, nodes: [] })
       closePrevItemizes(currentIndent)
     }
     // Open
@@ -99,9 +119,13 @@ const addBlockInfo = lines => {
     if (currentIndent > prevIndent) {
       // 一段深くなった
       itemizeIndentStack.push(currentIndent)
-      res.push({ indent: currentIndent, _type: 'itemizeHead', nodes: [] })
+      // 番号付きリストの判定
+      const _enumerate = isEnumerateLine(currentLine)
+      itemizeEnumerateStack.push(_enumerate)
+      res.push({ indent: currentIndent, _type: 'itemizeHead', _enumerate, nodes: [] })
     }
 
+    removeBulletNumber(currentLine)
     res.push(currentLine)
   }
   // console.log("$", res)
