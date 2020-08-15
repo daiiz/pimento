@@ -187,4 +187,4 @@ const cases = [
   }
 ]
 
-runTest('Parse figure', cases)
+runTest('Convert to figure', cases)

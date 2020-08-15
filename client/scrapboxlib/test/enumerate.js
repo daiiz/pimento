@@ -111,4 +111,4 @@ const cases = [
   }
 ]
 
-runTest('Parse enumerate', cases)
+runTest('Convert to enumerate', cases)

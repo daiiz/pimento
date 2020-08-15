@@ -92,4 +92,4 @@ const cases = [
   }
 ]
 
-runTest('Parse itemize', cases)
+runTest('Convert to itemize', cases)
