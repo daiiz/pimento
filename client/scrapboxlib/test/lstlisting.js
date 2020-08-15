@@ -97,7 +97,7 @@ const cases = [
   {
     name: 'lstlisting at the end line of the itemize block',
     source: [
-      '\tmessage',
+      '\thead-level-1',
       '\t\thead-level-2',
       '\t\tcode:tail-level-2.txt',
       '\t\t\tHello,',
@@ -106,7 +106,7 @@ const cases = [
     ],
     expect: [
       '\\begin{itemize}', // 1
-      '  \\item message',
+      '  \\item head-level-1',
       '  \\begin{itemize}', // 2
       '    \\item head-level-2',
       '    \\item \\begin{lstlisting}[frame=tb,caption=tail-level-2.txt]',
@@ -116,6 +116,64 @@ const cases = [
       '  \\end{itemize}', // 2
       '  \\item tail-level-1',
       '\\end{itemize}' // 1
+    ]
+  },
+  {
+    name: 'only lstlisting exists in itemize block',
+    source: [
+      'Example of placing code blocks inside bullets',
+      '\tlevel-1',
+      '\t\tlevel-2',
+      '\t\t\tcode:level-3.txt',
+      '\t\t\t\tHello,',
+      '\t\t\t\tWorld!',
+      '',
+      'code:level-0.txt',
+      '\t Have a nice day!',
+      '',
+      '\tlevel-1',
+      '\t\tlevel-2',
+      '\t\t\tcode:level-3.txt',
+      '\t\t\t\tHello,',
+      '\t\t\t\tWorld!',
+      '\t\tlevel-2 again',
+      '',
+      'Good!'
+    ],
+    expect: [
+      'Example of placing code blocks inside bullets',
+      '\\begin{itemize}', // 1
+      '  \\item level-1',
+      '  \\begin{itemize}', // 2
+      '    \\item level-2',
+      '    \\begin{itemize}', // 3
+      '      \\item \\begin{lstlisting}[frame=tb,caption=level-3.txt]',
+      'Hello,',
+      'World!',
+      '      \\end{lstlisting}',
+      '    \\end{itemize}', // 3
+      '  \\end{itemize}', // 2
+      '\\end{itemize}', // 1
+      '',
+      '\\begin{lstlisting}[frame=tb,caption=level-0.txt]',
+      ' Have a nice day!',
+      '\\end{lstlisting}',
+      '',
+      '\\begin{itemize}', // 1
+      '  \\item level-1',
+      '  \\begin{itemize}', // 2
+      '    \\item level-2',
+      '    \\begin{itemize}', // 3
+      '      \\item \\begin{lstlisting}[frame=tb,caption=level-3.txt]',
+      'Hello,',
+      'World!',
+      '      \\end{lstlisting}',
+      '    \\end{itemize}', // 3
+      '    \\item level-2 again',
+      '  \\end{itemize}', // 2
+      '\\end{itemize}', // 1
+      '',
+      'Good!\\\\'
     ]
   }
 ]

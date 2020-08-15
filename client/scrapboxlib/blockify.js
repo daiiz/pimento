@@ -64,12 +64,18 @@ const addBlockInfo = lines => {
     }
 
     const prevLine = lines[i - 1]
-    if (!prevLine.nodes) {
-      // skip
-      closePrevItemizes(currentIndent)
-      res.push(currentLine)
-      continue
-    }
+
+    // if (prevLine.type === 'codeBlock') {
+    //   prevLine.nodes = []
+    // }
+
+    // if (!prevLine.nodes) {
+    //   console.log("########", currentLine)
+    //   // skip
+    //   closePrevItemizes(currentIndent)
+    //   res.push(currentLine)
+    //   continue
+    // }
 
     // 連続した空行やコメント行
     if (currentIndent === 0 && prevLine.indent === 0 && currentLine.type === 'line' && prevLine.type === 'line') {
@@ -90,7 +96,7 @@ const addBlockInfo = lines => {
     }
 
     // 画像のキャプションをimage nodeに取り込む
-    if (prevLine.nodes.length === 1 && prevLine.nodes[0].type === 'image') {
+    if (prevLine.nodes && prevLine.nodes.length === 1 && prevLine.nodes[0].type === 'image') {
       prevLine._srcUrl = prevLine.nodes[0].src
       prevLine._gyazoImageId = getGyazoImageId(prevLine._srcUrl)
       prevLine._type = 'image'
@@ -128,7 +134,7 @@ const addBlockInfo = lines => {
     removeBulletNumber(currentLine)
     res.push(currentLine)
   }
-  // console.log("$", res)
+  // console.log("$$$", res)
   if (itemizeIndentStack.length > 0) {
     console.error('itemizeIndentStack is not empty.')
   }

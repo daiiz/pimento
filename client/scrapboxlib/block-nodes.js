@@ -1,4 +1,4 @@
-const { indentStr,buildOptions, texEscape, texEscapeForCodeBlock, backSlash } = require('./lib')
+const { indentStr, buildOptions, texEscape, texEscapeForCodeBlock, backSlash } = require('./lib')
 const { Texify } = require('./texify')
 
 const codeHeadPattern = /^(?:ref|label)=([^\s,]+),\s*([^\s,]+)$/
@@ -13,7 +13,7 @@ const renderTableRows = cells => {
     const rowCellTexts = rowCells.map(node => Texify(node))
     let text = `${rowCellTexts.join(' & ')} ${br}`
     // 先頭と末尾の行に罫線を挿入
-    if (i == 0 || i == cells.length - 1) text += ` ${hr}`
+    if (i === 0 || i === cells.length - 1) text += ` ${hr}`
     rows.push(text)
   }
   return rows
@@ -36,7 +36,7 @@ const handleScrapboxBlockNode = (line) => {
   switch (line.type) {
     case 'codeBlock': {
       // line: https://gyazo.com/2e694ee4369d3140ea5c1d73de0a73ac
-      let { fileName, content } = line
+      let { indent, fileName, content } = line
       fileName = fileName.trim()
       const contentLines = content.split('\n').map(line => indentStr(0) + line)
       info.frame = 'tb'
@@ -55,10 +55,12 @@ const handleScrapboxBlockNode = (line) => {
       } else {
         info.caption = texEscape(fileName)
       }
+      const prefixBegin = indent > 0 ? indentStr(indent + 1) + `${backSlash}item ` : ''
+      const prefixEnd = indent > 0 ? indentStr(indent + 1) : ''
       return [
-        `${backSlash}begin{lstlisting}[${buildOptions(info).join(',')}]`,
+        prefixBegin + `${backSlash}begin{lstlisting}[${buildOptions(info).join(',')}]`,
         ...contentLines.map(line => texEscapeForCodeBlock(line)),
-        `${backSlash}end{lstlisting}`
+        prefixEnd + `${backSlash}end{lstlisting}`
       ]
     }
 
