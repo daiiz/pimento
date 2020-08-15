@@ -36,16 +36,19 @@ const handleScrapboxBlockNode = (line) => {
   switch (line.type) {
     case 'codeBlock': {
       // line: https://gyazo.com/2e694ee4369d3140ea5c1d73de0a73ac
-      let { indent, fileName, content } = line
+      const { indent, content } = line
+      const prefixBegin = indent > 0 ? indentStr(indent + 1) + `${backSlash}item ` : ''
+      const prefixEnd = indent > 0 ? indentStr(indent + 1) : ''
+      let { fileName } = line
       fileName = fileName.trim()
       const contentLines = content.split('\n').map(line => indentStr(0) + line)
       info.frame = 'tb'
       if (fileName === 'tex') {
         // ユーザーが書いたTeXドキュメントを直接埋め込む
         return [
-          '%===== <user-tex> =====',
+          prefixBegin + '%===== <user-tex> =====',
           ...contentLines.map(line => texEscapeForCodeBlock(line)),
-          '%===== </user-tex> ====='
+          prefixEnd + '%===== </user-tex> ====='
         ]
       }
       if (codeHeadPattern.test(fileName)) {
@@ -55,8 +58,6 @@ const handleScrapboxBlockNode = (line) => {
       } else {
         info.caption = texEscape(fileName)
       }
-      const prefixBegin = indent > 0 ? indentStr(indent + 1) + `${backSlash}item ` : ''
-      const prefixEnd = indent > 0 ? indentStr(indent + 1) : ''
       return [
         prefixBegin + `${backSlash}begin{lstlisting}[${buildOptions(info).join(',')}]`,
         ...contentLines.map(line => texEscapeForCodeBlock(line)),
