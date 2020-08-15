@@ -102,7 +102,8 @@ const addBlockInfo = lines => {
       prevLine._type = 'image'
 
       // キャプションは無かプレーンテキストであるべき
-      if (currentLine.nodes.length === 0 || currentLine.nodes[0].type === 'plain') {
+      const deeper = currentIndent === 0 || currentIndent > prevLine.indent
+      if (deeper && (currentLine.nodes.length === 0 || currentLine.nodes[0].type === 'plain')) {
         prevLine._captionNodes = currentLine.nodes
       } else {
         prevLine._captionNodes = []
