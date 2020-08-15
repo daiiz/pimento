@@ -68,22 +68,36 @@ const handleScrapboxBlockNode = (line) => {
     case 'table': {
       // line: https://gyazo.com/ccfa6d8dd2f83f825871d2b15a778483
       // 参考: https://github.com/daiiz/pimento-browser-extension/blob/master/chrome/js/upload-button.js
-      const { fileName, cells } = line
+      const { indent, fileName, cells } = line
       if (cells.length === 0) return []
       const colNum = cells[0].length
       const colDef = `|${'l'.repeat(colNum).split('').join('|')}|`
       const { label, caption } = parseTableHead(fileName.trim())
-      return [
-        `${backSlash}begin{table}[htb]`, // [tbh]
-        `${backSlash}begin{center}`,
-        `  ${backSlash}caption{${texEscape(caption)}}`,
-        label ? `  ${backSlash}label{table:${label}}` : '  % no label',
-        `  ${backSlash}begin{tabular}{${colDef}} ${hr}`,
-        ...renderTableRows(cells).map(row => `    ${row}`),
-        `  ${backSlash}end{tabular}`,
-        `${backSlash}end{center}`,
-        `${backSlash}end{table}`
-      ]
+      if (indent > 0) {
+        // inline table
+        const prefixBegin = indent > 0 ? indentStr(indent + 1) + `${backSlash}item ` : ''
+        const prefixEnd = indent > 0 ? indentStr(indent + 1) : ''
+        return [
+          prefixBegin + `${backSlash}vspace{2mm}`,
+          prefixEnd + `${backSlash}begin{tabular}{${colDef}} ${hr}`,
+          ...renderTableRows(cells).map(row => `    ${row}`),
+          prefixEnd + `${backSlash}end{tabular}`,
+          prefixEnd + `${backSlash}vspace{2mm}`
+        ]
+      } else {
+        // block table
+        return [
+          `${backSlash}begin{table}[htb]`, // [tbh]
+          `${backSlash}begin{center}`,
+          `  ${backSlash}caption{${texEscape(caption)}}`,
+          label ? `  ${backSlash}label{table:${label}}` : '  % no label',
+          `  ${backSlash}begin{tabular}{${colDef}} ${hr}`,
+          ...renderTableRows(cells).map(row => `    ${row}`),
+          `  ${backSlash}end{tabular}`,
+          `${backSlash}end{center}`,
+          `${backSlash}end{table}`
+        ]
+      }
     }
   }
   return []
