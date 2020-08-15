@@ -109,13 +109,13 @@ const handleSpecialLine = (line) => {
           prefix + `  ${backSlash}vspace{0.5truemm}`,
           prefix + `  ${backSlash}begin{center}`,
           prefix + `    ${renderIncludegraphics()}`,
-          prefix + `    ${backSlash}vspace{1truemm}`,
+          prefix + '    ' + (captionText ? `${backSlash}vspace{1truemm}` : ''),
           prefix + '    ' + (captionText ? `${backSlash}captionof{figure}{${captionText}}` : '% no caption'),
           prefix + `    ${backSlash}vspace{3truemm}`,
           prefix + `    ${renderLabel()}`,
           prefix + `  ${backSlash}end{center}`,
           prefix + `${backSlash}end{minipage}`
-        ]
+        ].filter(line => !!line.trim())
       } else {
         // block image
         return [

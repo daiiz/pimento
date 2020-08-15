@@ -186,7 +186,32 @@ const cases = [
     ]
   },
   {
-    name: 'figures in itemize',
+    name: 'image in itemize',
+    source: [
+      '\thead-level-1',
+      '\t[https://gyazo.com/a94a9b7c49846aa996a26fd08503dc96]',
+      '\tRust crab',
+      '\ttail-level-1'
+    ],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item head-level-1',
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/a94a9b7c49846aa996a26fd08503dc96.jpg}',
+      '      % no caption',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:gyazo-id-a94a9b7c49846aa996a26fd08503dc96}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\item Rust crab',
+      '  \\item tail-level-1',
+      '\\end{itemize}'
+    ]
+  },
+  {
+    name: 'image in itemize with caption, width and label',
     source: [
       'Example of placing figure inside bullets',
       '\thead-level-1',
@@ -209,6 +234,37 @@ const cases = [
       '    \\end{center}',
       '  \\end{minipage}',
       '  \\item tail-level-1',
+      '\\end{itemize}'
+    ]
+  },
+  {
+    name: 'image in itemize level 1, 2',
+    source: [
+      '\tlevel-1',
+      '\t\tlevel-2',
+      '\t[https://gyazo.com/465aba5a060921d0dddde8a0963e73cd]',
+      '\t\tlevel-1 image',
+      '\t\tlevel-2'
+    ],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item level-1',
+      '  \\begin{itemize}',
+      '    \\item level-2',
+      '  \\end{itemize}',
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/465aba5a060921d0dddde8a0963e73cd.jpg}',
+      '      \\vspace{1truemm}',
+      '      \\captionof{figure}{level-1 image}',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:gyazo-id-465aba5a060921d0dddde8a0963e73cd}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\begin{itemize}',
+      '    \\item level-2',
+      '  \\end{itemize}',
       '\\end{itemize}'
     ]
   }
