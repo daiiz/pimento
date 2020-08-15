@@ -9,7 +9,7 @@ const isEmptyLine = line => {
   return line.indent === 0 && line.nodes.length === 0
 }
 
-const headNumberPattern = /^\d+\.\s+/
+const headNumberPattern = /^\d+\.\s*/
 
 const isEnumerateLine = line => {
   if (!line.nodes || line.indent === 0 || line.nodes.length === 0) return false
@@ -39,8 +39,8 @@ const addBlockInfo = lines => {
     // 複数のジャンプがあるときに一気に閉じる
     if (lastLineIndent - current > 1) {
       for (let s = stackLen - 1; s >= 0; s--) {
-        itemizeEnumerateStack.pop()
-        res.push({ indent: itemizeIndentStack.pop(), _type: 'itemizeTail', nodes: [] })
+        const _enumerate = itemizeEnumerateStack.pop()
+        res.push({ indent: itemizeIndentStack.pop(), _type: 'itemizeTail', _enumerate, nodes: [] })
       }
     }
   }
