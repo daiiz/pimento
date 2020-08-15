@@ -33,10 +33,12 @@ const handleSpecialLine = (line) => {
       }
     }
     case 'itemizeHead': {
-      return [indentStr(line.indent) + `${backSlash}begin{itemize}`]
+      const itemizeType = line._enumerate ? 'enumerate' : 'itemize'
+      return [indentStr(line.indent) + `${backSlash}begin{${itemizeType}}`]
     }
     case 'itemizeTail': {
-      return [indentStr(line.indent) + `${backSlash}end{itemize}`]
+      const itemizeType = line._enumerate ? 'enumerate' : 'itemize'
+      return [indentStr(line.indent) + `${backSlash}end{${itemizeType}}`]
     }
     case 'image': {
       let captionText = ''

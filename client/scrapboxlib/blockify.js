@@ -9,11 +9,19 @@ const isEmptyLine = line => {
   return line.indent === 0 && line.nodes.length === 0
 }
 
+const headNumberPattern = /^\d+\.\s+/
+
 const isEnumerateLine = line => {
-  if (line.nodes.length === 0) return false
+  if (!line.nodes || line.indent === 0 || line.nodes.length === 0) return false
   const node = line.nodes[0]
   if (node.type !== 'plain') return false
-  return /^\d+\.\s+/.test(node.text)
+  return headNumberPattern.test(node.text)
+}
+
+const removeBulletNumber = line => {
+  if (!isEnumerateLine(line)) return
+  const node = line.nodes[0]
+  node.text = node.text.replace(headNumberPattern, '')
 }
 
 // ブロック情報を付け足す
@@ -116,13 +124,13 @@ const addBlockInfo = lines => {
       res.push({ indent: currentIndent, _type: 'itemizeHead', _enumerate, nodes: [] })
     }
 
+    removeBulletNumber(currentLine)
     res.push(currentLine)
   }
   // console.log("$", res)
   if (itemizeIndentStack.length > 0) {
     console.error('itemizeIndentStack is not empty.')
   }
-  console.log("#####", res)
   return res
 }
 
