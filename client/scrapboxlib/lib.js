@@ -74,9 +74,9 @@ const buildOptions = (info, excludeKeys = []) => {
 
 const texEscape = str => {
   return str
-    .replace(/\\/g, backSlash + 'textbackslash')
-    .replace(/\~/g, backSlash + 'textasciitilde')
-    .replace(/\^/g, backSlash + 'textasciicircum')
+    .replace(/\\/g, backSlash + 'textbackslash ')
+    .replace(/\~/g, backSlash + 'textasciitilde ')
+    .replace(/\^/g, backSlash + 'textasciicircum ')
     .replace(/\_/g, backSlash + '_')
     .replace(/\$/g, backSlash + '$')
     .replace(/\&/g, backSlash + '&')
