@@ -184,6 +184,33 @@ const cases = [
       '  \\end{center}',
       '\\end{figure}'
     ]
+  },
+  {
+    name: 'figures in itemize',
+    source: [
+      'Example of placing figure inside bullets',
+      '\thead-level-1',
+      '\t[https://gyazo.com/a94a9b7c49846aa996a26fd08503dc96]',
+      '\t\tRust crab [/ width=0.3, ref=crab]',
+      '\ttail-level-1'
+    ],
+    expect: [
+      'Example of placing figure inside bullets',
+      '\\begin{itemize}',
+      '  \\item head-level-1',
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.3\\linewidth]{./cmyk-gray-gyazo-images/a94a9b7c49846aa996a26fd08503dc96.jpg}',
+      '      \\vspace{1truemm}',
+      '      \\captionof{figure}{Rust crab}',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:crab}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\item tail-level-1',
+      '\\end{itemize}'
+    ]
   }
 ]
 
