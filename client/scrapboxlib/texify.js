@@ -1,4 +1,4 @@
-const { addToPageRefs, texEscape, texEscapeForFormula, backSlash } = require('./lib')
+const { addToPageRefs, texEscape, texEscapeForFormula, texEscapeForRef, backSlash } = require('./lib')
 const { existsPage } = require('../page-embed-counter')
 
 const Texify = node => {
@@ -15,7 +15,7 @@ const Texify = node => {
       // 参照記法「.」
       if (decos.includes('.') && node.nodes.length === 1) {
         const [kind, label] = Texify(node.nodes[0]).split(':')
-        return `${backSlash}autoref{${kind}:` + label + '}'
+        return `${backSlash}autoref{${kind}:` + texEscapeForRef(label) + '}'
       }
       // 脚注記法「!」
       if (decos.includes('!')) {

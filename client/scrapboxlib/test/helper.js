@@ -8,9 +8,9 @@ const getBody = str => {
   return str.split('\n').slice(2)
 }
 
-const runTest = (name, cases) => {
-  describe('Parse itemize', function () {
-    for (const testCase of cases) {
+const runTest = (testName, testCases) => {
+  describe(testName, function () {
+    for (const testCase of testCases) {
       const name = testCase.name || 'test'
       it(name, function (done) {
         const lines = [
