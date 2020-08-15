@@ -17,13 +17,14 @@ def build_page(page_title_hash):
   if len(page_title_hash) != 32:
     return jsonify({ 'message': 'Invalid page_title_hash' }), 400
   isWhole = request.args.get('whole') == '1'
+  refresh = request.args.get('refresh') == '1'
   docDir = './docs/'
   prefix = 'book_' if isWhole else 'page_'
   texFileName = prefix + page_title_hash
   texFilePath = 'tex/' + texFileName + '.tex'
   # ビルド前にauxファイルを削除する
   auxFilePath = docDir + texFileName + '.aux'
-  if os.path.isfile(auxFilePath):
+  if refresh and os.path.isfile(auxFilePath):
     os.remove(auxFilePath)
   try:
     subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')

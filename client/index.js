@@ -91,7 +91,7 @@ let received = false
 
 window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
-  const { task, type, body, template, refs, bookTitle, toc } = data
+  const { task, type, refresh, body, template, refs, bookTitle, toc } = data
 
   if (received) {
     if (task === 'close') this.close()
@@ -134,6 +134,10 @@ window.onmessage = async function ({ origin, data }) {
       let buildUrl = `/build/pages/${pageTitleHash}?r=${rand}`
       if (type === 'whole-pages') {
         buildUrl += '&whole=1'
+      }
+      if (refresh) {
+        // ビルド前にauxファイルが削除される
+        buildUrl += '&refresh=1'
       }
       await fetch(buildUrl, { method: 'POST' })
 
