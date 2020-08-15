@@ -1,9 +1,17 @@
-const { addToPageRefs, indentStr, buildOptions, texEscape, backSlash } = require('./lib')
 const { incrementPageEmbedCounter } = require('../page-embed-counter')
 const { Texify } = require('./texify')
+const {
+  addToPageRefs,
+  indentStr,
+  buildOptions,
+  texEscape,
+  texEscapeForRef,
+  backSlash
+} = require('./lib')
 
 const patternWidthRef = /^width=([\d\.]+),\s*(?:ref|label)=(.+)$/i
 const patternWidth = /^width=([\d\.]+),*\s*$/i
+const patternRef = /^(?:ref|label)=(.+),*\s*$/i
 
 const handleSpecialLine = (line) => {
   switch (line._type) {
@@ -23,23 +31,19 @@ const handleSpecialLine = (line) => {
       } else {
         return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${line._text}}`]
       }
-      break
     }
     case 'itemizeHead': {
       return [indentStr(line.indent) + `${backSlash}begin{itemize}`]
-      break
     }
     case 'itemizeTail': {
       return [indentStr(line.indent) + `${backSlash}end{itemize}`]
-      break
     }
     case 'image': {
       let captionText = ''
-      let info = {
+      const info = {
         width: `0.5${backSlash}linewidth`,
         ref: `gyazo-id-${line._gyazoImageId}`
       }
-      const captionNodes = []
 
       if (!line._gyazoImageId) {
         console.error('This is not a Gyazo image.')
@@ -63,10 +67,13 @@ const handleSpecialLine = (line) => {
           if (patternWidthRef.test(infoText)) {
             const [, width, ref] = infoText.match(patternWidthRef)
             info.width = width + `${backSlash}linewidth`
-            info.ref = ref
+            info.ref = texEscapeForRef(ref)
           } else if (patternWidth.test(infoText)) {
             const [, width] = infoText.match(patternWidth)
             info.width = width + `${backSlash}linewidth`
+          } else if (patternRef.test(infoText)) {
+            const [, ref] = infoText.match(patternRef)
+            info.ref = texEscapeForRef(ref)
           }
           break
         }

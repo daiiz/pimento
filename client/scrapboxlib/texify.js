@@ -1,4 +1,4 @@
-const { addToPageRefs, texEscape, texEscapeForFormula, backSlash } = require('./lib')
+const { addToPageRefs, texEscape, texEscapeForFormula, texEscapeForRef, backSlash } = require('./lib')
 const { existsPage } = require('../page-embed-counter')
 
 const Texify = node => {
@@ -15,7 +15,7 @@ const Texify = node => {
       // 参照記法「.」
       if (decos.includes('.') && node.nodes.length === 1) {
         const [kind, label] = Texify(node.nodes[0]).split(':')
-        return `${backSlash}autoref{${kind}:` + label + '}'
+        return `${backSlash}autoref{${kind}:` + texEscapeForRef(label) + '}'
       }
       // 脚注記法「!」
       if (decos.includes('!')) {
@@ -52,6 +52,15 @@ const Texify = node => {
         return `${backSlash}url{` + texEscape(node.text) + '}'
       }
       return `{${backSlash}tt ` + texEscape(node.text) + '}'
+    }
+    case 'icon': {
+      if (node.pathType === 'root') {
+        // 外部プロジェクトの画像は表示しない
+        const path = node.path.split('/').pop()
+        return `{${backSlash}tt (${texEscape(path)})}`
+      }
+      // TODO: 小さい画像として描画したい
+      return `{${backSlash}tt (${texEscape(node.path)})}`
     }
     case 'link': {
       const { pathType, href } = node
@@ -91,7 +100,12 @@ const Texify = node => {
       }
       return `${backSlash}url{` + texEscape(src) + '}'
     }
+    case 'helpfeel': {
+      // XXX: 索引を生成してもいいかも？
+      return '% Omitted helpfeel line'
+    }
   }
+  console.log('Unsupported node:', node)
   return Texify(node.text)
 }
 

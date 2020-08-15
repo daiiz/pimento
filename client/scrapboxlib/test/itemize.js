@@ -1,6 +1,5 @@
 /* eslint-env mocha */
 const { runTest } = require('./helper')
-const window = global
 
 const cases = [
   {

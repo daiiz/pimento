@@ -1,8 +1,8 @@
 const { getGyazoImageId } = require('./lib')
 
 const isCommentLine = line => {
-  return line.indent === 0 && line.nodes.length === 1
-    && line.nodes[0].decos && line.nodes[0].decos.includes('#')
+  return line.indent === 0 && line.nodes.length === 1 &&
+    line.nodes[0].decos && line.nodes[0].decos.includes('#')
 }
 
 const isEmptyLine = line => {
@@ -24,7 +24,6 @@ const addBlockInfo = lines => {
       for (let s = stackLen - 1; s >= 0; s--) {
         res.push({ indent: itemizeIndentStack.pop(), _type: 'itemizeTail', nodes: [] })
       }
-      return
     }
   }
 
@@ -75,8 +74,15 @@ const addBlockInfo = lines => {
     if (prevLine.nodes.length === 1 && prevLine.nodes[0].type === 'image') {
       prevLine._srcUrl = prevLine.nodes[0].src
       prevLine._gyazoImageId = getGyazoImageId(prevLine._srcUrl)
-      prevLine._captionNodes = currentLine.nodes
       prevLine._type = 'image'
+
+      // キャプションは無かプレーンテキストであるべき
+      if (currentLine.nodes.length === 0 || currentLine.nodes[0].type === 'plain') {
+        prevLine._captionNodes = currentLine.nodes
+      } else {
+        prevLine._captionNodes = []
+        res.push(currentLine)
+      }
       continue
     }
 
