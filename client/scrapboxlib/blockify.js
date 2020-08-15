@@ -9,12 +9,20 @@ const isEmptyLine = line => {
   return line.indent === 0 && line.nodes.length === 0
 }
 
+const isEnumerateLine = line => {
+  if (line.nodes.length === 0) return false
+  const node = line.nodes[0]
+  if (node.type !== 'plain') return false
+  return /^\d+\.\s+/.test(node.text)
+}
+
 // ブロック情報を付け足す
 const addBlockInfo = lines => {
-  console.log("### lines", lines)
   if (lines.length === 0) return []
   const res = []
+  // TODO: 一つのStackにまとめたい
   const itemizeIndentStack = []
+  const itemizeEnumerateStack = []
 
   // 閉じていない箇条書きを閉じる
   const closePrevItemizes = (current) => {
@@ -23,6 +31,7 @@ const addBlockInfo = lines => {
     // 複数のジャンプがあるときに一気に閉じる
     if (lastLineIndent - current > 1) {
       for (let s = stackLen - 1; s >= 0; s--) {
+        itemizeEnumerateStack.pop()
         res.push({ indent: itemizeIndentStack.pop(), _type: 'itemizeTail', nodes: [] })
       }
     }
@@ -92,7 +101,8 @@ const addBlockInfo = lines => {
     let prevIndent = getRecentIndent()
     if (currentIndent < prevIndent) {
       itemizeIndentStack.pop()
-      res.push({ indent: prevIndent, _type: 'itemizeTail', nodes: [] })
+      const _enumerate = itemizeEnumerateStack.pop()
+      res.push({ indent: prevIndent, _type: 'itemizeTail', _enumerate, nodes: [] })
       closePrevItemizes(currentIndent)
     }
     // Open
@@ -101,8 +111,9 @@ const addBlockInfo = lines => {
       // 一段深くなった
       itemizeIndentStack.push(currentIndent)
       // 番号付きリストの判定
-      console.log("######", currentLine)
-      res.push({ indent: currentIndent, _type: 'itemizeHead', nodes: [] })
+      const _enumerate = isEnumerateLine(currentLine)
+      itemizeEnumerateStack.push(_enumerate)
+      res.push({ indent: currentIndent, _type: 'itemizeHead', _enumerate, nodes: [] })
     }
 
     res.push(currentLine)
