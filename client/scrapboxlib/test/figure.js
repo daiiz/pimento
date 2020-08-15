@@ -267,6 +267,61 @@ const cases = [
       '  \\end{itemize}',
       '\\end{itemize}'
     ]
+  },
+  {
+    name: 'series of images in itemize',
+    source: [
+      '\t[https://gyazo.com/465aba5a060921d0dddde8a0963e73cd]',
+      '\t[https://gyazo.com/a94a9b7c49846aa996a26fd08503dc96]',
+      '\t\tRust Crab level-1 [/ width=0.1, ref=crab1]',
+      '\t\t[https://gyazo.com/a94a9b7c49846aa996a26fd08503dc96]',
+      '\t\t\tRust Crab level-2 [/ width=0.2, ref=crab2]',
+      '\t\t\tlevel-3',
+      '\t\tlevel-2',
+      '\t\t\tlevel-3 again'
+    ],
+    expect: [
+      '\\begin{itemize}', // 1
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/465aba5a060921d0dddde8a0963e73cd.jpg}',
+      '      % no caption',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:gyazo-id-465aba5a060921d0dddde8a0963e73cd}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.1\\linewidth]{./cmyk-gray-gyazo-images/a94a9b7c49846aa996a26fd08503dc96.jpg}',
+      '      \\vspace{1truemm}',
+      '      \\captionof{figure}{Rust Crab level-1}',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:crab1}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\begin{itemize}', // 2
+      '    \\item \\begin{minipage}[t]{\\linewidth}',
+      '      \\vspace{0.5truemm}',
+      '      \\begin{center}',
+      '        \\includegraphics[width=0.2\\linewidth]{./cmyk-gray-gyazo-images/a94a9b7c49846aa996a26fd08503dc96.jpg}',
+      '        \\vspace{1truemm}',
+      '        \\captionof{figure}{Rust Crab level-2}',
+      '        \\vspace{3truemm}',
+      '        \\label{fig:crab2}',
+      '      \\end{center}',
+      '    \\end{minipage}',
+      '    \\begin{itemize}', // 3
+      '      \\item level-3',
+      '    \\end{itemize}', // 3
+      '    \\item level-2',
+      '    \\begin{itemize}', // 3'
+      '      \\item level-3 again',
+      '    \\end{itemize}', // 3'
+      '  \\end{itemize}', // 2
+      '\\end{itemize}' // 1
+    ]
   }
 ]
 
