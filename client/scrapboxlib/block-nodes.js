@@ -22,7 +22,7 @@ const renderTableRows = cells => {
 const parseTableHead = text => {
   const info = Object.create(null)
   if (tabelHeadPattern.test(text)) {
-    const [whole, ref] = text.match(tabelHeadPattern)
+    const [, ref] = text.match(tabelHeadPattern)
     info.label = ref.trim()
     info.caption = text.replace(tabelHeadPattern, '').trim()
   } else {
@@ -76,8 +76,8 @@ const handleScrapboxBlockNode = (line) => {
       return [
         `${backSlash}begin{table}[htb]`, // [tbh]
         `${backSlash}begin{center}`,
-        `  ${backSlash}caption{${caption}}`,
-        label ? `  ${backSlash}label{table:${label}}` : '',
+        `  ${backSlash}caption{${texEscape(caption)}}`,
+        label ? `  ${backSlash}label{table:${label}}` : '  % no label',
         `  ${backSlash}begin{tabular}{${colDef}} ${hr}`,
         ...renderTableRows(cells).map(row => `    ${row}`),
         `  ${backSlash}end{tabular}`,
