@@ -41,6 +41,7 @@ const handleSpecialLine = (line) => {
       return [indentStr(line.indent) + `${backSlash}end{${itemizeType}}`]
     }
     case 'image': {
+      // console.log("######", line)
       let captionText = ''
       const info = {
         width: `0.5${backSlash}linewidth`,
@@ -96,15 +97,37 @@ const handleSpecialLine = (line) => {
         if (!info.ref) return ''
         return `${backSlash}label{fig:` + info.ref + '}'
       }
-      return [
-        `${backSlash}begin{figure}[h]`, // [tbh]
-        `  ${backSlash}begin{center}`,
-        `     ${renderIncludegraphics()}`,
-        `     ${backSlash}caption{${captionText.trim()}}`,
-        `     ${renderLabel()}`,
-        `  ${backSlash}end{center}`,
-        `${backSlash}end{figure}`
-      ].filter(line => !!line)
+
+      const { indent } = line
+      if (indent > 0) {
+        // inline image
+        const prefixBegin = line.indent > 0 ? indentStr(line.indent + 1) + `${backSlash}item ` : ''
+        const prefix = line.indent > 0 ? indentStr(line.indent + 1) : ''
+        captionText = captionText.trim()
+        return [
+          prefixBegin + `${backSlash}begin{minipage}[t]{${backSlash}linewidth}`,
+          prefix + `  ${backSlash}vspace{0.5truemm}`,
+          prefix + `  ${backSlash}begin{center}`,
+          prefix + `    ${renderIncludegraphics()}`,
+          prefix + '    ' + (captionText ? `${backSlash}vspace{1truemm}` : ''),
+          prefix + '    ' + (captionText ? `${backSlash}captionof{figure}{${captionText}}` : '% no caption'),
+          prefix + `    ${backSlash}vspace{3truemm}`,
+          prefix + `    ${renderLabel()}`,
+          prefix + `  ${backSlash}end{center}`,
+          prefix + `${backSlash}end{minipage}`
+        ].filter(line => !!line.trim())
+      } else {
+        // block image
+        return [
+          `${backSlash}begin{figure}[h]`, // [tbh]
+          `  ${backSlash}begin{center}`,
+          `     ${renderIncludegraphics()}`,
+          `     ${backSlash}caption{${captionText.trim()}}`,
+          `     ${renderLabel()}`,
+          `  ${backSlash}end{center}`,
+          `${backSlash}end{figure}`
+        ].filter(line => !!line)
+      }
     }
   }
 }

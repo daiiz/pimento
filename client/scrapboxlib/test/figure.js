@@ -184,6 +184,144 @@ const cases = [
       '  \\end{center}',
       '\\end{figure}'
     ]
+  },
+  {
+    name: 'image in itemize',
+    source: [
+      '\thead-level-1',
+      '\t[https://gyazo.com/a94a9b7c49846aa996a26fd08503dc96]',
+      '\tRust crab',
+      '\ttail-level-1'
+    ],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item head-level-1',
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/a94a9b7c49846aa996a26fd08503dc96.jpg}',
+      '      % no caption',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:gyazo-id-a94a9b7c49846aa996a26fd08503dc96}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\item Rust crab',
+      '  \\item tail-level-1',
+      '\\end{itemize}'
+    ]
+  },
+  {
+    name: 'image in itemize with caption, width and label',
+    source: [
+      'Example of placing figure inside bullets',
+      '\thead-level-1',
+      '\t[https://gyazo.com/a94a9b7c49846aa996a26fd08503dc96]',
+      '\t\tRust crab [/ width=0.3, ref=crab]',
+      '\ttail-level-1'
+    ],
+    expect: [
+      'Example of placing figure inside bullets',
+      '\\begin{itemize}',
+      '  \\item head-level-1',
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.3\\linewidth]{./cmyk-gray-gyazo-images/a94a9b7c49846aa996a26fd08503dc96.jpg}',
+      '      \\vspace{1truemm}',
+      '      \\captionof{figure}{Rust crab}',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:crab}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\item tail-level-1',
+      '\\end{itemize}'
+    ]
+  },
+  {
+    name: 'image in itemize level 1, 2',
+    source: [
+      '\tlevel-1',
+      '\t\tlevel-2',
+      '\t[https://gyazo.com/465aba5a060921d0dddde8a0963e73cd]',
+      '\t\tlevel-1 image',
+      '\t\tlevel-2'
+    ],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item level-1',
+      '  \\begin{itemize}',
+      '    \\item level-2',
+      '  \\end{itemize}',
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/465aba5a060921d0dddde8a0963e73cd.jpg}',
+      '      \\vspace{1truemm}',
+      '      \\captionof{figure}{level-1 image}',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:gyazo-id-465aba5a060921d0dddde8a0963e73cd}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\begin{itemize}',
+      '    \\item level-2',
+      '  \\end{itemize}',
+      '\\end{itemize}'
+    ]
+  },
+  {
+    name: 'series of images in itemize',
+    source: [
+      '\t[https://gyazo.com/465aba5a060921d0dddde8a0963e73cd]',
+      '\t[https://gyazo.com/a94a9b7c49846aa996a26fd08503dc96]',
+      '\t\tRust Crab level-1 [/ width=0.1, ref=crab1]',
+      '\t\t[https://gyazo.com/a94a9b7c49846aa996a26fd08503dc96]',
+      '\t\t\tRust Crab level-2 [/ width=0.2, ref=crab2]',
+      '\t\t\tlevel-3',
+      '\t\tlevel-2',
+      '\t\t\tlevel-3 again'
+    ],
+    expect: [
+      '\\begin{itemize}', // 1
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/465aba5a060921d0dddde8a0963e73cd.jpg}',
+      '      % no caption',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:gyazo-id-465aba5a060921d0dddde8a0963e73cd}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\item \\begin{minipage}[t]{\\linewidth}',
+      '    \\vspace{0.5truemm}',
+      '    \\begin{center}',
+      '      \\includegraphics[width=0.1\\linewidth]{./cmyk-gray-gyazo-images/a94a9b7c49846aa996a26fd08503dc96.jpg}',
+      '      \\vspace{1truemm}',
+      '      \\captionof{figure}{Rust Crab level-1}',
+      '      \\vspace{3truemm}',
+      '      \\label{fig:crab1}',
+      '    \\end{center}',
+      '  \\end{minipage}',
+      '  \\begin{itemize}', // 2
+      '    \\item \\begin{minipage}[t]{\\linewidth}',
+      '      \\vspace{0.5truemm}',
+      '      \\begin{center}',
+      '        \\includegraphics[width=0.2\\linewidth]{./cmyk-gray-gyazo-images/a94a9b7c49846aa996a26fd08503dc96.jpg}',
+      '        \\vspace{1truemm}',
+      '        \\captionof{figure}{Rust Crab level-2}',
+      '        \\vspace{3truemm}',
+      '        \\label{fig:crab2}',
+      '      \\end{center}',
+      '    \\end{minipage}',
+      '    \\begin{itemize}', // 3
+      '      \\item level-3',
+      '    \\end{itemize}', // 3
+      '    \\item level-2',
+      '    \\begin{itemize}', // 3'
+      '      \\item level-3 again',
+      '    \\end{itemize}', // 3'
+      '  \\end{itemize}', // 2
+      '\\end{itemize}' // 1
+    ]
   }
 ]
 
