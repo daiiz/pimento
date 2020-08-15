@@ -69,6 +69,54 @@ const cases = [
       '</blank>',
       '\\end{lstlisting}'
     ]
+  },
+  {
+    name: 'lstlisting in itemize',
+    source: [
+      '\tmessage',
+      '\t\tcode:hello.txt',
+      '\t\t\tHello,',
+      '\t\t\tWorld!',
+      '\t\ttail-level-2',
+      '\ttail-level-1'
+    ],
+    expect: [
+      '\\begin{itemize}',
+      '  \\item message',
+      '  \\begin{itemize}',
+      '    \\item \\begin{lstlisting}[frame=tb,caption=hello.txt]',
+      'Hello,',
+      'World!',
+      '    \\end{lstlisting}',
+      '    \\item tail-level-2',
+      '  \\end{itemize}',
+      '  \\item tail-level-1',
+      '\\end{itemize}'
+    ]
+  },
+  {
+    name: 'lstlisting at the end line of the itemize block',
+    source: [
+      '\tmessage',
+      '\t\thead-level-2',
+      '\t\tcode:tail-level-2.txt',
+      '\t\t\tHello,',
+      '\t\t\tWorld!',
+      '\ttail-level-1'
+    ],
+    expect: [
+      '\\begin{itemize}', // 1
+      '  \\item message',
+      '  \\begin{itemize}', // 2
+      '    \\item head-level-2',
+      '    \\item \\begin{lstlisting}[frame=tb,caption=tail-level-2.txt]',
+      'Hello,',
+      'World!',
+      '    \\end{lstlisting}',
+      '  \\end{itemize}', // 2
+      '  \\item tail-level-1',
+      '\\end{itemize}' // 1
+    ]
   }
 ]
 
