@@ -65,10 +65,6 @@ const addBlockInfo = lines => {
 
     const prevLine = lines[i - 1]
 
-    // if (prevLine.type === 'codeBlock') {
-    //   prevLine.nodes = []
-    // }
-
     // if (!prevLine.nodes) {
     //   console.log("########", currentLine)
     //   // skip
