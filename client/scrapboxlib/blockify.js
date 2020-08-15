@@ -11,6 +11,7 @@ const isEmptyLine = line => {
 
 // ブロック情報を付け足す
 const addBlockInfo = lines => {
+  console.log("### lines", lines)
   if (lines.length === 0) return []
   const res = []
   const itemizeIndentStack = []
@@ -99,6 +100,8 @@ const addBlockInfo = lines => {
     if (currentIndent > prevIndent) {
       // 一段深くなった
       itemizeIndentStack.push(currentIndent)
+      // 番号付きリストの判定
+      console.log("######", currentLine)
       res.push({ indent: currentIndent, _type: 'itemizeHead', nodes: [] })
     }
 
@@ -108,6 +111,7 @@ const addBlockInfo = lines => {
   if (itemizeIndentStack.length > 0) {
     console.error('itemizeIndentStack is not empty.')
   }
+  console.log("#####", res)
   return res
 }
 
