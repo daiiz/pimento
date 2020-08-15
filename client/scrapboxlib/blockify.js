@@ -33,14 +33,15 @@ const addBlockInfo = lines => {
   const itemizeEnumerateStack = []
 
   // 閉じていない箇条書きを閉じる
-  const closePrevItemizes = (current) => {
-    const stackLen = itemizeIndentStack.length
-    const lastLineIndent = res[res.length - 1].indent
+  const closePrevItemizes = currentIndent => {
     // 複数のジャンプがあるときに一気に閉じる
-    if (lastLineIndent - current > 1) {
-      for (let s = stackLen - 1; s >= 0; s--) {
+    while (itemizeIndentStack.length > 0) {
+      const lastLineIndent = res[res.length - 1].indent
+      if (lastLineIndent - currentIndent > 1) {
         const _enumerate = itemizeEnumerateStack.pop()
         res.push({ indent: itemizeIndentStack.pop(), _type: 'itemizeTail', _enumerate, nodes: [] })
+      } else {
+        break
       }
     }
   }

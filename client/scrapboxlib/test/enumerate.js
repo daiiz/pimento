@@ -105,8 +105,6 @@ const cases = [
       '      \\item x',
       '    \\end{itemize}',
       '  \\end{itemize}',
-      '\\end{enumerate}',
-      '\\begin{enumerate}', // XXX: リセットされてしまう
       '  \\item B',
       '\\end{enumerate}'
     ]
