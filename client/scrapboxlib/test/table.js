@@ -25,6 +25,28 @@ const cases = [
       '\\end{center}',
       '\\end{table}'
     ]
+  },
+  {
+    name: 'indent level 0 table with label',
+    source: [
+      'table:ref=my_dpr:my_table',
+      '\t\tDPR',
+      '\tMacBook Air 2014\t1.0',
+      '\tMacBook Pro 2017 Retina\t2.0'
+    ],
+    expect: [
+      '\\begin{table}[htb]',
+      '\\begin{center}',
+      '  \\caption{my\\_table}',
+      '  \\label{table:my_dpr}',
+      '  \\begin{tabular}{|l|l|} \\hline',
+      '     & DPR \\\\ \\hline',
+      '    MacBook Air 2014 & 1.0 \\\\',
+      '    MacBook Pro 2017 Retina & 2.0 \\\\ \\hline',
+      '  \\end{tabular}',
+      '\\end{center}',
+      '\\end{table}'
+    ]
   }
 ]
 
