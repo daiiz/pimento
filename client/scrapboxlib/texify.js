@@ -53,6 +53,15 @@ const Texify = node => {
       }
       return `{${backSlash}tt ` + texEscape(node.text) + '}'
     }
+    case 'icon': {
+      if (node.pathType === 'root') {
+        // 外部プロジェクトの画像は表示しない
+        const path = node.path.split('/').pop()
+        return `{${backSlash}tt (${texEscape(path)})}`
+      }
+      // TODO: 小さい画像として描画したい
+      return `{${backSlash}tt (${texEscape(node.path)})}`
+    }
     case 'link': {
       const { pathType, href } = node
       if (pathType === 'relative') {
@@ -92,6 +101,7 @@ const Texify = node => {
       return `${backSlash}url{` + texEscape(src) + '}'
     }
   }
+  console.log('Unsupported node:', node)
   return Texify(node.text)
 }
 
