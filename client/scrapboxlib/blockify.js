@@ -1,8 +1,8 @@
 const { getGyazoImageId } = require('./lib')
 
 const isCommentLine = line => {
-  return line.indent === 0 && line.nodes.length === 1
-    && line.nodes[0].decos && line.nodes[0].decos.includes('#')
+  return line.indent === 0 && line.nodes.length === 1 &&
+    line.nodes[0].decos && line.nodes[0].decos.includes('#')
 }
 
 const isEmptyLine = line => {
@@ -24,7 +24,6 @@ const addBlockInfo = lines => {
       for (let s = stackLen - 1; s >= 0; s--) {
         res.push({ indent: itemizeIndentStack.pop(), _type: 'itemizeTail', nodes: [] })
       }
-      return
     }
   }
 

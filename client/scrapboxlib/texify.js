@@ -100,6 +100,10 @@ const Texify = node => {
       }
       return `${backSlash}url{` + texEscape(src) + '}'
     }
+    case 'helpfeel': {
+      // XXX: 索引を生成してもいいかも？
+      return '% Omitted helpfeel line'
+    }
   }
   console.log('Unsupported node:', node)
   return Texify(node.text)
