@@ -6,7 +6,7 @@ const isCommentLine = line => {
 }
 
 const isEmptyLine = line => {
-  return line.indent === 0 && line.nodes.length === 0
+  return !line._type && line.indent === 0 && line.nodes.length === 0
 }
 
 const headNumberPattern = /^\d+\.\s*/
@@ -73,6 +73,14 @@ const addBlockInfo = lines => {
     //   continue
     // }
 
+    // 引用記法を特殊ノード扱いする
+    if (currentLine.type === 'line' && currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'quote') {
+      const quoteNode = currentLine.nodes[0]
+      currentLine._type = 'quote'
+      currentLine._quoteNodes = [...quoteNode.nodes]
+      currentLine.nodes = []
+    }
+
     // 連続した空行やコメント行
     if (currentIndent === 0 && prevLine.indent === 0 && currentLine.type === 'line' && prevLine.type === 'line') {
       if (isEmptyLine(currentLine) || isCommentLine(currentLine)) {
@@ -108,6 +116,7 @@ const addBlockInfo = lines => {
     }
 
     // 箇条書きブロックの終始情報の行を追加する
+    // これ以前でres.pushしてはいけない
     // Close
     let prevIndent = getRecentIndent()
     if (currentIndent < prevIndent) {

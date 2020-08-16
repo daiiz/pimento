@@ -29,6 +29,11 @@ RUN tlmgr install xcolor
 RUN tlmgr install titlesec
 RUN tlmgr install bxpapersize
 
+RUN tlmgr install tcolorbox
+RUN tlmgr install pgf
+RUN tlmgr install environ
+RUN tlmgr install trimspaces
+
 RUN tlmgr version
 RUN tlmgr list --only-installed
 

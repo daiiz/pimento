@@ -22,6 +22,7 @@ const handleSpecialLine = (line) => {
         `${backSlash}label{textBlock-${hash}}`
       ]
     }
+
     case 'textBlockHead': {
       if (line._embed) {
         // https://scrapbox.io/teamj/pimento_v2:_節の埋め込み記法
@@ -32,16 +33,30 @@ const handleSpecialLine = (line) => {
         return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${line._text}}`]
       }
     }
+
     case 'itemizeHead': {
       const itemizeType = line._enumerate ? 'enumerate' : 'itemize'
       return [indentStr(line.indent) + `${backSlash}begin{${itemizeType}}`]
     }
+
     case 'itemizeTail': {
       const itemizeType = line._enumerate ? 'enumerate' : 'itemize'
       return [indentStr(line.indent) + `${backSlash}end{${itemizeType}}`]
     }
+
+    case 'quote': {
+      const texts = Texify(line._quoteNodes)
+      const vspace = `${backSlash}vspace{1truemm}`
+      const prefixBegin = line.indent > 0 ? indentStr(line.indent + 1) + `${backSlash}item ${vspace} ` : ''
+      const prefix = line.indent > 0 ? indentStr(line.indent + 1) : ''
+      return [
+        prefixBegin + `${backSlash}begin{pimento-quote}`,
+        ...texts.map(text => `${prefix}  ${text}`),
+        prefix + `${backSlash}end{pimento-quote}`
+      ]
+    }
+
     case 'image': {
-      // console.log("######", line)
       let captionText = ''
       const info = {
         width: `0.5${backSlash}linewidth`,
@@ -108,6 +123,7 @@ const handleSpecialLine = (line) => {
           prefixBegin + `${backSlash}begin{minipage}[t]{${backSlash}linewidth}`,
           prefix + `  ${backSlash}vspace{0.5truemm}`,
           prefix + `  ${backSlash}begin{center}`,
+          // prefix + `    ${backSlash}captionsetup{width=.85${backSlash}linewidth}`,
           prefix + `    ${renderIncludegraphics()}`,
           prefix + '    ' + (captionText ? `${backSlash}vspace{1truemm}` : ''),
           prefix + '    ' + (captionText ? `${backSlash}captionof{figure}{${captionText}}` : '% no caption'),
@@ -121,6 +137,7 @@ const handleSpecialLine = (line) => {
         return [
           `${backSlash}begin{figure}[h]`, // [tbh]
           `  ${backSlash}begin{center}`,
+          // `     ${backSlash}captionsetup{width=.85${backSlash}linewidth}`,
           `     ${renderIncludegraphics()}`,
           `     ${backSlash}caption{${captionText.trim()}}`,
           `     ${renderLabel()}`,
