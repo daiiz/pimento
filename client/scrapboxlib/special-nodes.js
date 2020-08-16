@@ -46,12 +46,13 @@ const handleSpecialLine = (line) => {
 
     case 'quote': {
       const texts = Texify(line._quoteNodes)
-      const prefixBegin = line.indent > 0 ? indentStr(line.indent + 1) + `${backSlash}item ` : ''
+      const vspace = `${backSlash}vspace{1truemm}`
+      const prefixBegin = line.indent > 0 ? indentStr(line.indent + 1) + `${backSlash}item ${vspace} ` : ''
       const prefix = line.indent > 0 ? indentStr(line.indent + 1) : ''
       return [
-        prefixBegin + `${backSlash}begin{quote}`,
+        prefixBegin + `${backSlash}begin{pimento-quote}`,
         ...texts.map(text => `${prefix}  ${text}`),
-        prefix + `${backSlash}end{quote}`
+        prefix + `${backSlash}end{pimento-quote}`
       ]
     }
 
