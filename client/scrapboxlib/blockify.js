@@ -101,11 +101,10 @@ const addBlockInfo = lines => {
       const deeper = currentIndent === 0 || currentIndent > prevLine.indent
       if (deeper && (currentLine.nodes.length === 0 || currentLine.nodes[0].type === 'plain')) {
         prevLine._captionNodes = currentLine.nodes
+        continue
       } else {
         prevLine._captionNodes = []
-        res.push(currentLine)
       }
-      continue
     }
 
     // 箇条書きブロックの終始情報の行を追加する
