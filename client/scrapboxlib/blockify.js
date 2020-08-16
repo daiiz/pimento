@@ -104,9 +104,7 @@ const addBlockInfo = lines => {
         continue
       } else {
         prevLine._captionNodes = []
-        // res.push(currentLine)
       }
-      // continue
     }
 
     // 箇条書きブロックの終始情報の行を追加する
