@@ -123,12 +123,16 @@ const finalAdjustment = texts => {
     // ['...\\', '', '\begin{']
     // ['...\\', '', '${window.textBlockName(']
     // など
+    // TODO: 複合条件を関数に切り出す
     if (oneAheadLine === '') {
-      if (twoAheadLine.startsWith(`${backSlash}begin{`)
-        || twoAheadLine.startsWith('${window.textBlockName(')
-        || twoAheadLine.startsWith('${window.funcs.page_')) {
+      if (twoAheadLine.startsWith(`${backSlash}begin{`) ||
+        twoAheadLine.startsWith('${window.textBlockName(') ||
+        twoAheadLine.startsWith('${window.funcs.page_')) {
         const tailNewLineMark = new RegExp(backSlash + backSlash + '$')
-        currentLine = currentLine.replace(tailNewLineMark, '')
+        // 引用記法は例外
+        if (!twoAheadLine.startsWith(`${backSlash}begin{pimento-quote}`)) {
+          currentLine = currentLine.replace(tailNewLineMark, '')
+        }
       }
     }
 
