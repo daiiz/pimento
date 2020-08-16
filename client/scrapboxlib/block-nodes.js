@@ -58,8 +58,12 @@ const handleScrapboxBlockNode = (line) => {
       } else {
         info.caption = texEscape(fileName)
       }
+      let options = buildOptions(info).join(',')
+      if (line.indent > 0) {
+        options = 'style=pimento-inline,' + options
+      }
       return [
-        prefixBegin + `${backSlash}begin{lstlisting}[${buildOptions(info).join(',')}]`,
+        prefixBegin + `${backSlash}begin{lstlisting}[${options}]`,
         ...contentLines.map(line => texEscapeForCodeBlock(line)),
         prefixEnd + `${backSlash}end{lstlisting}`
       ]
