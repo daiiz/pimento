@@ -22,6 +22,7 @@ const handleSpecialLine = (line) => {
         `${backSlash}label{textBlock-${hash}}`
       ]
     }
+
     case 'textBlockHead': {
       if (line._embed) {
         // https://scrapbox.io/teamj/pimento_v2:_節の埋め込み記法
@@ -32,16 +33,22 @@ const handleSpecialLine = (line) => {
         return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${line._text}}`]
       }
     }
+
     case 'itemizeHead': {
       const itemizeType = line._enumerate ? 'enumerate' : 'itemize'
       return [indentStr(line.indent) + `${backSlash}begin{${itemizeType}}`]
     }
+
     case 'itemizeTail': {
       const itemizeType = line._enumerate ? 'enumerate' : 'itemize'
       return [indentStr(line.indent) + `${backSlash}end{${itemizeType}}`]
     }
+
+    case 'quote': {
+      return ['QUOTE']
+    }
+
     case 'image': {
-      // console.log("######", line)
       let captionText = ''
       const info = {
         width: `0.5${backSlash}linewidth`,

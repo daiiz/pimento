@@ -73,6 +73,16 @@ const addBlockInfo = lines => {
     //   continue
     // }
 
+    // 引用記法を特殊ノード扱いする
+    if (currentLine.type === 'line' && currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'quote') {
+      currentLine._type = 'quote'
+      currentLine._quoteNodes = [...currentLine.nodes]
+      currentLine.nodes = []
+      console.log("###", currentLine)
+      res.push(currentLine)
+      continue
+    }
+
     // 連続した空行やコメント行
     if (currentIndent === 0 && prevLine.indent === 0 && currentLine.type === 'line' && prevLine.type === 'line') {
       if (isEmptyLine(currentLine) || isCommentLine(currentLine)) {
