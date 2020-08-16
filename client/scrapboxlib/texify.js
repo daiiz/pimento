@@ -62,6 +62,15 @@ const Texify = node => {
       // TODO: 小さい画像として描画したい
       return `{${backSlash}tt (${texEscape(node.path)})}`
     }
+    case 'hashTag': {
+      const hash = addToPageRefs(node.href)
+      let text = `{${backSlash}tt ${texEscape('#' + node.href)}}`
+      if (existsPage(hash)) {
+        const refStr = `(${backSlash}autoref{textBlock-${hash}})`
+        text += ` {${backSlash}scriptsize ${refStr}}`
+      }
+      return text
+    }
     case 'link': {
       const { pathType, href } = node
       if (pathType === 'relative') {
