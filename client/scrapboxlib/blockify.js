@@ -6,7 +6,7 @@ const isCommentLine = line => {
 }
 
 const isEmptyLine = line => {
-  return line.indent === 0 && line.nodes.length === 0
+  return !line._type && line.indent === 0 && line.nodes.length === 0
 }
 
 const headNumberPattern = /^\d+\.\s*/
