@@ -45,7 +45,14 @@ const handleSpecialLine = (line) => {
     }
 
     case 'quote': {
-      return ['QUOTE']
+      const texts = Texify(line._quoteNodes)
+      const prefixBegin = line.indent > 0 ? indentStr(line.indent + 1) + `${backSlash}item ` : ''
+      const prefix = line.indent > 0 ? indentStr(line.indent + 1) : ''
+      return [
+        prefixBegin + `${backSlash}begin{quote}`,
+        ...texts.map(text => `${prefix}  ${text}`),
+        prefix + `${backSlash}end{quote}`
+      ]
     }
 
     case 'image': {

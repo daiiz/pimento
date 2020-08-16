@@ -75,12 +75,10 @@ const addBlockInfo = lines => {
 
     // 引用記法を特殊ノード扱いする
     if (currentLine.type === 'line' && currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'quote') {
+      const quoteNode = currentLine.nodes[0]
       currentLine._type = 'quote'
-      currentLine._quoteNodes = [...currentLine.nodes]
+      currentLine._quoteNodes = [...quoteNode.nodes]
       currentLine.nodes = []
-      console.log("###", currentLine)
-      res.push(currentLine)
-      continue
     }
 
     // 連続した空行やコメント行
@@ -118,6 +116,7 @@ const addBlockInfo = lines => {
     }
 
     // 箇条書きブロックの終始情報の行を追加する
+    // これ以前でres.pushしてはいけない
     // Close
     let prevIndent = getRecentIndent()
     if (currentIndent < prevIndent) {
