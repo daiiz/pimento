@@ -10,7 +10,7 @@ const cases = [
       '\tconsole.log("World!");'
     ],
     expect: [
-      '\\begin{lstlisting}[frame=tb,caption=hello.js]',
+      '\\begin{lstlisting}[style=pimento-block,frame=tb,caption=hello.js]',
       'console.log("Hello,");',
       'console.log("World!");',
       '\\end{lstlisting}'
@@ -26,7 +26,7 @@ const cases = [
     ],
     expect: [
       'Look at \\autoref{code:my-svg}.',
-      '\\begin{lstlisting}[frame=tb,label=code:my-svg,caption=image.svg]',
+      '\\begin{lstlisting}[style=pimento-block,frame=tb,label=code:my-svg,caption=image.svg]',
       '<svg xmlns="http://www.w3.org/2000/svg">',
       '</svg>',
       '\\end{lstlisting}'
@@ -61,7 +61,7 @@ const cases = [
       '\t</blank>'
     ],
     expect: [
-      '\\begin{lstlisting}[frame=tb,caption=blank.html]',
+      '\\begin{lstlisting}[style=pimento-block,frame=tb,caption=blank.html]',
       '<blank>',
       '', '', '',
       '<!-- Hello -->',
@@ -155,7 +155,7 @@ const cases = [
       '  \\end{itemize}', // 2
       '\\end{itemize}', // 1
       '',
-      '\\begin{lstlisting}[frame=tb,caption=level-0.txt]',
+      '\\begin{lstlisting}[style=pimento-block,frame=tb,caption=level-0.txt]',
       ' Have a nice day!',
       '\\end{lstlisting}',
       '',

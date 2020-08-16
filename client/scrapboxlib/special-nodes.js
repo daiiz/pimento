@@ -123,6 +123,7 @@ const handleSpecialLine = (line) => {
           prefixBegin + `${backSlash}begin{minipage}[t]{${backSlash}linewidth}`,
           prefix + `  ${backSlash}vspace{0.5truemm}`,
           prefix + `  ${backSlash}begin{center}`,
+          // prefix + `    ${backSlash}captionsetup{width=.85${backSlash}linewidth}`,
           prefix + `    ${renderIncludegraphics()}`,
           prefix + '    ' + (captionText ? `${backSlash}vspace{1truemm}` : ''),
           prefix + '    ' + (captionText ? `${backSlash}captionof{figure}{${captionText}}` : '% no caption'),
@@ -136,6 +137,7 @@ const handleSpecialLine = (line) => {
         return [
           `${backSlash}begin{figure}[h]`, // [tbh]
           `  ${backSlash}begin{center}`,
+          // `     ${backSlash}captionsetup{width=.85${backSlash}linewidth}`,
           `     ${renderIncludegraphics()}`,
           `     ${backSlash}caption{${captionText.trim()}}`,
           `     ${renderLabel()}`,

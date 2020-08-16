@@ -129,8 +129,9 @@ const finalAdjustment = texts => {
         twoAheadLine.startsWith('${window.textBlockName(') ||
         twoAheadLine.startsWith('${window.funcs.page_')) {
         const tailNewLineMark = new RegExp(backSlash + backSlash + '$')
-        // 引用記法は例外
-        if (!twoAheadLine.startsWith(`${backSlash}begin{pimento-quote}`)) {
+        // 引用と図は例外
+        if (!twoAheadLine.startsWith(`${backSlash}begin{pimento-quote}`) &&
+          !twoAheadLine.startsWith(`${backSlash}begin{figure}`)) {
           currentLine = currentLine.replace(tailNewLineMark, '')
         }
       }
