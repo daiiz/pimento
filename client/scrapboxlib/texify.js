@@ -66,7 +66,7 @@ const Texify = node => {
       const hash = addToPageRefs(node.href)
       let text = `{${backSlash}tt ${texEscape('#' + node.href)}}`
       if (existsPage(hash)) {
-        const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
+        const refStr = `(${backSlash}autoref{textBlock-${hash}})`
         text += ` {${backSlash}scriptsize ${refStr}}`
       }
       return text
