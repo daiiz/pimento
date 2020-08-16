@@ -84,7 +84,7 @@ const cases = [
       '\\begin{itemize}',
       '  \\item message',
       '  \\begin{itemize}',
-      '    \\item \\begin{lstlisting}[frame=tb,caption=hello.txt]',
+      '    \\item \\begin{lstlisting}[style=pimento-inline,frame=tb,caption=hello.txt]',
       'Hello,',
       'World!',
       '    \\end{lstlisting}',
@@ -109,7 +109,7 @@ const cases = [
       '  \\item head-level-1',
       '  \\begin{itemize}', // 2
       '    \\item head-level-2',
-      '    \\item \\begin{lstlisting}[frame=tb,caption=tail-level-2.txt]',
+      '    \\item \\begin{lstlisting}[style=pimento-inline,frame=tb,caption=tail-level-2.txt]',
       'Hello,',
       'World!',
       '    \\end{lstlisting}',
@@ -147,7 +147,7 @@ const cases = [
       '  \\begin{itemize}', // 2
       '    \\item level-2',
       '    \\begin{itemize}', // 3
-      '      \\item \\begin{lstlisting}[frame=tb,caption=level-3.txt]',
+      '      \\item \\begin{lstlisting}[style=pimento-inline,frame=tb,caption=level-3.txt]',
       'Hello,',
       'World!',
       '      \\end{lstlisting}',
@@ -164,7 +164,7 @@ const cases = [
       '  \\begin{itemize}', // 2
       '    \\item level-2',
       '    \\begin{itemize}', // 3
-      '      \\item \\begin{lstlisting}[frame=tb,caption=level-3.txt]',
+      '      \\item \\begin{lstlisting}[style=pimento-inline,frame=tb,caption=level-3.txt]',
       'Hello,',
       'World!',
       '      \\end{lstlisting}',
@@ -198,7 +198,7 @@ const cases = [
       '  \\begin{itemize}', // 2
       '    \\item level-2',
       '    \\begin{itemize}', // 3
-      '      \\item \\begin{lstlisting}[frame=tb,caption=level-3.txt]',
+      '      \\item \\begin{lstlisting}[style=pimento-inline,frame=tb,caption=level-3.txt]',
       'Hello,',
       'World!',
       '      \\end{lstlisting}',
