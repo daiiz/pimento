@@ -27,12 +27,23 @@ const removeEmptyLinesBothEnds = lines => {
   return []
 }
 
+const removeLineComments = texts => {
+  const newTexts = []
+  const commentPattern = /^\[[^\s]*#[^\s]*\s+(.*)\]\s*$/
+  for (const text of texts) {
+    if (commentPattern.test(text)) continue
+    newTexts.push(text)
+  }
+  return newTexts
+}
+
 const parseScrapboxPage = ({ lines }) => {
-  const lineTexts = lines.map(line => line.text)
+  let lineTexts = lines.map(line => line.text)
   // 最終行が空行になるよう調整する
   if (lineTexts[lineTexts.length - 1] !== '') {
     lineTexts.push('')
   }
+  lineTexts = removeLineComments(lineTexts)
   let lineObjects = parse(lineTexts.join('\n'))
 
   const gyazoIds = extractGyazoIds(lineObjects)
