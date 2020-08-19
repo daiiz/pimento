@@ -36,6 +36,24 @@ const cases = [
       '  \\item My name is daiiz!',
       '\\end{itemize}'
     ]
+  },
+  {
+    name: 'keep comment notations in codeblocks',
+    source: [
+      'code:test',
+      '\ta',
+      '\tb[# I am here]c',
+      '\td',
+      '\t[# I am here too][# Nice#^^#]'
+    ],
+    expect: [
+      '\\begin{lstlisting}[style=pimento-block,frame=tb,caption=test]',
+      'a',
+      'b[# I am here]c',
+      'd',
+      '[# I am here too][# Nice#^^#]',
+      '\\end{lstlisting}'
+    ]
   }
 ]
 
