@@ -1,5 +1,7 @@
+const { texEscape, formatMarks } = require('./scrapboxlib/lib')
+
 const headers = {
-  'Content-Type': 'application/json; charset=utf-8',
+  'Content-Type': 'application/json; charset=utf-8'
 }
 
 const trimTexLine = line => {
@@ -13,7 +15,7 @@ const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTempl
   }
   let pageHead = [
     '\\begin{filecontents*}{\\jobname.xmpdata}',
-    `  \\Title{${pageTitle}}`,
+    `  \\Title{${formatMarks(texEscape(pageTitle))}}`,
     '\\end{filecontents*}',
     '',
     ...(pageTemplate.headLines || [])
@@ -32,7 +34,7 @@ const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTempl
     const line = trimTexLine(pageHead[i])
     if (/\\title\{[^\{\}\\]+\}/.test(line)) {
       // 「\title{}」行にpageTitleを挿入する
-      pageHead[i] = '\\title{' + pageTitle + '}'
+      pageHead[i] = '\\title{' + formatMarks(texEscape(pageTitle)) + '}'
     }
   }
 
