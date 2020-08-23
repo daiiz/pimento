@@ -6,6 +6,7 @@ const {
   buildOptions,
   texEscape,
   texEscapeForRef,
+  texEscapeForFormula,
   backSlash
 } = require('./lib')
 
@@ -53,6 +54,14 @@ const handleSpecialLine = (line) => {
         prefixBegin + `${backSlash}begin{pimento-quote}`,
         ...texts.map(text => `${prefix}  ${text}`),
         prefix + `${backSlash}end{pimento-quote}`
+      ]
+    }
+
+    case 'formula': {
+      return [
+        `${backSlash}begin{equation*}`,
+        `  ${texEscapeForFormula(line._formula)}`,
+        `${backSlash}end{equation*}`
       ]
     }
 
