@@ -147,6 +147,8 @@ const handleSpecialLine = (line) => {
       }
     }
   }
+  console.log('Unsupported special node:', line)
+  return []
 }
 
 module.exports = {
