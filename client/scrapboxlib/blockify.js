@@ -65,14 +65,6 @@ const addBlockInfo = lines => {
 
     const prevLine = lines[i - 1]
 
-    // if (!prevLine.nodes) {
-    //   console.log("########", currentLine)
-    //   // skip
-    //   closePrevItemizes(currentIndent)
-    //   res.push(currentLine)
-    //   continue
-    // }
-
     // 引用記法を特殊ノード扱いする
     if (currentLine.type === 'line' && currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'quote') {
       const quoteNode = currentLine.nodes[0]
