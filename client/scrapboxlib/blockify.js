@@ -65,19 +65,19 @@ const addBlockInfo = lines => {
 
     const prevLine = lines[i - 1]
 
-    // if (!prevLine.nodes) {
-    //   console.log("########", currentLine)
-    //   // skip
-    //   closePrevItemizes(currentIndent)
-    //   res.push(currentLine)
-    //   continue
-    // }
-
     // 引用記法を特殊ノード扱いする
     if (currentLine.type === 'line' && currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'quote') {
       const quoteNode = currentLine.nodes[0]
       currentLine._type = 'quote'
       currentLine._quoteNodes = [...quoteNode.nodes]
+      currentLine.nodes = []
+    }
+
+    // 単一の数式記法からなる行を特殊ノード扱いする
+    if (currentLine.type === 'line' && currentIndent === 0 &&
+      currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'formula') {
+      currentLine._type = 'formula'
+      currentLine._formula = currentLine.nodes[0].formula
       currentLine.nodes = []
     }
 
