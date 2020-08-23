@@ -74,7 +74,8 @@ const addBlockInfo = lines => {
     }
 
     // 単一の数式記法からなる行を特殊ノード扱いする
-    if (currentLine.type === 'line' && currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'formula') {
+    if (currentLine.type === 'line' && currentIndent === 0 &&
+      currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'formula') {
       currentLine._type = 'formula'
       currentLine._formula = currentLine.nodes[0].formula
       currentLine.nodes = []
