@@ -269,6 +269,37 @@ const cases = [
     ]
   },
   {
+    name: 'return to plain line with indent level 0 from image located in deep indent with no caption',
+    source: [
+      'Test',
+      '\tlevel-1',
+      '\t\tlevel-2',
+      '\t\t\t[https://gyazo.com/3d30566b55e2f511f07b7826a7af77f6]',
+      'level-0 plain line'
+    ],
+    expect: [
+      'Test',
+      '\\begin{itemize}', // 1
+      '  \\item level-1',
+      '  \\begin{itemize}', // 2
+      '    \\item level-2',
+      '    \\begin{itemize}', // 3
+      '      \\item \\begin{minipage}[t]{\\linewidth}',
+      '        \\vspace{0.5truemm}',
+      '        \\begin{center}',
+      '          \\includegraphics[width=0.5\\linewidth]{./cmyk-gray-gyazo-images/3d30566b55e2f511f07b7826a7af77f6.jpg}',
+      '          % no caption',
+      '          \\vspace{3truemm}',
+      '          \\label{fig:gyazo-id-3d30566b55e2f511f07b7826a7af77f6}',
+      '        \\end{center}',
+      '      \\end{minipage}',
+      '    \\end{itemize}', // 3
+      '  \\end{itemize}', // 2
+      '\\end{itemize}', // 1
+      'level-0 plain line\\\\'
+    ]
+  },
+  {
     name: 'image without a caption deep inside the itemize',
     source: [
       'Test successful return from deep indentation',

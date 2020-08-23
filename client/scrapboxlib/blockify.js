@@ -105,8 +105,10 @@ const addBlockInfo = lines => {
       prevLine._gyazoImageId = getGyazoImageId(prevLine._srcUrl)
       prevLine._type = 'image'
 
-      // キャプションは無かプレーンテキストであるべき
-      const deeper = currentIndent === 0 || currentIndent > prevLine.indent
+      // 画像行のindent=0の場合に限り、indent=0のキャプション行があり得る
+      // その他のケースでは、画像行のindentよりもキャプション行の方が深い
+      // また、キャプションは無かプレーンテキストであるべき
+      const deeper = (prevLine.indent === 0 && currentIndent === 0) || currentIndent > prevLine.indent
       if (deeper && (currentLine.nodes.length === 0 || currentLine.nodes[0].type === 'plain')) {
         prevLine._captionNodes = currentLine.nodes
         continue
