@@ -73,6 +73,13 @@ const addBlockInfo = lines => {
       currentLine.nodes = []
     }
 
+    // 単一の数式記法からなる行を特殊ノード扱いする
+    if (currentLine.type === 'line' && currentLine.nodes.length === 1 && currentLine.nodes[0].type === 'formula') {
+      currentLine._type = 'formula'
+      currentLine._formula = currentLine.nodes[0].formula
+      currentLine.nodes = []
+    }
+
     // 連続した空行やコメント行
     if (currentIndent === 0 && prevLine.indent === 0 && currentLine.type === 'line' && prevLine.type === 'line') {
       if (isEmptyLine(currentLine) || isCommentLine(currentLine)) {
