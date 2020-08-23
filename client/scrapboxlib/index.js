@@ -40,9 +40,7 @@ const removeLineComments = texts => {
 
 const parseScrapboxPage = ({ lines }) => {
   const rawTexts = lines.map(line => line.text)
-  let { abstractTexts, lineTexts } = separateAbstractFromTexts(rawTexts)
-  console.log('abstract:', abstractTexts)
-  console.log('lineTexts:', lineTexts)
+  let { abstractFuncCall, lineTexts } = separateAbstractFromTexts(rawTexts)
   // 最終行が空行になるよう調整する
   if (lineTexts[lineTexts.length - 1] !== '') {
     lineTexts.push('')
@@ -80,9 +78,19 @@ const parseScrapboxPage = ({ lines }) => {
     texts.push(indentStr(line.indent, true) + texLine)
   }
 
+  let pageTexts = texts
+  if (abstractFuncCall && texts.length >= 2) {
+    pageTexts = [
+      texts[0], // title
+      texts[1], // reference label
+      abstractFuncCall,
+      ...texts.slice(2)
+    ]
+  }
+
   // 最終生成物
   return {
-    texts: removeEmptyLinesBothEnds(texts),
+    texts: removeEmptyLinesBothEnds(pageTexts),
     gyazoIds
   }
 }
