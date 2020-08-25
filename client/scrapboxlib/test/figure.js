@@ -90,6 +90,22 @@ const cases = [
     ]
   },
   {
+    name: 'CMYK color image with caption and width',
+    source: [
+      '[https://gyazo.com/54f4b18d87b2b6aff8a40fb9615ee26d]',
+      'Cafe morning set [/* width=0.6]'
+    ],
+    expect: [
+      '\\begin{figure}[h]',
+      '  \\begin{center}',
+      '     \\includegraphics[width=0.6\\linewidth]{./cmyk-gyazo-images/54f4b18d87b2b6aff8a40fb9615ee26d.jpg}',
+      '     \\caption{Cafe morning set}',
+      '     \\label{fig:gyazo-id-54f4b18d87b2b6aff8a40fb9615ee26d}',
+      '  \\end{center}',
+      '\\end{figure}'
+    ]
+  },
+  {
     name: 'image with caption and label',
     source: [
       '[https://gyazo.com/54f4b18d87b2b6aff8a40fb9615ee26d]',
