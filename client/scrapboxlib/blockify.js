@@ -130,12 +130,17 @@ const addBlockInfo = lines => {
     // Open
     prevIndent = getRecentIndent()
     if (currentIndent > prevIndent) {
-      // 一段深くなった
-      itemizeIndentStack.push(currentIndent)
-      // 番号付きリストの判定
-      const _enumerate = isEnumerateLine(currentLine)
-      itemizeEnumerateStack.push(_enumerate)
-      res.push({ indent: currentIndent, _type: 'itemizeHead', _enumerate, nodes: [] })
+      if (itemizeIndentStack.length < 4) {
+        // 一段深くなった
+        itemizeIndentStack.push(currentIndent)
+        // 番号付きリストの判定
+        const _enumerate = isEnumerateLine(currentLine)
+        itemizeEnumerateStack.push(_enumerate)
+        res.push({ indent: currentIndent, _type: 'itemizeHead', _enumerate, nodes: [] })
+      } else {
+        // LaTeX Error: Too deeply nested: 深さレベル5以上の箇条書きができない
+        // これ以上深くできないのこのままいく
+      }
     }
 
     removeBulletNumber(currentLine)
