@@ -88,6 +88,7 @@ const handleSpecialLine = (line) => {
         case 2: {
           captionText = Texify(line._captionNodes[0])
           const infoNode = line._captionNodes[1]
+          info.color = infoNode.decos.includes('*-1')
           infoNode.decos = []
           const infoText = Texify(infoNode)[0].trim()
           // 指定できる画像オプションを制限しておく
@@ -107,9 +108,10 @@ const handleSpecialLine = (line) => {
       }
 
       const renderIncludegraphics = () => {
-        const options = buildOptions(info, ['ref'])
+        const options = buildOptions(info, ['ref', 'color'])
         // TODO: 画像ディレクトリを変更可能にする
-        const srcUrl = `./cmyk-gray-gyazo-images/${line._gyazoImageId}.jpg`
+        const imageDirName = info.color ? 'cmyk-gyazo-images' : 'cmyk-gray-gyazo-images'
+        const srcUrl = `./${imageDirName}/${line._gyazoImageId}.jpg`
         // const srcUrl = './cmyk-gray-gyazo-images/retina_pancake.jpg'
         if (options.length > 0) {
           return `${backSlash}includegraphics[${options.join(',')}]{${srcUrl}}`
