@@ -99,6 +99,14 @@ const addBlockInfo = lines => {
       }
     }
 
+    // アイコン記法で終わる行にも改行目印をつける
+    if (prevLine.type === 'line' && currentIndent === 0 && prevLine.indent === 0) {
+      const nodes = prevLine.nodes || []
+      if (nodes.length > 0 && nodes[nodes.length - 1].type === 'icon' && !prevLine._requireNewParagraph) {
+        prevLine._requireNewLine = true
+      }
+    }
+
     // 画像のキャプションをimage nodeに取り込む
     if (prevLine.nodes && prevLine.nodes.length === 1 && prevLine.nodes[0].type === 'image') {
       prevLine._srcUrl = prevLine.nodes[0].src
