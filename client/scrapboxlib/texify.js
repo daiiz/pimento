@@ -53,6 +53,9 @@ const Texify = node => {
       }
       return `{${backSlash}tt ` + texEscape(node.text) + '}'
     }
+    case 'strong': {
+      return `{${backSlash}bf ${Texify(node.nodes)}}`
+    }
     case 'icon': {
       if (node.pathType === 'root') {
         // 外部プロジェクトの画像は表示しない
