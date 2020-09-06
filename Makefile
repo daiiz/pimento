@@ -3,6 +3,7 @@ TIMEZONE := Asia/Tokyo
 
 build:
 	rm -f ./apps/app.sock
+	npm install
 	npm run build
 	docker build -t daiiz/pimento:$(VERSION) .
 
