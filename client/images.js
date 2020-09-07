@@ -25,7 +25,7 @@ const uploadGyazoIcons = async pageGyazoIconUrls => {
       dict[titleLc] = gyazoId
     }
   }
-  console.log("#>>>", Object.values(dict))
+  await uploadImages({ gyazoIds: Object.values(dict) })
   return dict
 }
 
