@@ -33,8 +33,7 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
 }
 
 const main = async ({ type, body, icons, bookTitle, toc }) => {
-  const pageGyazoIcons = await uploadGyazoIcons(icons)
-  console.log("###", pageGyazoIcons)
+  window.gyazoIcons = await uploadGyazoIcons(icons)
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
