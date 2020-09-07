@@ -86,8 +86,6 @@ const Texify = node => {
         }
       }
       return `{${backSlash}tt (${texEscape(title)})}`
-      // return `{${backSlash}tt (${texEscape(node.path)})}`
-      // return `${backSlash}inlinegraphics{./cmyk-gyazo-images/ad5908312a46eed71e50995a2668dbb1.jpg}`
     }
     case 'hashTag': {
       const hash = addToPageRefs(node.href)
