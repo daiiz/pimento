@@ -2,6 +2,7 @@
 
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
+const { applyConfigs } = require('./configs')
 const { uploadImages, uploadGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
@@ -34,8 +35,6 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
 
 const main = async ({ type, body, icons, bookTitle, toc }) => {
   window.gyazoIcons = await uploadGyazoIcons(icons)
-  // TODO: 仮設定
-  window.gyazoIcons.PIMENTO_ICON_MODE = 'gray' // cmyk, text
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
@@ -123,6 +122,7 @@ window.onmessage = async function ({ origin, data }) {
   const rand = Math.floor(Math.random() * 100000000)
   const docType = type === 'whole-pages' ? 'books' : 'pages'
 
+  applyConfigs(template)
   switch (task) {
     // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {

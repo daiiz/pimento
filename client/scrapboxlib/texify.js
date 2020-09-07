@@ -8,7 +8,8 @@ const getIconInfo = title => {
     return { mode: 'text' }
   }
   return {
-    mode: global.gyazoIcons.PIMENTO_ICON_MODE || 'text',
+    mode: global.pimentoConfigs.icons || 'text',
+    colorType: global.pimentoConfigs['color-mode'] || 'cmyk',
     gyazoId: global.gyazoIcons[titleLc]
   }
 }
@@ -81,8 +82,11 @@ const Texify = node => {
         case 'gray': {
           return `${backSlash}inlinegraphics{./cmyk-gray-gyazo-images/${gyazoId}.jpg}`
         }
-        case 'cmyk': {
+        case 'color': {
           return `${backSlash}inlinegraphics{./cmyk-gyazo-images/${gyazoId}.jpg}`
+        }
+        case 'ignore': {
+          return ''
         }
       }
       return `{${backSlash}tt (${texEscape(title)})}`
