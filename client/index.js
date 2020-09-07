@@ -34,6 +34,8 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
 
 const main = async ({ type, body, icons, bookTitle, toc }) => {
   window.gyazoIcons = await uploadGyazoIcons(icons)
+  // TODO: 仮設定
+  window.gyazoIcons.PIMENTO_ICON_MODE = 'gray' // cmyk, text
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {

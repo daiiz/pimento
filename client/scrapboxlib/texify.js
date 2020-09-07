@@ -1,5 +1,17 @@
-const { addToPageRefs, texEscape, texEscapeForFormula, texEscapeForRef, backSlash } = require('./lib')
+const { addToPageRefs, texEscape, texEscapeForFormula, texEscapeForRef, toTitleLc, backSlash } = require('./lib')
 const { existsPage } = require('../page-embed-counter')
+
+// XXX: 仮実装
+const getIconInfo = title => {
+  const titleLc = toTitleLc(title)
+  if (!global.gyazoIcons || !global.gyazoIcons[titleLc]) {
+    return { mode: 'text' }
+  }
+  return {
+    mode: global.gyazoIcons.PIMENTO_ICON_MODE || 'text',
+    gyazoId: global.gyazoIcons[titleLc]
+  }
+}
 
 const Texify = node => {
   if (typeof node === 'string') return node
@@ -62,8 +74,20 @@ const Texify = node => {
         const path = node.path.split('/').pop()
         return `{${backSlash}tt (${texEscape(path)})}`
       }
-      // TODO: 小さい画像として描画したい
-      return `{${backSlash}tt (${texEscape(node.path)})}`
+      // TODO: 小さい画像として描画するオプションを導入
+      const title = node.path
+      const { mode, gyazoId } = getIconInfo(title)
+      switch (mode) {
+        case 'gray': {
+          return `${backSlash}inlinegraphics{./cmyk-gray-gyazo-images/${gyazoId}.jpg}`
+        }
+        case 'cmyk': {
+          return `${backSlash}inlinegraphics{./cmyk-gyazo-images/${gyazoId}.jpg}`
+        }
+      }
+      return `{${backSlash}tt (${texEscape(title)})}`
+      // return `{${backSlash}tt (${texEscape(node.path)})}`
+      // return `${backSlash}inlinegraphics{./cmyk-gyazo-images/ad5908312a46eed71e50995a2668dbb1.jpg}`
     }
     case 'hashTag': {
       const hash = addToPageRefs(node.href)
