@@ -1,6 +1,8 @@
+/* eslint-env browser */
+
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
-const { convertImages } = require('./images')
+const { uploadImages, uploadGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
 const { initPageEmbedCounter } = require('./page-embed-counter')
@@ -21,7 +23,7 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
     format(funcs.pageContent(1)),
     format(funcs.appendixContent())
   ].join('\n')
-  await convertImages({ gyazoIds })
+  await uploadImages({ gyazoIds })
   return {
     pageTitle,
     pageTitleHash: pageHash,
@@ -30,7 +32,9 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   }
 }
 
-const main = async ({ type, body, bookTitle, toc }) => {
+const main = async ({ type, body, icons, bookTitle, toc }) => {
+  const pageGyazoIcons = await uploadGyazoIcons(icons)
+  console.log("###", pageGyazoIcons)
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
@@ -84,14 +88,14 @@ const buildRefPages = async refs => {
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
     }
   }
-  await convertImages({ gyazoIds })
+  await uploadImages({ gyazoIds })
 }
 
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
   if (origin !== 'https://scrapbox.io') return
-  const { task, type, refresh, body, template, refs, bookTitle, toc } = data
+  const { task, type, refresh, body, icons, template, refs, bookTitle, toc } = data
 
   if (received) {
     if (task === 'close') this.close()
@@ -121,7 +125,12 @@ window.onmessage = async function ({ origin, data }) {
   switch (task) {
     // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {
-      const { pageTitle, pageTitleHash, pageText, includeCover } = await main({ type, body, bookTitle, toc })
+      const {
+        pageTitle,
+        pageTitleHash,
+        pageText,
+        includeCover
+      } = await main({ type, body, icons, bookTitle, toc })
       document.getElementById('pre-text').innerText = pageText
       await uploadTexDocument({
         includeCover,
