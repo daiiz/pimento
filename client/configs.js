@@ -1,5 +1,11 @@
 /* eslint-env browser */
 
+window.pimentoConfigs = {
+  colormode: 'cmyk', // XXX: 未対応
+  images: 'gray', // XXX: 未対応
+  icons: 'text'
+}
+
 // template tailLines:
 // "% =====pimento-book-content====="
 // "\end{document}"
@@ -7,29 +13,23 @@
 // "% icons=gray // gray, color, text*, ignore"
 // "% images=color // gray*, color, ignore"
 // "% color-mode=cmyk // cmyk*"
+
 const applyConfigs = ({ tailLines }) => {
   const lines = tailLines.map(line => line.replace(/\s*\/\/.*$/, ''))
   const configLines = lines
     .filter(line => /%\s*/.test(line.trim()))
     .map(line => line.replace(/^%\s*/, ''))
 
-  // TODO: Validator
-  const configs = {
-    colormode: 'cmyk', // XXX: 未対応
-    images: 'gray', // XXX: 未対応
-    icons: 'text'
-  }
-  const acceptKeys = Object.keys(configs)
+  const acceptKeys = Object.keys(window.pimentoConfigs)
   for (const line of configLines) {
     const pattern = /^([^=\s]+)\s*=\s*([^=\s]+)$/
     if (!pattern.test(line)) continue
     const [, key, value] = line.match(pattern)
     if (acceptKeys.includes(key)) {
-      configs[key] = value
+      window.pimentoConfigs[key] = value
     }
   }
-  window.pimentoConfigs = configs
-  console.log('pimentoConfigs:', configs)
+  console.log('pimentoConfigs:', window.pimentoConfigs)
 }
 
 module.exports = {
