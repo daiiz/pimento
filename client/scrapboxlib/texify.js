@@ -80,10 +80,10 @@ const Texify = node => {
       const { mode, gyazoId } = getIconInfo(title)
       switch (mode) {
         case 'gray': {
-          return `${backSlash}inlinegraphics{./cmyk-gray-gyazo-images/${gyazoId}.jpg}`
+          return `${backSlash}scrapboxicon{./cmyk-gray-gyazo-images/${gyazoId}.jpg}`
         }
         case 'color': {
-          return `${backSlash}inlinegraphics{./cmyk-gyazo-images/${gyazoId}.jpg}`
+          return `${backSlash}scrapboxicon{./cmyk-gyazo-images/${gyazoId}.jpg}`
         }
         case 'ignore': {
           return ''
