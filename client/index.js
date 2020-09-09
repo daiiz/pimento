@@ -33,8 +33,7 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   }
 }
 
-const main = async ({ type, body, icons, bookTitle, toc }) => {
-  window.gyazoIcons = await uploadGyazoIcons(icons)
+const main = async ({ type, body, bookTitle, toc }) => {
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
@@ -103,6 +102,9 @@ window.onmessage = async function ({ origin, data }) {
   }
   received = true
 
+  applyConfigs(template)
+  window.gyazoIcons = await uploadGyazoIcons(icons)
+
   // XXX: 引数形式揃えたい
   if (type === 'whole-pages') {
     initPageEmbedCounter(Object.values(body).map(page => page.title))
@@ -122,7 +124,6 @@ window.onmessage = async function ({ origin, data }) {
   const rand = Math.floor(Math.random() * 100000000)
   const docType = type === 'whole-pages' ? 'books' : 'pages'
 
-  applyConfigs(template)
   switch (task) {
     // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {
@@ -131,7 +132,7 @@ window.onmessage = async function ({ origin, data }) {
         pageTitleHash,
         pageText,
         includeCover
-      } = await main({ type, body, icons, bookTitle, toc })
+      } = await main({ type, body, bookTitle, toc })
       document.getElementById('pre-text').innerText = pageText
       await uploadTexDocument({
         includeCover,
