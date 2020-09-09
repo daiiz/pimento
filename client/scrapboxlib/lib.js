@@ -165,5 +165,6 @@ module.exports = {
   texEscapeForRef,
   finalAdjustment,
   formatMarks,
+  toTitleLc,
   backSlash
 }

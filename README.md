@@ -18,14 +18,14 @@ $ make run-server
 import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js"
 ```
 
-## Tips: Build TeX documents
+## DevTips: Build TeX documents
 ```
 $ make run-bash
 # cd /var/apps/docs
 # lualatex tex/sample.tex
 ```
 
-## Tips: Develop client app
+## DevTips: Develop client app
 ```
 $ npm run watch
 ```
