@@ -1,11 +1,5 @@
 /* eslint-env browser */
 
-window.pimentoConfigs = {
-  colormode: 'cmyk', // XXX: 未対応
-  images: 'gray', // XXX: 未対応
-  icons: 'text'
-}
-
 // template tailLines:
 // "% =====pimento-book-content====="
 // "\end{document}"
@@ -13,7 +7,6 @@ window.pimentoConfigs = {
 // "% icons=gray // gray, color, text*, ignore"
 // "% images=color // gray*, color, ignore"
 // "% color-mode=cmyk // cmyk*"
-
 const applyConfigs = ({ tailLines }) => {
   const lines = tailLines.map(line => line.replace(/\s*\/\/.*$/, ''))
   const configLines = lines

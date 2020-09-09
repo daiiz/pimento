@@ -29,6 +29,13 @@ window.funcs = Object.create(null)
 window.rawData = Object.create(null)
 window.rawData.pageEmbedCounter = Object.create(null)
 
+// See: configs.js
+window.pimentoConfigs = {
+  colormode: 'cmyk', // XXX: 未対応
+  images: 'gray', // XXX: 未対応
+  icons: 'text'
+}
+
 // 欠損しているpage関数を仮定義する
 window.makeTentativeDefinitions = () => {
   const pageHashs = getPageRefs()
