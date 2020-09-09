@@ -75,7 +75,6 @@ const Texify = node => {
         const path = node.path.split('/').pop()
         return `{${backSlash}tt (${texEscape(path)})}`
       }
-      // TODO: 小さい画像として描画するオプションを導入
       const title = node.path
       const { mode, gyazoId } = getIconInfo(title)
       switch (mode) {
