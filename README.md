@@ -11,11 +11,13 @@ $ make build
 ```
 $ make run-server
 ```
+Start the local server on port 5000.
 
 ## Scrapbox UserScript
 ```js
 // script.js
 import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js"
+setPimentoOrigin("http://localhost:5000")
 ```
 
 ## DevTips: Build TeX documents
