@@ -20,6 +20,9 @@ import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js"
 setPimentoOrigin("http://localhost:5000")
 ```
 
+## Settings
+See https://scrapbox.io/daiiz-pimento/_pimento
+
 ## DevTips: Build TeX documents
 ```
 $ make run-bash
