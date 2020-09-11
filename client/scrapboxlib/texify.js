@@ -61,7 +61,7 @@ const Texify = node => {
       return '$' + texEscapeForFormula(node.formula) + '$'
     }
     case 'code': {
-      if (/https?:\/\//.test(node.text)) {
+      if (/^https?:\/\//.test(node.text)) {
         return `${backSlash}url{` + texEscape(node.text) + '}'
       }
       return `{${backSlash}tt ` + texEscape(node.text) + '}'
