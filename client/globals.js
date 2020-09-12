@@ -6,7 +6,7 @@ const { getPageRefs } = require('./scrapboxlib/lib')
 window.textBlockName = (level, showNumber = true) => {
   level = parseInt(level)
   let brace = showNumber ? '{' : '*{'
-  if (level >= (global.pimentoConfigs['heading-number-omit-level'] || 3)) {
+  if (level >= global.pimentoConfigs['heading-number-omit-level']) {
     brace = '*{'
   }
   switch (level) {
