@@ -112,8 +112,9 @@ const Texify = node => {
         // pageEmbedCounterを用いて参照可能性を判定する
         if (existsPage(hash)) {
           if (getHeadingNumberInfo().omitLevel <= 1) {
-            // 参照を併記できないのでtt扱いする
-            return `{${backSlash}tt ` + texEscape(href) + '}'
+            // ページ番号で参照する
+            const refStr = `(p.${backSlash}pageref{` + `textBlock-${hash}` + '})'
+            return `{${backSlash}tt ${texEscape(href)}} {${backSlash}scriptsize ${refStr}}`
           } else {
             // TODO: テキスト省略オプション
             const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
