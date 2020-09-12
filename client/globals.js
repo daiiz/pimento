@@ -6,7 +6,7 @@ const { getPageRefs } = require('./scrapboxlib/lib')
 window.textBlockName = (level, showNumber = true) => {
   level = parseInt(level)
   let brace = showNumber ? '{' : '*{'
-  if (level >= (global.pimentoConfigs['level-omit-heading-number'] || 3)) {
+  if (level >= (global.pimentoConfigs['heading-number-omit-level'] || 3)) {
     brace = '*{'
   }
   switch (level) {
@@ -30,7 +30,7 @@ window.rawData.pageEmbedCounter = Object.create(null)
 
 // See: configs.js
 window.pimentoConfigs = {
-  'level-omit-heading-number': 3, // textBlockの見出し番号を省略するレベル
+  'heading-number-omit-level': 3, // textBlockの見出し番号を省略するレベル
   colormode: 'cmyk', // XXX: 未対応
   images: 'gray', // XXX: 部分対応
   icons: 'text'
