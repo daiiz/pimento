@@ -14,6 +14,16 @@ const patternWidthRef = /^width=([\d\.]+),\s*(?:ref|label)=(.+)$/i
 const patternWidth = /^width=([\d\.]+),*\s*$/i
 const patternRef = /^(?:ref|label)=(.+),*\s*$/i
 
+// XXX: 仮実装
+const getImageInfo = () => {
+  if (!global.pimentoConfigs) {
+    return { mode: 'gray' }
+  }
+  return {
+    mode: global.pimentoConfigs.images || 'gray'
+  }
+}
+
 const handleSpecialLine = (line) => {
   switch (line._type) {
     case 'title': {
@@ -109,8 +119,12 @@ const handleSpecialLine = (line) => {
 
       const renderIncludegraphics = () => {
         const options = buildOptions(info, ['ref', 'color'])
-        // TODO: 画像ディレクトリを変更可能にする
-        const imageDirName = info.color ? 'cmyk-gyazo-images' : 'cmyk-gray-gyazo-images'
+        let imageDirName = info.color ? 'cmyk-gyazo-images' : 'cmyk-gray-gyazo-images'
+        const { mode } = getImageInfo()
+        if (mode === 'color') {
+          imageDirName = 'cmyk-gyazo-images'
+        }
+
         const srcUrl = `./${imageDirName}/${line._gyazoImageId}.jpg`
         // const srcUrl = './cmyk-gray-gyazo-images/retina_pancake.jpg'
         if (options.length > 0) {
