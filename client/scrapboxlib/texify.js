@@ -14,6 +14,10 @@ const getIconInfo = title => {
   }
 }
 
+const getHeadingNumberInfo = () => {
+  return { omitLevel: global.pimentoConfigs['heading-number-omit-level'] }
+}
+
 const Texify = node => {
   if (typeof node === 'string') return node
   if (node instanceof Array) {
@@ -107,9 +111,15 @@ const Texify = node => {
         const hash = addToPageRefs(href)
         // pageEmbedCounterを用いて参照可能性を判定する
         if (existsPage(hash)) {
-          // TODO: テキスト省略オプション
-          const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
-          return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
+          if (getHeadingNumberInfo().omitLevel <= 1) {
+            // ページ番号で参照する
+            const refStr = `(p.${backSlash}pageref{` + `textBlock-${hash}` + '})'
+            return `{${backSlash}tt ${texEscape(href)}} {${backSlash}scriptsize ${refStr}}`
+          } else {
+            // TODO: テキスト省略オプション
+            const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
+            return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
+          }
         } else {
           // EmptyLinkやInterLinkへの参照はプレーンテキスト扱いする
           return texEscape(href)

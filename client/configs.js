@@ -19,7 +19,7 @@ const applyConfigs = ({ tailLines }) => {
     if (!pattern.test(line)) continue
     const [, key, value] = line.match(pattern)
     if (acceptKeys.includes(key)) {
-      window.pimentoConfigs[key] = value
+      window.pimentoConfigs[key] = Number(value) || value
     }
   }
   console.log('pimentoConfigs:', window.pimentoConfigs)
