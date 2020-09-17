@@ -27,12 +27,16 @@ def build_page(page_title_hash):
   if refresh and os.path.isfile(auxFilePath):
     os.remove(auxFilePath)
   try:
-    subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
+    subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
+    subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd='./docs/tex')
+    subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
     if isWhole:
       # TeX文書内の参照番号解決のため、二度実行する
-      subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs')
-  except:
+      subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs/tex')
+    subprocess.check_call(['cp', './docs/tex/' + texFileName + '.pdf', './docs/' + texFileName + '.pdf'])
+  except Exception as e:
     # TODO: redirect
+    print(e)
     return send_file(docDir + texFilePath, mimetype='text/plain')
   return send_file(docDir + texFileName + '.pdf')
 
