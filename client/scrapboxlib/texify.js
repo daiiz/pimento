@@ -109,20 +109,22 @@ const Texify = node => {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
         const hash = addToPageRefs(href)
+        // XXX: すべてのページリンクに対してインデックスをはってみる
+        const index = `${backSlash}index{${texEscape(href)}}`
         // pageEmbedCounterを用いて参照可能性を判定する
         if (existsPage(hash)) {
           if (getHeadingNumberInfo().omitLevel <= 1) {
             // ページ番号で参照する
             const refStr = `(p.${backSlash}pageref{` + `textBlock-${hash}` + '})'
-            return `{${backSlash}tt ${texEscape(href)}} {${backSlash}scriptsize ${refStr}}`
+            return `{${backSlash}tt ${texEscape(href)}}${index} {${backSlash}scriptsize ${refStr}}`
           } else {
             // TODO: テキスト省略オプション
             const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
-            return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
+            return `${texEscape(href)}${index} {${backSlash}scriptsize ${refStr}}`
           }
         } else {
           // EmptyLinkやInterLinkへの参照はプレーンテキスト扱いする
-          return texEscape(href)
+          return texEscape(href) + index
         }
       } else if (pathType === 'absolute') {
         if (node.content) {
