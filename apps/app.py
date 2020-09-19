@@ -21,21 +21,29 @@ def build_page(page_title_hash):
   docDir = './docs/'
   prefix = 'book_' if isWhole else 'page_'
   texFileName = prefix + page_title_hash
-  texFilePath = 'tex/' + texFileName + '.tex'
+  texFilePath = texFileName + '.tex'
   # ビルド前にauxファイルを削除する
   auxFilePath = docDir + texFileName + '.aux'
   if refresh and os.path.isfile(auxFilePath):
     os.remove(auxFilePath)
   try:
     subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
+  except Exception as e:
+    pass
+
+  # 索引を作る
+  try:
     subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd='./docs/tex')
     subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
+  except Exception as e:
+    pass
+
+  # TeX文書内の参照番号解決のため、二度実行する
+  try:
     if isWhole:
-      # TeX文書内の参照番号解決のため、二度実行する
-      subprocess.check_call(['lualatex', texFilePath], shell=False, cwd='./docs/tex')
+      subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
     subprocess.check_call(['cp', './docs/tex/' + texFileName + '.pdf', './docs/' + texFileName + '.pdf'])
   except Exception as e:
-    # TODO: redirect
     print(e)
     return send_file(docDir + texFilePath, mimetype='text/plain')
   return send_file(docDir + texFileName + '.pdf')

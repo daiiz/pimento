@@ -2,12 +2,12 @@ import os
 from PIL import Image
 
 def converter(gyazo_id, dirname, gray = False):
-  outPath = './docs/' + dirname + '/' + gyazo_id + '.jpg'
+  outPath = './docs/tex/' + dirname + '/' + gyazo_id + '.jpg'
   if (os.path.exists(outPath)):
     print('> Hit local file:', outPath)
     return
 
-  image_path = './docs/gyazo-images/' + gyazo_id
+  image_path = './docs/tex/gyazo-images/' + gyazo_id
   # RGBA -> RGB
   im = Image.open(image_path).convert('RGB')
   if gray:

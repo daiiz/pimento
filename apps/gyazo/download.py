@@ -14,7 +14,7 @@ def download_image(gyazo_id):
   if (len(gyazo_id) != 32): return ''
 
   url = 'https://gyazo.com/' + gyazo_id + '/raw'
-  distPath = './docs/gyazo-images/' + gyazo_id
+  distPath = './docs/tex/gyazo-images/' + gyazo_id
 
   if (os.path.exists(distPath)):
     print('> Hit local file:', gyazo_id)
