@@ -25,8 +25,9 @@ See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
 
 ### Options
 ```tex
+% =====pimento-options=====
 % icons=gray // text*, gray, color, ignore
-% images=gray // gray*, color
+% images=gray // gray*, color, ignore
 % heading-number-omit-level=3 // 3
 % index=true
 ```

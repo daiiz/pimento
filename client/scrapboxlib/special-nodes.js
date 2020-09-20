@@ -108,16 +108,16 @@ const handleSpecialLine = (line) => {
         }
       }
 
+      const { mode } = getImageInfo()
       const renderIncludegraphics = () => {
         const options = buildOptions(info, ['ref', 'color'])
         let imageDirName = info.color ? 'cmyk-gyazo-images' : 'cmyk-gray-gyazo-images'
-        const { mode } = getImageInfo()
         if (mode === 'color') {
           imageDirName = 'cmyk-gyazo-images'
         }
 
-        const srcUrl = `./${imageDirName}/${line._gyazoImageId}.jpg`
         // const srcUrl = './cmyk-gray-gyazo-images/retina_pancake.jpg'
+        const srcUrl = `./${imageDirName}/${line._gyazoImageId}.jpg`
         if (options.length > 0) {
           return `${backSlash}includegraphics[${options.join(',')}]{${srcUrl}}`
         } else {
@@ -127,6 +127,10 @@ const handleSpecialLine = (line) => {
       const renderLabel = () => {
         if (!info.ref) return ''
         return `${backSlash}label{fig:` + info.ref + '}'
+      }
+
+      if (mode === 'ignore') {
+        return ['% Omitted image line']
       }
 
       const { indent } = line
