@@ -21,7 +21,15 @@ setPimentoOrigin("http://localhost:5000")
 ```
 
 ## Settings
-See https://scrapbox.io/daiiz-pimento/_pimento
+See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
+
+### Options
+```tex
+% icons=gray // text*, gray, color, ignore
+% images=gray // gray*, color
+% heading-number-omit-level=3 // 3
+% index=true
+```
 
 ## DevTips: Build TeX documents
 ```
