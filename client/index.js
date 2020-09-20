@@ -22,7 +22,8 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // 章レベルで描画
   const texDocument = [
     format(funcs.pageContent(1)),
-    format(funcs.appendixContent())
+    format(funcs.appendixContent()),
+    getIndexInfo().printIndexLine
   ].join('\n')
   await uploadImages({ gyazoIds })
   return {
@@ -59,6 +60,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
         ...toc.preface,
         format(window.funcs.bookContent()),
         format(window.funcs.appendixContent()),
+        getIndexInfo().printIndexLine,
         ...toc.postscript
       ].join('\n')
       return {
@@ -137,7 +139,6 @@ window.onmessage = async function ({ origin, data }) {
       const includeIndex = getIndexInfo().mode
       await uploadTexDocument({
         includeCover,
-        includeIndex,
         pageTitle,
         pageTitleHash,
         pageText,

@@ -50,9 +50,16 @@ const getImageInfo = () => {
 }
 
 const getIndexInfo = () => {
-  if (!global.pimentoConfigs) return { mode: false }
+  if (!global.pimentoConfigs) {
+    return {
+      mode: false,
+      printIndexLine: ''
+    }
+  }
+  const mode = global.pimentoConfigs.index
   return {
-    mode: global.pimentoConfigs.index
+    mode,
+    printIndexLine: mode ? '\\printindex' : ''
   }
 }
 

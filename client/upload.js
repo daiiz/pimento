@@ -11,7 +11,7 @@ const trimTexLine = line => {
 }
 
 const uploadTexDocument = async (
-  { pageTitle, pageTitleHash, pageText, pageTemplate, includeCover, includeIndex }) => {
+  { pageTitle, pageTitleHash, pageText, pageTemplate, includeCover }) => {
   // maketitle
   if (!pageTitle || !pageTitleHash || !pageText) {
     throw new Error('Invalid arguments')
@@ -24,10 +24,6 @@ const uploadTexDocument = async (
     ...(pageTemplate.headLines || [])
   ]
   const pageTail = pageTemplate.tailLines || []
-  if (includeIndex) {
-    pageTail.unshift('\\printindex')
-  }
-
   if (!includeCover) {
     const ignoreLines = [
       '\\maketitle',
