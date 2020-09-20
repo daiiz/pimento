@@ -134,9 +134,10 @@ window.onmessage = async function ({ origin, data }) {
         includeCover
       } = await main({ type, body, bookTitle, toc })
       document.getElementById('pre-text').innerText = pageText
+      const includeIndex = getIndexInfo().mode
       await uploadTexDocument({
         includeCover,
-        includeIndex: getIndexInfo().mode,
+        includeIndex,
         pageTitle,
         pageTitleHash,
         pageText,
@@ -150,6 +151,9 @@ window.onmessage = async function ({ origin, data }) {
       if (refresh) {
         // ビルド前にauxファイルが削除される
         buildUrl += '&refresh=1'
+      }
+      if (includeIndex) {
+        buildUrl += '&index=1'
       }
       await fetch(buildUrl, { method: 'POST' })
 

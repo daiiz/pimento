@@ -7,6 +7,8 @@ app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
+docDir = './docs/'
+
 @app.route('/', methods=["GET"])
 def index():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
@@ -17,8 +19,8 @@ def build_page(page_title_hash):
   if len(page_title_hash) != 32:
     return jsonify({ 'message': 'Invalid page_title_hash' }), 400
   isWhole = request.args.get('whole') == '1'
+  insertIndex = request.args.get('index') == '1'
   refresh = request.args.get('refresh') == '1'
-  docDir = './docs/'
   prefix = 'book_' if isWhole else 'page_'
   texFileName = prefix + page_title_hash
   texFilePath = texFileName + '.tex'
@@ -32,11 +34,12 @@ def build_page(page_title_hash):
     pass
 
   # 索引を作る
-  try:
-    subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd='./docs/tex')
-    subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
-  except Exception as e:
-    pass
+  if insertIndex:
+    try:
+      subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd='./docs/tex')
+      subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
+    except Exception as e:
+      pass
 
   # TeX文書内の参照番号解決のため、二度実行する
   try:
@@ -85,9 +88,9 @@ def show_page(doc_type, file_type, page_title_hash):
   if doc_type not in ['page', 'book']:
     return jsonify({ 'message': 'Invalid doc_type' }), 400
 
-  filePath = './docs/' + file_type + '/' + doc_type + '_' + page_title_hash + '.' + file_type
+  filePath = docDir + file_type + '/' + doc_type + '_' + page_title_hash + '.' + file_type
   if file_type == 'pdf':
-    filePath = './docs/' + doc_type + '_' + page_title_hash + '.pdf'
+    filePath = docDir + doc_type + '_' + page_title_hash + '.pdf'
   try:
     return send_file(filePath)
   except:
