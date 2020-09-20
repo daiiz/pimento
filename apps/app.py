@@ -8,6 +8,7 @@ app.config["JSON_AS_ASCII"] = False
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
 docDir = './docs/'
+workDir = docDir + 'tex/'
 
 @app.route('/', methods=["GET"])
 def index():
@@ -26,26 +27,27 @@ def build_page(page_title_hash):
   texFilePath = texFileName + '.tex'
   # ビルド前にauxファイルを削除する
   auxFilePath = docDir + texFileName + '.aux'
+
   if refresh and os.path.isfile(auxFilePath):
     os.remove(auxFilePath)
   try:
-    subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
+    subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
   except Exception as e:
     pass
 
   # 索引を作る
   if insertIndex:
     try:
-      subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd='./docs/tex')
-      subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
+      subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd=workDir)
+      subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
     except Exception as e:
       pass
 
   # TeX文書内の参照番号解決のため、二度実行する
   try:
     if isWhole:
-      subprocess.check_call(['lualatex', texFileName], shell=False, cwd='./docs/tex')
-    subprocess.check_call(['cp', './docs/tex/' + texFileName + '.pdf', './docs/' + texFileName + '.pdf'])
+      subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
+    subprocess.check_call(['cp', workDir + texFileName + '.pdf', docDir + texFileName + '.pdf'])
   except Exception as e:
     print(e)
     return send_file(docDir + texFilePath, mimetype='text/plain')

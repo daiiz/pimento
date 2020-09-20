@@ -112,7 +112,7 @@ const Texify = node => {
           }
         } else {
           // EmptyLinkやInterLinkへの参照はプレーンテキスト扱いする
-          return texEscape(href) + index
+          return `${texEscape(href)}${index}`
         }
       } else if (pathType === 'absolute') {
         if (node.content) {
