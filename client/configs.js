@@ -31,6 +31,28 @@ const applyConfigs = ({ tailLines }) => {
   console.log('pimentoConfigs:', window.pimentoConfigs)
 }
 
+const getIconInfo = titleLc => {
+  if (!global.gyazoIcons || !global.gyazoIcons[titleLc]) {
+    return { mode: 'text' }
+  }
+  return {
+    mode: global.pimentoConfigs.icons || 'text',
+    colorType: global.pimentoConfigs['color-mode'] || 'cmyk',
+    gyazoId: global.gyazoIcons[titleLc]
+  }
+}
+
+const getImageInfo = () => {
+  if (!global.pimentoConfigs) {
+    return { mode: 'gray' }
+  }
+  return {
+    mode: global.pimentoConfigs.images || 'gray'
+  }
+}
+
 module.exports = {
-  applyConfigs
+  applyConfigs,
+  getIconInfo,
+  getImageInfo
 }

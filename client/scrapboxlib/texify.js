@@ -1,18 +1,6 @@
 const { addToPageRefs, texEscape, texEscapeForFormula, texEscapeForRef, toTitleLc, backSlash } = require('./lib')
 const { existsPage } = require('../page-embed-counter')
-
-// XXX: 仮実装
-const getIconInfo = title => {
-  const titleLc = toTitleLc(title)
-  if (!global.gyazoIcons || !global.gyazoIcons[titleLc]) {
-    return { mode: 'text' }
-  }
-  return {
-    mode: global.pimentoConfigs.icons || 'text',
-    colorType: global.pimentoConfigs['color-mode'] || 'cmyk',
-    gyazoId: global.gyazoIcons[titleLc]
-  }
-}
+const { getIconInfo } = require('../configs')
 
 const getHeadingNumberInfo = () => {
   return { omitLevel: global.pimentoConfigs['heading-number-omit-level'] }
@@ -80,7 +68,7 @@ const Texify = node => {
         return `{${backSlash}tt (${texEscape(path)})}`
       }
       const title = node.path
-      const { mode, gyazoId } = getIconInfo(title)
+      const { mode, gyazoId } = getIconInfo(toTitleLc(title))
       switch (mode) {
         case 'gray': {
           return `${backSlash}scrapboxicon{./cmyk-gray-gyazo-images/${gyazoId}.jpg}`
