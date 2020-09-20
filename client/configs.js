@@ -3,7 +3,7 @@
 // template tailLines:
 // "% =====pimento-book-content====="
 // "\end{document}"
-// "% =====pimento-figure-settings====="
+// "% =====pimento-options====="
 // "% icons=gray // gray, color, text*, ignore"
 // "% images=color // gray*, color, ignore"
 // "% color-mode=cmyk // cmyk*"
