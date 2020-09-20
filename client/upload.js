@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 const { texEscape, formatMarks } = require('./scrapboxlib/lib')
 
 const headers = {
@@ -5,10 +7,11 @@ const headers = {
 }
 
 const trimTexLine = line => {
-  return line.replace(/\%.+$/, '').trim()
+  return line.replace(/%.+$/, '').trim()
 }
 
-const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTemplate, includeCover }) => {
+const uploadTexDocument = async (
+  { pageTitle, pageTitleHash, pageText, pageTemplate, includeCover }) => {
   // maketitle
   if (!pageTitle || !pageTitleHash || !pageText) {
     throw new Error('Invalid arguments')
@@ -32,7 +35,7 @@ const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTempl
 
   for (let i = 0; i < pageHead.length; i++) {
     const line = trimTexLine(pageHead[i])
-    if (/\\title\{[^\{\}\\]+\}/.test(line)) {
+    if (/\\title\{[^{}\\]+\}/.test(line)) {
       // 「\title{}」行にpageTitleを挿入する
       pageHead[i] = '\\title{' + formatMarks(texEscape(pageTitle)) + '}'
     }
@@ -54,8 +57,6 @@ const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTempl
     })
   })
   const { page_title_hash } = await res.json()
-  // const previewUrl = `/build/pages/${page_title_hash}`
-  // console.log(">>>>>", data)
   return page_title_hash
 }
 

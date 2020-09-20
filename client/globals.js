@@ -33,7 +33,8 @@ window.pimentoConfigs = {
   'heading-number-omit-level': 3, // textBlockの見出し番号を省略するレベル
   colormode: 'cmyk', // XXX: 未対応
   images: 'gray', // XXX: 部分対応
-  icons: 'text'
+  icons: 'text',
+  index: false // 巻末に索引ページを追加する
 }
 
 // 欠損しているpage関数を仮定義する

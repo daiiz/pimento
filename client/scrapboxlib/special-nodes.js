@@ -1,4 +1,5 @@
 const { incrementPageEmbedCounter } = require('../page-embed-counter')
+const { getImageInfo } = require('../configs')
 const { Texify } = require('./texify')
 const {
   addToPageRefs,
@@ -13,16 +14,6 @@ const {
 const patternWidthRef = /^width=([\d\.]+),\s*(?:ref|label)=(.+)$/i
 const patternWidth = /^width=([\d\.]+),*\s*$/i
 const patternRef = /^(?:ref|label)=(.+),*\s*$/i
-
-// XXX: 仮実装
-const getImageInfo = () => {
-  if (!global.pimentoConfigs) {
-    return { mode: 'gray' }
-  }
-  return {
-    mode: global.pimentoConfigs.images || 'gray'
-  }
-}
 
 const handleSpecialLine = (line) => {
   switch (line._type) {

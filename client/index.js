@@ -2,7 +2,7 @@
 
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
-const { applyConfigs } = require('./configs')
+const { applyConfigs, getIndexInfo } = require('./configs')
 const { uploadImages, uploadGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
@@ -22,7 +22,8 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // 章レベルで描画
   const texDocument = [
     format(funcs.pageContent(1)),
-    format(funcs.appendixContent())
+    format(funcs.appendixContent()),
+    getIndexInfo().printIndexLine
   ].join('\n')
   await uploadImages({ gyazoIds })
   return {
@@ -59,6 +60,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
         ...toc.preface,
         format(window.funcs.bookContent()),
         format(window.funcs.appendixContent()),
+        getIndexInfo().printIndexLine,
         ...toc.postscript
       ].join('\n')
       return {
@@ -134,6 +136,7 @@ window.onmessage = async function ({ origin, data }) {
         includeCover
       } = await main({ type, body, bookTitle, toc })
       document.getElementById('pre-text').innerText = pageText
+      const includeIndex = getIndexInfo().mode
       await uploadTexDocument({
         includeCover,
         pageTitle,
@@ -149,6 +152,9 @@ window.onmessage = async function ({ origin, data }) {
       if (refresh) {
         // ビルド前にauxファイルが削除される
         buildUrl += '&refresh=1'
+      }
+      if (includeIndex) {
+        buildUrl += '&index=1'
       }
       await fetch(buildUrl, { method: 'POST' })
 

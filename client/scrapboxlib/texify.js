@@ -1,18 +1,6 @@
 const { addToPageRefs, texEscape, texEscapeForFormula, texEscapeForRef, toTitleLc, backSlash } = require('./lib')
 const { existsPage } = require('../page-embed-counter')
-
-// XXX: 仮実装
-const getIconInfo = title => {
-  const titleLc = toTitleLc(title)
-  if (!global.gyazoIcons || !global.gyazoIcons[titleLc]) {
-    return { mode: 'text' }
-  }
-  return {
-    mode: global.pimentoConfigs.icons || 'text',
-    colorType: global.pimentoConfigs['color-mode'] || 'cmyk',
-    gyazoId: global.gyazoIcons[titleLc]
-  }
-}
+const { getIconInfo } = require('../configs')
 
 const getHeadingNumberInfo = () => {
   return { omitLevel: global.pimentoConfigs['heading-number-omit-level'] }
@@ -80,7 +68,7 @@ const Texify = node => {
         return `{${backSlash}tt (${texEscape(path)})}`
       }
       const title = node.path
-      const { mode, gyazoId } = getIconInfo(title)
+      const { mode, gyazoId } = getIconInfo(toTitleLc(title))
       switch (mode) {
         case 'gray': {
           return `${backSlash}scrapboxicon{./cmyk-gray-gyazo-images/${gyazoId}.jpg}`
@@ -109,20 +97,22 @@ const Texify = node => {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
         const hash = addToPageRefs(href)
+        // XXX: すべてのページリンクに対してインデックスをはってみる
+        const index = `${backSlash}index{${texEscape(href)}}`
         // pageEmbedCounterを用いて参照可能性を判定する
         if (existsPage(hash)) {
           if (getHeadingNumberInfo().omitLevel <= 1) {
             // ページ番号で参照する
             const refStr = `(p.${backSlash}pageref{` + `textBlock-${hash}` + '})'
-            return `{${backSlash}tt ${texEscape(href)}} {${backSlash}scriptsize ${refStr}}`
+            return `{${backSlash}tt ${texEscape(href)}}${index} {${backSlash}scriptsize ${refStr}}`
           } else {
             // TODO: テキスト省略オプション
             const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
-            return `${texEscape(href)} {${backSlash}scriptsize ${refStr}}`
+            return `${texEscape(href)}${index} {${backSlash}scriptsize ${refStr}}`
           }
         } else {
           // EmptyLinkやInterLinkへの参照はプレーンテキスト扱いする
-          return texEscape(href)
+          return `${texEscape(href)}${index}`
         }
       } else if (pathType === 'absolute') {
         if (node.content) {

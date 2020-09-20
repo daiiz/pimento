@@ -19,12 +19,53 @@ const applyConfigs = ({ tailLines }) => {
     if (!pattern.test(line)) continue
     const [, key, value] = line.match(pattern)
     if (acceptKeys.includes(key)) {
-      window.pimentoConfigs[key] = Number(value) || value
+      let v = Number(value) || value
+      if (v === 'true') {
+        v = true
+      } else if (v === 'false') {
+        v = false
+      }
+      window.pimentoConfigs[key] = v
     }
   }
   console.log('pimentoConfigs:', window.pimentoConfigs)
 }
 
+const getIconInfo = titleLc => {
+  if (!global.gyazoIcons || !global.gyazoIcons[titleLc]) {
+    return { mode: 'text' }
+  }
+  return {
+    mode: global.pimentoConfigs.icons || 'text',
+    colorType: global.pimentoConfigs['color-mode'] || 'cmyk',
+    gyazoId: global.gyazoIcons[titleLc]
+  }
+}
+
+const getImageInfo = () => {
+  if (!global.pimentoConfigs) return { mode: 'gray' }
+  return {
+    mode: global.pimentoConfigs.images || 'gray'
+  }
+}
+
+const getIndexInfo = () => {
+  if (!global.pimentoConfigs) {
+    return {
+      mode: false,
+      printIndexLine: ''
+    }
+  }
+  const mode = global.pimentoConfigs.index
+  return {
+    mode,
+    printIndexLine: mode ? '\\printindex' : ''
+  }
+}
+
 module.exports = {
-  applyConfigs
+  applyConfigs,
+  getIconInfo,
+  getImageInfo,
+  getIndexInfo
 }
