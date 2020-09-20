@@ -43,16 +43,22 @@ const getIconInfo = titleLc => {
 }
 
 const getImageInfo = () => {
-  if (!global.pimentoConfigs) {
-    return { mode: 'gray' }
-  }
+  if (!global.pimentoConfigs) return { mode: 'gray' }
   return {
     mode: global.pimentoConfigs.images || 'gray'
+  }
+}
+
+const getIndexInfo = () => {
+  if (!global.pimentoConfigs) return { mode: false }
+  return {
+    mode: global.pimentoConfigs.index
   }
 }
 
 module.exports = {
   applyConfigs,
   getIconInfo,
-  getImageInfo
+  getImageInfo,
+  getIndexInfo
 }

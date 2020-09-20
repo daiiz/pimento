@@ -2,7 +2,7 @@
 
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
-const { applyConfigs } = require('./configs')
+const { applyConfigs, getIndexInfo } = require('./configs')
 const { uploadImages, uploadGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
@@ -136,6 +136,7 @@ window.onmessage = async function ({ origin, data }) {
       document.getElementById('pre-text').innerText = pageText
       await uploadTexDocument({
         includeCover,
+        includeIndex: getIndexInfo().mode,
         pageTitle,
         pageTitleHash,
         pageText,

@@ -8,7 +8,8 @@ const trimTexLine = line => {
   return line.replace(/\%.+$/, '').trim()
 }
 
-const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTemplate, includeCover }) => {
+const uploadTexDocument = async (
+  { pageTitle, pageTitleHash, pageText, pageTemplate, includeCover, includeIndex }) => {
   // maketitle
   if (!pageTitle || !pageTitleHash || !pageText) {
     throw new Error('Invalid arguments')
@@ -21,6 +22,10 @@ const uploadTexDocument = async ({ pageTitle, pageTitleHash, pageText, pageTempl
     ...(pageTemplate.headLines || [])
   ]
   const pageTail = pageTemplate.tailLines || []
+  if (includeIndex) {
+    pageTail.unshift('\\printindex')
+  }
+
   if (!includeCover) {
     const ignoreLines = [
       '\\maketitle',
