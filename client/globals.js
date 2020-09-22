@@ -34,6 +34,7 @@ window.pimentoConfigs = {
   colormode: 'cmyk', // XXX: 未対応
   images: 'gray', // XXX: 部分対応
   icons: 'text',
+  appendix: false, // 章立てに含まれない参照先ページを付録として追加する
   index: false // 巻末に索引ページを追加する
 }
 
