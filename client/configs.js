@@ -63,9 +63,18 @@ const getIndexInfo = () => {
   }
 }
 
+const getAppendixInfo = () => {
+  if (!global.pimentoConfigs) {
+    return { mode: false }
+  }
+  const mode = global.pimentoConfigs.appendix
+  return { mode }
+}
+
 module.exports = {
   applyConfigs,
   getIconInfo,
   getImageInfo,
-  getIndexInfo
+  getIndexInfo,
+  getAppendixInfo
 }
