@@ -9,7 +9,16 @@ def converter(gyazo_id, dirname, gray = False):
 
   image_path = './docs/tex/gyazo-images/' + gyazo_id
   # RGBA -> RGB
-  im = Image.open(image_path).convert('RGB')
+  rawImg = Image.open(image_path)
+  if rawImg.mode is not 'RGB':
+    rawImg = rawImg.convert('RGBA')
+    rawImg.load()
+    im = Image.new('RGBA', rawImg.size, (255, 255, 255))
+    im.paste(rawImg, mask=rawImg.split()[3]) # 3: alpha channel
+    im.convert('RGB')
+  else:
+    im = rawImg
+
   if gray:
     imCmyk = im.convert('CMYK').convert('L')
   else:
