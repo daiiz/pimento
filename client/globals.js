@@ -27,6 +27,7 @@ window.funcs = Object.create(null)
 // postMessageで受信したデータに基づく情報
 window.rawData = Object.create(null)
 window.rawData.pageEmbedCounter = Object.create(null)
+window.rawData.chapterHashs = []
 
 // See: configs.js
 window.pimentoConfigs = {
@@ -34,6 +35,7 @@ window.pimentoConfigs = {
   colormode: 'cmyk', // XXX: 未対応
   images: 'gray', // XXX: 部分対応
   icons: 'text',
+  appendix: false, // 章立てに含まれない参照先ページを付録として追加する
   index: false // 巻末に索引ページを追加する
 }
 

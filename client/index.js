@@ -2,11 +2,11 @@
 
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
-const { applyConfigs, getIndexInfo } = require('./configs')
+const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, uploadGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
-const { initPageEmbedCounter } = require('./page-embed-counter')
+const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
 require('./globals')
 
 const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
@@ -22,7 +22,7 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // 章レベルで描画
   const texDocument = [
     format(funcs.pageContent(1)),
-    format(funcs.appendixContent()),
+    getAppendixInfo().mode ? format(funcs.appendixContent()) : '',
     getIndexInfo().printIndexLine
   ].join('\n')
   await uploadImages({ gyazoIds })
@@ -35,6 +35,7 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
 }
 
 const main = async ({ type, body, bookTitle, toc }) => {
+  keepChapterHashs(toc)
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
@@ -59,7 +60,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
         '',
         ...toc.preface,
         format(window.funcs.bookContent()),
-        format(window.funcs.appendixContent()),
+        getAppendixInfo().mode ? format(window.funcs.appendixContent()) : '',
         getIndexInfo().printIndexLine,
         ...toc.postscript
       ].join('\n')

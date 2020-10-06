@@ -40,9 +40,31 @@ const getAppendixPages = () => {
   return res
 }
 
+// 章立て情報を保持する
+const keepChapterHashs = (toc = {}) => {
+  const chapterHashs = new Set()
+  for (const title of (toc.flatChaps || [])) {
+    chapterHashs.add(calcPageTitleHash(title))
+  }
+  const parts = Object.keys(toc.parts || {})
+  for (const part of parts) {
+    const titles = toc.parts[part]
+    for (const title of titles) {
+      chapterHashs.add(calcPageTitleHash(title))
+    }
+  }
+  window.rawData.chapterHashs = Array.from(chapterHashs)
+}
+
+const isChapter = titleHash => {
+  return window.rawData.chapterHashs.includes(titleHash)
+}
+
 module.exports = {
   initPageEmbedCounter,
   incrementPageEmbedCounter,
   existsPage,
-  getAppendixPages
+  getAppendixPages,
+  keepChapterHashs,
+  isChapter
 }

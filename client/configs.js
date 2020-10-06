@@ -63,9 +63,19 @@ const getIndexInfo = () => {
   }
 }
 
+// https://scrapbox.io/daiiz-pimento-dev/自動付録添付をオフにするオプション
+const getAppendixInfo = () => {
+  if (!global.pimentoConfigs) {
+    return { mode: false }
+  }
+  const mode = global.pimentoConfigs.appendix
+  return { mode }
+}
+
 module.exports = {
   applyConfigs,
   getIconInfo,
   getImageInfo,
-  getIndexInfo
+  getIndexInfo,
+  getAppendixInfo
 }

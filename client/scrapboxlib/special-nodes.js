@@ -89,7 +89,12 @@ const handleSpecialLine = (line) => {
         case 2: {
           captionText = Texify(line._captionNodes[0])
           const infoNode = line._captionNodes[1]
-          info.color = infoNode.decos.includes('*-1')
+          try {
+            info.color = infoNode.decos.includes('*-1')
+          } catch (err) {
+            // XXX: 日報20201005で再現
+            console.error(err, line)
+          }
           infoNode.decos = []
           const infoText = Texify(infoNode)[0].trim()
           // 指定できる画像オプションを制限しておく

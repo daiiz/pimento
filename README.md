@@ -26,10 +26,11 @@ See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
 ### Options
 ```tex
 % =====pimento-options=====
-% icons=gray // text*, gray, color, ignore
+% icons=gray // gray, color, text*, ignore
 % images=gray // gray*, color, ignore
-% heading-number-omit-level=3 // 3
-% index=true
+% heading-number-omit-level=3
+% appendix=true // true, false*
+% index=true // true, false*
 ```
 
 ## DevTips: Build TeX documents
