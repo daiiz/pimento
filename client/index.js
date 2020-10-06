@@ -6,7 +6,7 @@ const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, uploadGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument } = require('./upload')
-const { initPageEmbedCounter } = require('./page-embed-counter')
+const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
 require('./globals')
 
 const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
@@ -35,6 +35,7 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
 }
 
 const main = async ({ type, body, bookTitle, toc }) => {
+  keepChapterHashs(toc)
   switch (type) {
     // 単一ページのプレビュー
     case 'page': {
