@@ -1,5 +1,5 @@
 const { addToPageRefs, texEscape, texEscapeForFormula, texEscapeForRef, toTitleLc, backSlash } = require('./lib')
-const { existsPage } = require('../page-embed-counter')
+const { isChapter, existsPage } = require('../page-embed-counter')
 const { getIconInfo, getAppendixInfo } = require('../configs')
 
 const getHeadingNumberInfo = () => {
@@ -100,16 +100,16 @@ const Texify = node => {
         // XXX: すべてのページリンクに対してインデックスをはってみる
         const index = `${backSlash}index{${texEscape(href)}}`
         // pageEmbedCounterを用いて参照可能性を判定する
-        // TODO: 二項目は仮条件: 正しく求めるには章立てされているページのhashがほしい
-        if (existsPage(hash) && getAppendixInfo().mode) {
+        const shouldInsertReference = getAppendixInfo().mode ? true : isChapter(hash)
+        if (existsPage(hash) && shouldInsertReference) {
+          // TODO: テキスト省略オプション
           if (getHeadingNumberInfo().omitLevel <= 1) {
             // ページ番号で参照する
             const refStr = `(p.${backSlash}pageref{` + `textBlock-${hash}` + '})'
             return `{${backSlash}tt ${texEscape(href)}}${index} {${backSlash}scriptsize ${refStr}}`
           } else {
-            // TODO: テキスト省略オプション
             const refStr = `(${backSlash}autoref{` + `textBlock-${hash}` + '})'
-            // こちらのケースもttフォントでよいかも？
+            // XXX: こちらのケースもttフォントでよいかも？
             return `${texEscape(href)}${index} {${backSlash}scriptsize ${refStr}}`
           }
         } else {
