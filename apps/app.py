@@ -1,7 +1,7 @@
 from flask import Flask, render_template, send_file, jsonify, request, abort
 import os, subprocess, datetime, hashlib, json
-
 import gyazo
+from lib import is_debug
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -98,6 +98,5 @@ def show_page(doc_type, file_type, page_title_hash):
   except:
     return jsonify({ 'message': 'Not found' }), 404
 
-# for debug
-if __name__ == "__main__":
-  app.run()
+if __name__ == '__main__':
+  app.run(host='localhost', port=8080, debug=is_debug())
