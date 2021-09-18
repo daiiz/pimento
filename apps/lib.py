@@ -7,8 +7,11 @@ def is_debug():
   return False
 
 def is_app_enabled(received_key = ''):
-  api_key = os.environ.get('API_KEY', None)
-  if api_key is None or len(api_key) == 0:
+  api_key = os.environ.get('API_KEY', '').strip()
+  if not api_key:
     return False
+  # 開発モードでは何らかの文字列が渡されていればOK
+  if is_debug():
+    return True
   # TODO: 一致を確認
-  return True
+  return False
