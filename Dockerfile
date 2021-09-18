@@ -4,7 +4,7 @@ FROM nikolaik/python-nodejs:python3.6-nodejs12-stretch
 # apps
 RUN apt clean all && apt upgrade
 RUN apt-get update && apt-get -y install nginx
-RUN pip install flask uwsgi Pillow
+RUN pip install flask uwsgi Pillow gunicorn
 RUN python --version
 
 # LuaLaTex
@@ -69,12 +69,13 @@ RUN mkdir -p /var/apps/static/js
 # Node.js
 COPY client /var/apps/client
 COPY package.json package-lock.json /var/apps/
-WORKDIR /var/apps/
+
+WORKDIR /var/apps
 RUN node --version
 RUN npm install
 RUN npm run build
 
-WORKDIR /
-EXPOSE 80
+# EXPOSE 80
+ENV PORT 8080
 
-CMD ["bash", "/var/apps/start.sh"]
+CMD exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 1 --timeout 0 app:app
