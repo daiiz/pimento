@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
-docDir = './docs/'
+docDir = os.getcwd() + '/docs/'
 workDir = docDir + 'tex/'
 
 @app.route('/', methods=["GET"])
@@ -70,7 +70,7 @@ def upload_page():
   isWhole = request.args.get('whole') == '1'
   prefix = 'book_' if isWhole else 'page_'
   file_name = prefix + data['pageTitleHash'] + '.tex'
-  file_path = './docs/tex/' + file_name
+  file_path = os.getcwd() + '/docs/tex/' + file_name
   texDocument = data['pageHead'] + '\n\n' + data['pageText'] + '\n\n' + data['pageTail']
   with open(file_path, 'w') as f:
     f.write(texDocument)
