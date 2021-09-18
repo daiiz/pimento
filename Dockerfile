@@ -49,7 +49,15 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 
 COPY apps /var/apps
 RUN rm -f /var/apps/app.sock
+
+# 手元で追加したフォントをコピーする
 COPY otf /usr/share/fonts/otf
+
+# Googleフォントをダウンロードする
+RUN cd /usr/share/fonts/otf && \
+  wget https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/Japanese/NotoSansCJKjp-Bold.otf -O NotoSansJP-Bold.otf
+RUN cd /usr/share/fonts/otf && \
+  wget https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf -O NotoSansJP-Regular.otf
 
 RUN mkdir -p /var/apps/docs /var/apps/docs/pdf
 RUN mkdir -p /var/apps/docs/tex \
