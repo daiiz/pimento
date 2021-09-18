@@ -33,14 +33,14 @@ See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
 % index=true // true, false*
 ```
 
-## DevTips: Build TeX documents
+## Dev: Build TeX documents
 ```
 $ make run-bash
 # cd /var/apps/docs
 # lualatex tex/sample.tex
 ```
 
-## DevTips: Develop client app
+## Dev: Develop client app
 ```
 $ npm run watch
 ```
