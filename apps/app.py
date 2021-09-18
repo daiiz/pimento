@@ -12,7 +12,6 @@ docDir = os.getcwd() + '/docs/'
 workDir = docDir + 'tex/'
 
 @app.route('/', methods=["GET"])
-@check_app_enabled
 def index():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
   return render_template('page.html', time=now)
