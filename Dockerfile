@@ -51,7 +51,7 @@ COPY apps /var/apps
 RUN rm -f /var/apps/app.sock
 COPY otf /usr/share/fonts/otf
 
-RUN mkdir -p /var/apps/docs /var/apps/docs/sty /var/apps/docs/pdf
+RUN mkdir -p /var/apps/docs /var/apps/docs/pdf
 RUN mkdir -p /var/apps/docs/tex \
   /var/apps/docs/tex/gyazo-images \
   /var/apps/docs/tex/cmyk-gyazo-images \
