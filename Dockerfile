@@ -1,9 +1,10 @@
-FROM python:3.6
+FROM nikolaik/python-nodejs:python3.6-nodejs12-stretch
 
+# Python
 # apps
 RUN apt clean all && apt upgrade
 RUN apt-get update && apt-get -y install nginx
-RUN pip install flask uwsgi Pillow
+RUN pip install flask uwsgi Pillow gunicorn
 RUN python --version
 
 # LuaLaTex
@@ -33,18 +34,48 @@ RUN tlmgr install tcolorbox
 RUN tlmgr install pgf
 RUN tlmgr install environ
 RUN tlmgr install trimspaces
+RUN tlmgr install colorprofiles
 
 RUN tlmgr version
 RUN tlmgr list --only-installed
 
 # gentombow v0.9kやカスタムstyを追加する
-RUN rm /usr/share/texlive/texmf-dist/tex/latex/gentombow/gentombow.sty
+# RUN rm /usr/share/texlive/texmf-dist/tex/latex/gentombow/gentombow.sty
 COPY sty /usr/share/texlive/texmf-dist/tex/latex/pimento_sty
 RUN texhash
 
 RUN rm /etc/nginx/sites-enabled/default
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+COPY apps /var/apps
+RUN rm -f /var/apps/app.sock
 
-CMD ["bash", "/var/apps/start.sh"]
+# 手元で追加したフォントをコピーする
+COPY otf /usr/share/fonts/otf
+
+# Googleフォントをダウンロードする
+RUN cd /usr/share/fonts/otf && \
+  wget https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/Japanese/NotoSansCJKjp-Bold.otf -O NotoSansJP-Bold.otf
+RUN cd /usr/share/fonts/otf && \
+  wget https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf -O NotoSansJP-Regular.otf
+
+RUN mkdir -p /var/apps/docs /var/apps/docs/pdf
+RUN mkdir -p /var/apps/docs/tex \
+  /var/apps/docs/tex/gyazo-images \
+  /var/apps/docs/tex/cmyk-gyazo-images \
+  /var/apps/docs/tex/cmyk-gray-gyazo-images
+RUN mkdir -p /var/apps/static/js
+
+# Node.js
+COPY client /var/apps/client
+COPY package.json package-lock.json /var/apps/
+
+WORKDIR /var/apps
+RUN node --version
+RUN npm install
+RUN npm run build
+
+# EXPOSE 80
+ENV PORT 8080
+
+CMD exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 1 --timeout 0 app:app

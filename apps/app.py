@@ -1,13 +1,13 @@
 from flask import Flask, render_template, send_file, jsonify, request, abort
 import os, subprocess, datetime, hashlib, json
-
 import gyazo
+from lib import is_debug
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
-docDir = './docs/'
+docDir = os.getcwd() + '/docs/'
 workDir = docDir + 'tex/'
 
 @app.route('/', methods=["GET"])
@@ -70,7 +70,7 @@ def upload_page():
   isWhole = request.args.get('whole') == '1'
   prefix = 'book_' if isWhole else 'page_'
   file_name = prefix + data['pageTitleHash'] + '.tex'
-  file_path = './docs/tex/' + file_name
+  file_path = os.getcwd() + '/docs/tex/' + file_name
   texDocument = data['pageHead'] + '\n\n' + data['pageText'] + '\n\n' + data['pageTail']
   with open(file_path, 'w') as f:
     f.write(texDocument)
@@ -98,6 +98,5 @@ def show_page(doc_type, file_type, page_title_hash):
   except:
     return jsonify({ 'message': 'Not found' }), 404
 
-# for debug
-if __name__ == "__main__":
-  app.run()
+if __name__ == '__main__':
+  app.run(host='localhost', port=8080, debug=is_debug())

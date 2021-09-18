@@ -1,26 +1,31 @@
-VERSION := 1.1
+VERSION := 1.3
 TIMEZONE := Asia/Tokyo
 
 build:
-	rm -f ./apps/app.sock
-	npm install
-	npm run build
 	docker build -t daiiz/pimento:$(VERSION) .
 
 run-server:
 	docker run --rm -it --name pimento \
 		-e TZ=$(TIMEZONE) \
-		-v `pwd`/apps:/var/apps \
-		-v `pwd`/docs:/var/apps/docs \
-		-v `pwd`/static:/var/apps/static \
-		-v `pwd`/otf:/usr/share/fonts/otf \
-		-p 5000:80 \
+		-p 5000:8080 \
 		daiiz/pimento:$(VERSION)
 
 run-bash:
 	docker run --rm -it \
+		daiiz/pimento:$(VERSION) \
+		bash
+
+run-server-dev:
+	docker run --rm -it --name pimento \
+		-e TZ=$(TIMEZONE) -e DEBUG=yes \
+		-p 5000:8080 \
 		-v `pwd`/apps:/var/apps \
 		-v `pwd`/docs:/var/apps/docs \
-		-v `pwd`/otf:/usr/share/fonts/otf \
+		-v `pwd`/static:/var/apps/static \
+		daiiz/pimento:$(VERSION)
+
+run-bash-dev:
+	docker run --rm -it \
+		-v `pwd`/docs:/var/apps/docs \
 		daiiz/pimento:$(VERSION) \
 		bash
