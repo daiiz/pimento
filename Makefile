@@ -6,7 +6,7 @@ build:
 
 run-server:
 	docker run --rm -it --name pimento \
-		-e TZ=$(TIMEZONE) -e DEBUG=yes \
+		-e TZ=$(TIMEZONE) \
 		-p 5000:8080 \
 		daiiz/pimento:$(VERSION)
 
