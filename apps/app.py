@@ -1,7 +1,8 @@
 from flask import Flask, render_template, send_file, jsonify, request, abort
 import os, subprocess, datetime, hashlib, json
 import gyazo
-from lib import is_debug
+from lib import is_debug, is_app_enabled
+from middlewares import check_app_enabled
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -11,11 +12,13 @@ docDir = os.getcwd() + '/docs/'
 workDir = docDir + 'tex/'
 
 @app.route('/', methods=["GET"])
+@check_app_enabled
 def index():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
   return render_template('page.html', time=now)
 
 @app.route('/build/pages/<string:page_title_hash>', methods=["POST"])
+@check_app_enabled
 def build_page(page_title_hash):
   if len(page_title_hash) != 32:
     return jsonify({ 'message': 'Invalid page_title_hash' }), 400
@@ -54,6 +57,7 @@ def build_page(page_title_hash):
   return send_file(docDir + texFileName + '.pdf')
 
 @app.route('/api/convert/images', methods=["POST"])
+@check_app_enabled
 def convert_images():
   data = json.loads(request.data.decode('utf-8'))
   # Gyazo画像を保存する
@@ -65,6 +69,7 @@ def convert_images():
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
 
 @app.route('/api/upload/page', methods=["POST"])
+@check_app_enabled
 def upload_page():
   data = json.loads(request.data.decode('utf-8'))
   isWhole = request.args.get('whole') == '1'
@@ -82,6 +87,7 @@ def upload_page():
 
 # コンパイルせずに既存のファイルを返すだけ
 @app.route('/<string:doc_type>s/<string:file_type>/<string:page_title_hash>', methods=["GET"])
+@check_app_enabled
 def show_page(doc_type, file_type, page_title_hash):
   if len(page_title_hash) != 32:
     return jsonify({ 'message': 'Invalid page_title_hash' }), 400
