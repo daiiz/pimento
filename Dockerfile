@@ -11,6 +11,7 @@ RUN python --version
 RUN apt-get install -y \
   texlive-lang-japanese \
   texlive-luatex \
+  texlive-latex-extra \
   texlive-latex-recommended \
   texlive-lang-cjk \
   wget \
