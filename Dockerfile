@@ -1,5 +1,6 @@
-FROM python:3.6
+FROM nikolaik/python-nodejs:python3.6-nodejs12-stretch
 
+# Python
 # apps
 RUN apt clean all && apt upgrade
 RUN apt-get update && apt-get -y install nginx
@@ -33,18 +34,39 @@ RUN tlmgr install tcolorbox
 RUN tlmgr install pgf
 RUN tlmgr install environ
 RUN tlmgr install trimspaces
+RUN tlmgr install colorprofiles
 
 RUN tlmgr version
 RUN tlmgr list --only-installed
 
 # gentombow v0.9kやカスタムstyを追加する
-RUN rm /usr/share/texlive/texmf-dist/tex/latex/gentombow/gentombow.sty
+# RUN rm /usr/share/texlive/texmf-dist/tex/latex/gentombow/gentombow.sty
 COPY sty /usr/share/texlive/texmf-dist/tex/latex/pimento_sty
 RUN texhash
 
 RUN rm /etc/nginx/sites-enabled/default
 COPY default.conf /etc/nginx/conf.d/default.conf
 
+COPY apps /var/apps
+RUN rm -f /var/apps/app.sock
+COPY otf /usr/share/fonts/otf
+
+RUN mkdir -p /var/apps/docs /var/apps/docs/sty /var/apps/docs/pdf
+RUN mkdir -p /var/apps/docs/tex \
+  /var/apps/docs/tex/gyazo-images \
+  /var/apps/docs/tex/cmyk-gyazo-images \
+  /var/apps/docs/tex/cmyk-gray-gyazo-images
+RUN mkdir -p /var/apps/static/js
+
+# Node.js
+COPY client /var/apps/client
+COPY package.json package-lock.json /var/apps/
+WORKDIR /var/apps/
+RUN node --version
+RUN npm install
+RUN npm run build
+
+WORKDIR /
 EXPOSE 80
 
 CMD ["bash", "/var/apps/start.sh"]
