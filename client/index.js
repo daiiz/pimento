@@ -157,24 +157,32 @@ window.onmessage = async function ({ origin, data }) {
         pageTemplate: template
       }
 
-      // 実験中
+      // 実験ここから
+      const payload = {
+        data: generatedData,
+        buildOptions: {
+          whole: type === 'whole-pages',
+          refresh: !!refresh,
+          includeIndex: !!getIndexInfo().mode
+        }
+      }
       if (window.parent !== window) {
         console.log('I am in frames.')
-        window.parent.postMessage(generatedData, pimentFrontendOrigin)
+        window.parent.postMessage(payload, pimentFrontendOrigin)
       }
+      // 実験ここまで
 
-      const includeIndex = getIndexInfo().mode
       await uploadTexDocument(generatedData)
 
       let buildUrl = `/build/pages/${pageTitleHash}?r=${rand}`
-      if (type === 'whole-pages') {
+      if (payload.buildOptions.whole) {
         buildUrl += '&whole=1'
       }
-      if (refresh) {
+      if (payload.buildOptions.refresh) {
         // ビルド前にauxファイルが削除される
         buildUrl += '&refresh=1'
       }
-      if (includeIndex) {
+      if (payload.buildOptions.includeIndex) {
         buildUrl += '&index=1'
       }
       await fetch(buildUrl, { method: 'POST' })
