@@ -3,7 +3,7 @@ import os, subprocess, datetime, hashlib, json
 import gyazo
 from lib import is_debug
 from firebase_helpers import detect_firebase_user
-from middlewares import check_app_enabled, only_local_server
+from middlewares import check_app_enabled, only_for_local_tools
 from validates import validate_firebase_user
 
 from dotenv import load_dotenv
@@ -54,7 +54,7 @@ def build_page_api(page_title_hash):
 
 
 @app.route('/build/pages/<string:page_title_hash>', methods=["POST"])
-@only_local_server
+@only_for_local_tools
 def build_page(page_title_hash):
   if len(page_title_hash) != 32:
     return jsonify({ 'message': 'Invalid page_title_hash' }), 400
@@ -126,7 +126,7 @@ def upload_page():
 
 # コンパイルせずに既存のファイルを返すだけ
 @app.route('/<string:doc_type>s/<string:file_type>/<string:page_title_hash>', methods=["GET"])
-@only_local_server
+@only_for_local_tools
 def show_page(doc_type, file_type, page_title_hash):
   if len(page_title_hash) != 32:
     return jsonify({ 'message': 'Invalid page_title_hash' }), 400

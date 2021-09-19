@@ -21,7 +21,8 @@ def is_app_enabled(received_key = ''):
   return False
 
 
-def is_local_server():
+def is_local_tools_mode():
   api_origin = os.environ.get('PIMENTO_API_ORIGIN', '')
-  return api_origin.startswith('http://localhost:')
+  local_tools_mode = os.environ.get('LOCAL_TOOLS_MODE', None)
+  return (local_tools_mode == 'true') and api_origin.startswith('http://localhost:')
 
