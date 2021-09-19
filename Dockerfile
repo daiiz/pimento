@@ -4,7 +4,7 @@ FROM nikolaik/python-nodejs:python3.6-nodejs12-stretch
 # apps
 RUN apt clean all && apt upgrade
 RUN apt-get update && apt-get -y install nginx
-RUN pip install flask uwsgi Pillow gunicorn
+RUN pip install flask uwsgi Pillow gunicorn python-dotenv firebase-admin
 RUN python --version
 
 # LuaLaTex
