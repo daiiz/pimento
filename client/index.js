@@ -96,10 +96,12 @@ const buildRefPages = async refs => {
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
+  const pimentFrontendOrigin = 'http://localhost:3000'
+  // const pimentFrontendOrigin = 'https://pimento.daiiz.dev'
+
   const allowOrigins = [
     'https://scrapbox.io',
-    'https://pimento.daiiz.dev', // pimento-frontend
-    'http://localhost:3000' // pimento-frontend-dev
+    pimentFrontendOrigin
   ]
   console.log(allowOrigins)
   if (!allowOrigins.includes(origin)) {
@@ -147,16 +149,22 @@ window.onmessage = async function ({ origin, data }) {
       } = await main({ type, body, bookTitle, toc })
       document.getElementById('pre-text').innerText = pageText
 
-      // XXX: 実験中
-
-      const includeIndex = getIndexInfo().mode
-      await uploadTexDocument({
+      const generatedData = {
         includeCover,
         pageTitle,
         pageTitleHash,
         pageText,
         pageTemplate: template
-      })
+      }
+
+      // 実験中
+      if (window.parent !== window) {
+        console.log('I am in frames.')
+        window.parent.postMessage(data, pimentFrontendOrigin)
+      }
+
+      const includeIndex = getIndexInfo().mode
+      await uploadTexDocument(generatedData)
 
       let buildUrl = `/build/pages/${pageTitleHash}?r=${rand}`
       if (type === 'whole-pages') {
