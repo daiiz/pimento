@@ -160,7 +160,7 @@ window.onmessage = async function ({ origin, data }) {
       // 実験中
       if (window.parent !== window) {
         console.log('I am in frames.')
-        window.parent.postMessage(data, pimentFrontendOrigin)
+        window.parent.postMessage(generatedData, pimentFrontendOrigin)
       }
 
       const includeIndex = getIndexInfo().mode
