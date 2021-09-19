@@ -1,14 +1,24 @@
 # 参考: https://github.com/daiiz/nlp-api-server/blob/main/middlewares.py
+import os
 from functools import wraps
-from lib import is_app_enabled
+from lib import is_app_enabled, is_local_server
 
 MESSAGE_INVALID_API_KEY = 'Bad Request: API key is invalid.\n'
+MESSAGE_INVALID_ENDPOINT = 'Not Found\n'
 
 def check_app_enabled(f):
   @wraps(f)
   def decorated_function(*args, **kwargs):
-    is_enabled = is_app_enabled()
-    if not is_enabled:
+    if not is_app_enabled():
       return MESSAGE_INVALID_API_KEY, 400
+    return f(*args, **kwargs)
+  return decorated_function
+
+
+def only_local_server(f):
+  @wraps(f)
+  def decorated_function(*args, **kwargs):
+    if not is_local_server():
+      return MESSAGE_INVALID_ENDPOINT, 404
     return f(*args, **kwargs)
   return decorated_function
