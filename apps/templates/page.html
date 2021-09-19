@@ -51,6 +51,9 @@
         height: 100vh;
         color: #333;
       }
+      #pre.frame {
+        width: 100vw;
+      }
       object {
         display: block;
         width: 60vw;
@@ -64,7 +67,7 @@
   </head>
   <!-- <h1>Hello!! ({{time}} {{frame}})</h1> -->
   <div class='container' data-is-frame='{{frame}}'>
-    <div id='pre'>
+    <div id='pre' class='{{"frame" if frame else ""}}'>
       <div id='pre-header'>
         <a class='item tex' target='_blank'>TeX</a>
         <a class='item pdf' target='_blank'>PDF</a>
@@ -72,8 +75,11 @@
       </div>
       <pre id='pre-text'></pre>
     </div>
+
+    {% if frame != 'true' %}
     <object id='preview' data='' type='application/pdf'>
     </object>
+    {% endif %}
   </div>
   <script src='/static/js/bundle.js'></script>
 </html>

@@ -9,6 +9,11 @@ const { uploadTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
 require('./globals')
 
+const isInFrame = () => {
+  const container = document.querySelector('.container')
+  return container.dataset.isFrame === 'true' && window.parent !== window
+}
+
 const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
@@ -166,32 +171,34 @@ window.onmessage = async function ({ origin, data }) {
           includeIndex: !!getIndexInfo().mode
         }
       }
-      if (window.parent !== window) {
+
+      if (isInFrame()) {
         console.log('I am in frames.')
         window.parent.postMessage(payload, pimentFrontendOrigin)
-      }
-      // 実験ここまで
+        // 実験ここまで
+      } else {
+        // ローカルツール向け
+        await uploadTexDocument(generatedData)
 
-      await uploadTexDocument(generatedData)
+        let buildUrl = `/build/pages/${pageTitleHash}?r=${rand}`
+        if (payload.buildOptions.whole) {
+          buildUrl += '&whole=1'
+        }
+        if (payload.buildOptions.refresh) {
+          // ビルド前にauxファイルが削除される
+          buildUrl += '&refresh=1'
+        }
+        if (payload.buildOptions.includeIndex) {
+          buildUrl += '&index=1'
+        }
+        await fetch(buildUrl, { method: 'POST' })
 
-      let buildUrl = `/build/pages/${pageTitleHash}?r=${rand}`
-      if (payload.buildOptions.whole) {
-        buildUrl += '&whole=1'
+        const previewUrl = `/${docType}/pdf/${pageTitleHash}?r=${rand}`
+        previewElement.setAttribute('data', previewUrl)
+        anchorPdf.href = previewUrl
+        anchorTex.href = `/${docType}/tex/${pageTitleHash}?r=${rand}`
+        message.innerText = ''
       }
-      if (payload.buildOptions.refresh) {
-        // ビルド前にauxファイルが削除される
-        buildUrl += '&refresh=1'
-      }
-      if (payload.buildOptions.includeIndex) {
-        buildUrl += '&index=1'
-      }
-      await fetch(buildUrl, { method: 'POST' })
-
-      const previewUrl = `/${docType}/pdf/${pageTitleHash}?r=${rand}`
-      previewElement.setAttribute('data', previewUrl)
-      anchorPdf.href = previewUrl
-      anchorTex.href = `/${docType}/tex/${pageTitleHash}?r=${rand}`
-      message.innerText = ''
       break
     }
   }
