@@ -12,10 +12,14 @@ docDir = os.getcwd() + '/docs/'
 workDir = docDir + 'tex/'
 
 @app.route('/', methods=["GET"])
-@app.route('/frame', methods=["GET"])
 def index():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
   return render_template('page.html', time=now)
+
+@app.route('/frame', methods=["GET"])
+def index_frame():
+  now = datetime.datetime.now().strftime('%H:%M:%S.%f')
+  return render_template('page.html', time=now, frame='true')
 
 @app.route('/build/pages/<string:page_title_hash>', methods=["POST"])
 @check_app_enabled
