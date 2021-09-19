@@ -96,7 +96,16 @@ const buildRefPages = async refs => {
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
-  if (origin !== 'https://scrapbox.io') return
+  const allowOrigins = [
+    'https://scrapbox.io',
+    'https://pimento.daiiz.dev', // pimento-frontend
+    'http://localhost:3000' // pimento-frontend-dev
+  ]
+  console.log(allowOrigins)
+  if (!allowOrigins.includes(origin)) {
+    console.error('Invalid origin:', origin)
+    return
+  }
   const { task, type, refresh, body, icons, template, refs, bookTitle, toc } = data
 
   if (received) {
@@ -137,6 +146,9 @@ window.onmessage = async function ({ origin, data }) {
         includeCover
       } = await main({ type, body, bookTitle, toc })
       document.getElementById('pre-text').innerText = pageText
+
+      // XXX: 実験中
+
       const includeIndex = getIndexInfo().mode
       await uploadTexDocument({
         includeCover,
