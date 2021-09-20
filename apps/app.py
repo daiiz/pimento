@@ -64,6 +64,7 @@ def build_page_api():
       'preview_tex_path': '/{}/tex/{}'.format(doc_type, page_title_hash)
     }), 200
 
+  print('>', '/{}/pdf/{}'.format(doc_type, page_title_hash))
   print('>', page_title_hash, g.user['name'], pdf_file_path)
   return jsonify({ 'build_options': build_options }), 200
 
@@ -82,20 +83,28 @@ def convert_images():
 
 # つぎはこれ
 @app.route('/api/upload/page', methods=["POST"])
-@check_app_enabled
+@check_firebase_user
 def upload_page():
   data = json.loads(request.data.decode('utf-8'))
-  print('[upload] "{}" by {}'.format(data['pageTitle'], '??'))
-  isWhole = request.args.get('whole') == '1'
+  print('[upload] is_local_tools_mode:', is_local_tools_mode())
+  print('[upload] "{}" by {}'.format(data['pageTitle'], g.user['name']))
+  isWhole = data['includeCover'] == True
   prefix = 'book_' if isWhole else 'page_'
-  file_name = prefix + data['pageTitleHash'] + '.tex'
+
+  # detect page title hash
+  page_title_hash = data.get('pageTitleHash', '')
+  status, message = validate_page_info(page_title_hash)
+  if status:
+    return jsonify({ 'message': message }), status
+
+  file_name = prefix + page_title_hash + '.tex'
   file_path = os.getcwd() + '/docs/tex/' + file_name
   texDocument = data['pageHead'] + '\n\n' + data['pageText'] + '\n\n' + data['pageTail']
   with open(file_path, 'w') as f:
     f.write(texDocument)
   # ページ単位でのTeXドキュメントを保存する
   return jsonify({
-    "page_title_hash": data['pageTitleHash'],
+    "page_title_hash": page_title_hash,
     "tex_file_name": file_name
   }), 200
 

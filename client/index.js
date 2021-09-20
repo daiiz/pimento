@@ -177,15 +177,14 @@ window.onmessage = async function ({ origin, data }) {
 
       if (isInFrame()) {
         // TODO: 向こうでuploadTexDocument
-        // await uploadTexDocument(uploadData)
         console.log('I am in frames.')
         window.parent.postMessage(payload, pimentFrontendOrigin)
         // 実験ここまで
       } else {
         // ローカルツール向け
+        console.log('uploadData:', uploadData)
         await uploadTexDocument(uploadData)
 
-        console.log('uploadData:', uploadData)
         const buildRes = await fetch(`/api/build/pages?r=${rand}`, {
           method: 'POST',
           headers: {

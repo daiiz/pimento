@@ -58,10 +58,11 @@ const createTexDocument = ({ pageTitle, pageTitleHash, pageText, pageTemplate, i
 
 const uploadTexDocument = async uploadData => {
   console.log('[uploadTexDocument]', uploadData)
-  let apiUrl = '/api/upload/page'
-  if (uploadData.includeCover) {
-    apiUrl += '?whole=1'
-  }
+  const apiUrl = '/api/upload/page'
+  // TODO: あとで修正
+  // if (uploadData.includeCover) {
+  //   apiUrl += '?whole=1'
+  // }
   const res = await fetch(apiUrl, {
     method: 'POST',
     headers: {

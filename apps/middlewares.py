@@ -8,7 +8,7 @@ from firebase_helpers import detect_firebase_user
 from validates import validate_firebase_user
 
 MESSAGE_INVALID_API_KEY = 'Bad Request: API key is invalid.\n'
-MESSAGE_INVALID_ENDPOINT = 'Not Found\n'
+MESSAGE_INVALID_ENDPOINT = '[L] Not Found\n'
 
 def check_app_enabled(f):
   @wraps(f)
