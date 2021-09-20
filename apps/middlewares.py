@@ -23,10 +23,15 @@ def check_firebase_user(f):
   @wraps(f)
   def decorated_function(*args, **kwargs):
     user = detect_firebase_user(request)
-    status, message = validate_firebase_user(user)
-    if status:
-      return message, status
-    g.user = user
+    err_status, message = validate_firebase_user(user)
+    # ローカルツールモードであれば常に通過させる
+    if err_status and is_local_tools_mode():
+      err_status = None
+    if err_status:
+      return message, err_status
+    if user:
+      print('[user]', user['name'])
+      g.user = user
     return f(*args, **kwargs)
   return decorated_function
 

@@ -80,7 +80,7 @@ def convert_images():
   dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids))
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
 
-
+# つぎはこれ
 @app.route('/api/upload/page', methods=["POST"])
 @check_app_enabled
 def upload_page():
