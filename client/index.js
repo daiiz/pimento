@@ -108,7 +108,6 @@ window.onmessage = async function ({ origin, data }) {
     'https://scrapbox.io',
     pimentFrontendOrigin
   ]
-  console.log(allowOrigins)
   if (!allowOrigins.includes(origin)) {
     console.error('Invalid origin:', origin)
     return
@@ -143,6 +142,7 @@ window.onmessage = async function ({ origin, data }) {
   const rand = Math.floor(Math.random() * 100000000)
   const docType = type === 'whole-pages' ? 'books' : 'pages'
 
+  console.log('funcs:', window.funcs)
   switch (task) {
     // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {
@@ -155,11 +155,13 @@ window.onmessage = async function ({ origin, data }) {
       document.getElementById('pre-text').innerText = pageText
 
       const generatedData = {
-        includeCover,
         pageTitle,
         pageTitleHash,
         pageText,
-        pageTemplate: template
+        pageTemplate: template,
+        // 付随情報
+        docType,
+        includeCover
       }
 
       // 実験ここから
@@ -167,8 +169,9 @@ window.onmessage = async function ({ origin, data }) {
         data: generatedData,
         buildOptions: {
           whole: type === 'whole-pages',
-          refresh: !!refresh,
-          includeIndex: !!getIndexInfo().mode
+          includeIndex: !!getIndexInfo().mode,
+          // ビルド前にauxファイルが削除される
+          refresh: !!refresh
         }
       }
 
@@ -182,30 +185,38 @@ window.onmessage = async function ({ origin, data }) {
         // ローカルツール向け
         await uploadTexDocument(generatedData)
 
-        let buildUrl = `/build/pages/${pageTitleHash}?r=${rand}`
-        if (payload.buildOptions.whole) {
-          buildUrl += '&whole=1'
-        }
-        if (payload.buildOptions.refresh) {
-          // ビルド前にauxファイルが削除される
-          buildUrl += '&refresh=1'
-        }
-        if (payload.buildOptions.includeIndex) {
-          buildUrl += '&index=1'
-        }
-        await fetch(buildUrl, { method: 'POST' })
+        // const buildUrl = `/api/build/pages?r=${rand}`
+        // if (payload.buildOptions.whole) {
+        //   buildUrl += '&whole=1'
+        // }
+        // if (payload.buildOptions.refresh) {
+        //   // ビルド前にauxファイルが削除される
+        //   buildUrl += '&refresh=1'
+        // }
+        // if (payload.buildOptions.includeIndex) {
+        //   buildUrl += '&index=1'
+        // }
+        console.log('generatedData:', generatedData)
+        const buildRes = await fetch(`/api/build/pages?r=${rand}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        const buildResData = await buildRes.json()
+        console.log('buildRes:', buildResData)
+        const { preview_pdf_path, preview_tex_path } = buildResData
 
-        const previewUrl = `/${docType}/pdf/${pageTitleHash}?r=${rand}`
+        const previewUrl = `${preview_pdf_path}?r=${rand}`
         previewElement.setAttribute('data', previewUrl)
         anchorPdf.href = previewUrl
-        anchorTex.href = `/${docType}/tex/${pageTitleHash}?r=${rand}`
+        anchorTex.href = `${preview_tex_path}?r=${rand}`
         message.innerText = ''
       }
       break
     }
   }
-
-  console.log('funcs:', window.funcs)
 }
 
 window.format = text => {
