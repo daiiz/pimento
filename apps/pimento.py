@@ -14,7 +14,7 @@ def get_user_dir_path(user_id):
   return '/tmp/user_' + uid
 
 
-def create_user_doc_dir(user):
+def create_user_docs_dir(user):
   if is_local_tools_mode():
     return os.getcwd() + '/docs'
 
@@ -22,12 +22,12 @@ def create_user_doc_dir(user):
   if not user_id:
     raise Exception('user_id is required')
   user_dir_path = get_user_dir_path(user_id)
-  user_doc_dir_path = user_dir_path + '/docs'
+  user_docs_dir_path = user_dir_path + '/docs'
 
-  if os.path.exists(user_doc_dir_path):
-    return user_doc_dir_path
+  if os.path.exists(user_docs_dir_path):
+    return user_docs_dir_path
   else:
-    os.makedirs(user_doc_dir_path, exist_ok=True)
+    os.makedirs(user_docs_dir_path, exist_ok=True)
 
   require_dir_paths = [
     '/pdf',
@@ -37,9 +37,8 @@ def create_user_doc_dir(user):
     '/tex/cmyk-gray-gyazo-images'
   ]
   for dir_path in require_dir_paths:
-    os.makedirs(user_doc_dir_path + dir_path, exist_ok=True)
-
-  return user_doc_dir_path
+    os.makedirs(user_docs_dir_path + dir_path, exist_ok=True)
+  return user_docs_dir_path
 
 
 def remove_user_doc_dir(user):

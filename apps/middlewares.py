@@ -32,6 +32,8 @@ def check_firebase_user(f):
     if user:
       print('[user]', user['name'])
       g.user = user
+    else:
+      g.user = None
     return f(*args, **kwargs)
   return decorated_function
 

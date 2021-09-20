@@ -1,20 +1,21 @@
 import urllib.error
 import urllib.request
 import os
-# from logger import push_log
 
-def download_images(gyazo_ids = []):
+def download_images(gyazo_ids, docs_dir):
   saved_gyazo_ids = []
   for gyazo_id in gyazo_ids:
-    download_image(gyazo_id)
+    download_image(gyazo_id, docs_dir)
     saved_gyazo_ids.append(gyazo_id)
   return saved_gyazo_ids
 
-def download_image(gyazo_id):
-  if (len(gyazo_id) != 32): return ''
+
+def download_image(gyazo_id, docs_dir):
+  if (len(gyazo_id) != 32):
+    return ''
 
   url = 'https://gyazo.com/' + gyazo_id + '/raw'
-  distPath = os.getcwd() + '/docs/tex/gyazo-images/' + gyazo_id
+  distPath = docs_dir + '/tex/gyazo-images/' + gyazo_id
 
   if (os.path.exists(distPath)):
     print('> Hit local file:', gyazo_id)

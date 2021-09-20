@@ -15,8 +15,6 @@ app.config["JSON_AS_ASCII"] = False
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
 docDir = os.getcwd() + '/docs/'
-workDir = docDir + 'tex/'
-
 
 @app.after_request
 def set_cors_headers(response):
@@ -68,18 +66,20 @@ def build_page_api():
   print('>', page_title_hash, g.user['name'], pdf_file_path)
   return jsonify({ 'build_options': build_options }), 200
 
-# つぎはこれ
+
 @app.route('/api/convert/images', methods=["POST"])
-@check_app_enabled
+@check_firebase_user
 def convert_images():
+  docs_dir = pimento.create_user_docs_dir(g.user)
   data = json.loads(request.data.decode('utf-8'))
   # Gyazo画像を保存する
-  saved_gyazo_ids = gyazo.download.download_images(data['gyazoIds'] or [])
+  saved_gyazo_ids = gyazo.download.download_images(data['gyazoIds'] or [], docs_dir)
   # CMYK, Grayに変換して保存する
   dirnames = []
   dirnames.append(gyazo.convert.convert_to_cmyk(saved_gyazo_ids))
   dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids))
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
+
 
 @app.route('/api/upload/page', methods=["POST"])
 @check_firebase_user
@@ -96,8 +96,11 @@ def upload_page():
   if status:
     return jsonify({ 'message': message }), status
 
+  docs_dir = pimento.create_user_docs_dir(g.user)
+  print('>>>>>>!', docs_dir)
+
   file_name = prefix + page_title_hash + '.tex'
-  file_path = os.getcwd() + '/docs/tex/' + file_name
+  file_path = docs_dir + '/tex/' + file_name
   texDocument = data['pageHead'] + '\n\n' + data['pageText'] + '\n\n' + data['pageTail']
   with open(file_path, 'w') as f:
     f.write(texDocument)
