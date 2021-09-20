@@ -64,7 +64,10 @@ def build_page_api():
   print('>', '/{}/pdf/{}'.format(doc_type, page_title_hash))
   print('>', page_title_hash, g.user['name'], pdf_file_path)
   pimento.remove_user_works_dir(g.user)
-  return jsonify({ 'build_options': build_options }), 200
+  return jsonify({
+    'doc_type': doc_type,
+    'page_title_hash': page_title_hash
+  }), 200
 
 
 @app.route('/api/convert/images', methods=["POST"])
