@@ -4,7 +4,7 @@ from lib import is_local_tools_mode
 def get_work_dir(docDir):
   if not docDir:
     raise Exception('docDir is invalid')
-  return docDir + 'tex/'
+  return docDir + '/tex/'
 
 
 def get_user_dir_path(user_id):
@@ -14,6 +14,7 @@ def get_user_dir_path(user_id):
   return '/tmp/user_' + uid
 
 
+# docsDirのパスを返す。なければ作る。
 def create_user_docs_dir(user):
   if is_local_tools_mode():
     return os.getcwd() + '/docs'
@@ -30,7 +31,6 @@ def create_user_docs_dir(user):
     os.makedirs(user_docs_dir_path, exist_ok=True)
 
   require_dir_paths = [
-    '/pdf',
     '/tex',
     '/tex/gyazo-images',
     '/tex/cmyk-gyazo-images',
@@ -77,7 +77,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
       print(e)
       return ''
 
-  pdf_file_path = docDir + texFileName + '.pdf'
+  pdf_file_path = docDir + '/' + texFileName + '.pdf'
   try:
     # TeX文書内の参照番号解決のため、二度実行する
     if isWhole:

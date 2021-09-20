@@ -3,7 +3,7 @@ import os, subprocess, datetime, hashlib, json
 import gyazo
 import pimento
 from lib import is_debug, is_local_tools_mode
-from middlewares import check_app_enabled, check_firebase_user, only_for_local_tools
+from middlewares import check_firebase_user, only_for_local_tools
 
 from validates import validate_page_info
 
@@ -13,8 +13,6 @@ load_dotenv()
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
-
-docDir = os.getcwd() + '/docs/'
 
 @app.after_request
 def set_cors_headers(response):
@@ -53,7 +51,8 @@ def build_page_api():
     return jsonify({ 'message': message }), status
 
   # get internal file path
-  pdf_file_path = pimento.build_page_or_book(page_title_hash, build_options, docDir)
+  docs_dir = pimento.create_user_docs_dir(g.user)
+  pdf_file_path = pimento.build_page_or_book(page_title_hash, build_options, docs_dir)
 
   if is_local_tools_mode():
     return jsonify({
@@ -70,6 +69,7 @@ def build_page_api():
 @app.route('/api/convert/images', methods=["POST"])
 @check_firebase_user
 def convert_images():
+  print('[convert images] is_local_tools_mode:', is_local_tools_mode())
   docs_dir = pimento.create_user_docs_dir(g.user)
   data = json.loads(request.data.decode('utf-8'))
   # Gyazo画像を保存する
@@ -97,7 +97,6 @@ def upload_page():
     return jsonify({ 'message': message }), status
 
   docs_dir = pimento.create_user_docs_dir(g.user)
-  print('>>>>>>!', docs_dir)
 
   file_name = prefix + page_title_hash + '.tex'
   file_path = docs_dir + '/tex/' + file_name
@@ -112,16 +111,17 @@ def upload_page():
 
 
 # コンパイルせずに既存のファイルを返すだけ
-@app.route('/<string:doc_type>s/<string:file_type>/<string:page_title_hash>', methods=["GET"])
+@app.route('/<string:doc_type>/<string:file_type>/<string:page_title_hash>', methods=["GET"])
 @only_for_local_tools
 def show_page(doc_type, file_type, page_title_hash):
   status, message = validate_page_info(page_title_hash, doc_type, file_type)
   if status:
     return jsonify({ 'message': message }), status
 
-  filePath = docDir + file_type + '/' + doc_type + '_' + page_title_hash + '.' + file_type
+  docs_dir = pimento.create_user_docs_dir(None)
+  filePath = docs_dir + '/' + file_type + '/' + doc_type + '_' + page_title_hash + '.' + file_type
   if file_type == 'pdf':
-    filePath = docDir + doc_type + '_' + page_title_hash + '.pdf'
+    filePath = docs_dir + '/' + doc_type + '_' + page_title_hash + '.pdf'
   try:
     return send_file(filePath)
   except:

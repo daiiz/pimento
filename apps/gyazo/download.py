@@ -18,7 +18,7 @@ def download_image(gyazo_id, docs_dir):
   distPath = docs_dir + '/tex/gyazo-images/' + gyazo_id
 
   if (os.path.exists(distPath)):
-    print('> Hit local file:', gyazo_id)
+    print('> Hit Gyazo ID:', gyazo_id)
     return distPath
 
   try:
