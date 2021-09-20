@@ -1,10 +1,11 @@
-from flask import Flask, render_template, send_file, jsonify, request, abort
+from flask import Flask, g, render_template, send_file, jsonify, request, abort
 import os, subprocess, datetime, hashlib, json
 import gyazo
-from lib import is_debug
-from firebase_helpers import detect_firebase_user
-from middlewares import check_app_enabled, only_for_local_tools
-from validates import validate_firebase_user
+import pimento
+from lib import is_debug, is_local_tools_mode
+from middlewares import check_app_enabled, check_firebase_user, only_for_local_tools
+
+from validates import validate_page_info
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -37,27 +38,36 @@ def index_frame():
   return render_template('page.html', time=now, frame='true')
 
 
-# こっちに統一したい
-@app.route('/api/build/pages/<string:page_title_hash>', methods=['POST'])
-def build_page_api(page_title_hash):
-  user = detect_firebase_user(request)
-  status, message = validate_firebase_user(user)
-  if status:
-    return jsonify({ 'message': message }), status
-
+@app.route('/api/build/pages', methods=['POST'])
+@check_firebase_user
+def build_page_api():
   payload = json.loads(request.data.decode('utf-8'))
   data = payload.get('data', {})
   build_options = payload.get('buildOptions', {})
-  # ここから
 
-  return jsonify({ 'name': user['name'], 'data': data, 'build_options': build_options }), 200
+  # detect page title hash
+  page_title_hash = data.get('pageTitleHash', '')
+  status, message = validate_page_info(page_title_hash)
+  if status:
+    return jsonify({ 'message': message }), status
+
+  pdf_file_path = pimento.build_page_or_book(page_title_hash, build_options, docDir)
+
+  print('>', page_title_hash, g.user['name'], pdf_file_path)
+  print('[is_local_tools_mode]', is_local_tools_mode())
+
+  if is_local_tools_mode():
+    return send_file(pdf_file_path)
+
+  return jsonify({ 'build_options': build_options }), 200
 
 
 @app.route('/build/pages/<string:page_title_hash>', methods=["POST"])
 @only_for_local_tools
 def build_page(page_title_hash):
-  if len(page_title_hash) != 32:
-    return jsonify({ 'message': 'Invalid page_title_hash' }), 400
+  status, message = validate_page_info(page_title_hash)
+  if status:
+    return jsonify({ 'message': message }), status
   isWhole = request.args.get('whole') == '1'
   insertIndex = request.args.get('index') == '1'
   refresh = request.args.get('refresh') == '1'
@@ -110,6 +120,7 @@ def convert_images():
 @check_app_enabled
 def upload_page():
   data = json.loads(request.data.decode('utf-8'))
+  print('[upload] "{}" by {}'.format(data['pageTitle'], '??'))
   isWhole = request.args.get('whole') == '1'
   prefix = 'book_' if isWhole else 'page_'
   file_name = prefix + data['pageTitleHash'] + '.tex'

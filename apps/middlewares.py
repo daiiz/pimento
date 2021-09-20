@@ -1,7 +1,11 @@
 # 参考: https://github.com/daiiz/nlp-api-server/blob/main/middlewares.py
 import os
+from flask import request, g
 from functools import wraps
+
 from lib import is_app_enabled, is_local_tools_mode
+from firebase_helpers import detect_firebase_user
+from validates import validate_firebase_user
 
 MESSAGE_INVALID_API_KEY = 'Bad Request: API key is invalid.\n'
 MESSAGE_INVALID_ENDPOINT = 'Not Found\n'
@@ -11,6 +15,18 @@ def check_app_enabled(f):
   def decorated_function(*args, **kwargs):
     if not is_app_enabled():
       return MESSAGE_INVALID_API_KEY, 400
+    return f(*args, **kwargs)
+  return decorated_function
+
+
+def check_firebase_user(f):
+  @wraps(f)
+  def decorated_function(*args, **kwargs):
+    user = detect_firebase_user(request)
+    status, message = validate_firebase_user(user)
+    if status:
+      return message, status
+    g.user = user
     return f(*args, **kwargs)
   return decorated_function
 
