@@ -176,10 +176,9 @@ window.onmessage = async function ({ origin, data }) {
       }
 
       if (isInFrame()) {
-        // TODO: 向こうでuploadTexDocument
+        // upload, buildともに向こうに任せる
         console.log('I am in frames.')
         window.parent.postMessage(payload, pimentFrontendOrigin)
-        // 実験ここまで
       } else {
         // ローカルツール向け
         console.log('uploadData:', uploadData)
