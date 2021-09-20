@@ -127,5 +127,6 @@ def show_page(doc_type, file_type, page_title_hash):
   except:
     return jsonify({ 'message': 'Not found' }), 404
 
+
 if __name__ == '__main__':
   app.run(host='localhost', port=8080, debug=is_debug())
