@@ -13,6 +13,9 @@ docs/tex/*.pdf
 docs/tex/*.xmpdata
 docs/tex/*.ist
 
+tmp/*
+!tmp/.gitkeep
+
 参考.txt
 old_code/*
 
