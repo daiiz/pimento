@@ -4,6 +4,8 @@ import os
 
 def download_images(gyazo_ids, docs_dir):
   saved_gyazo_ids = []
+  if len(gyazo_ids) > 0:
+    print('Gyazo image nums:', len(gyazo_ids))
   for gyazo_id in gyazo_ids:
     download_image(gyazo_id, docs_dir)
     saved_gyazo_ids.append(gyazo_id)

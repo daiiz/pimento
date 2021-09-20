@@ -31,7 +31,6 @@ def create_user_docs_dir(user):
     os.makedirs(user_docs_dir_path, exist_ok=True)
 
   require_dir_paths = [
-    '/tex',
     '/tex/gyazo-images',
     '/tex/cmyk-gyazo-images',
     '/tex/cmyk-gray-gyazo-images'
@@ -94,7 +93,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
   try:
     # TeX文書内の参照番号解決のため、二度実行する
     if isWhole:
-      subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
+      subprocess.check_call(['lualatex', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
     subprocess.check_call(['cp', workDir + texFileName + '.pdf', pdf_file_path])
   except Exception as e:
     print(e)
