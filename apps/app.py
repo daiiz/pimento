@@ -60,6 +60,7 @@ def build_page_api():
       'preview_tex_path': '/{}/tex/{}'.format(doc_type, page_title_hash)
     }), 200
 
+  print('\n-----')
   print('>', '/{}/pdf/{}'.format(doc_type, page_title_hash))
   print('>', page_title_hash, g.user['name'], pdf_file_path)
   pimento.remove_user_works_dir(g.user)
