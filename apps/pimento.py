@@ -1,4 +1,5 @@
 import os, subprocess
+from lib import is_local_tools_mode
 
 def get_work_dir(docDir):
   if not docDir:
@@ -6,9 +7,43 @@ def get_work_dir(docDir):
   return docDir + 'tex/'
 
 
-def create_user_work_dir(docDir):
-  if not docDir:
-    raise Exception('docDir is invalid')
+def get_user_dir_path(user_id):
+  uid = user_id.strip()
+  if not uid:
+    raise Exception('user_id is invalid')
+  return '/tmp/user_' + uid
+
+
+def create_user_doc_dir(user):
+  if is_local_tools_mode():
+    return os.getcwd() + '/docs'
+
+  user_id = user.get('uid', None)
+  if not user_id:
+    raise Exception('user_id is required')
+  user_dir_path = get_user_dir_path(user_id)
+  user_doc_dir_path = user_dir_path + '/docs'
+
+  if os.path.exists(user_doc_dir_path):
+    return user_doc_dir_path
+  else:
+    os.makedirs(user_doc_dir_path, exist_ok=True)
+
+  require_dir_paths = [
+    '/pdf',
+    '/tex',
+    '/tex/gyazo-images',
+    '/tex/cmyk-gyazo-images',
+    '/tex/cmyk-gray-gyazo-images'
+  ]
+  for dir_path in require_dir_paths:
+    os.makedirs(user_doc_dir_path + dir_path, exist_ok=True)
+
+  return user_doc_dir_path
+
+
+def remove_user_doc_dir(user):
+  pass
 
 
 def build_page_or_book(page_title_hash, build_options, docDir):
