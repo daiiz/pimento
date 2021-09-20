@@ -185,17 +185,6 @@ window.onmessage = async function ({ origin, data }) {
         // ローカルツール向け
         await uploadTexDocument(generatedData)
 
-        // const buildUrl = `/api/build/pages?r=${rand}`
-        // if (payload.buildOptions.whole) {
-        //   buildUrl += '&whole=1'
-        // }
-        // if (payload.buildOptions.refresh) {
-        //   // ビルド前にauxファイルが削除される
-        //   buildUrl += '&refresh=1'
-        // }
-        // if (payload.buildOptions.includeIndex) {
-        //   buildUrl += '&index=1'
-        // }
         console.log('generatedData:', generatedData)
         const buildRes = await fetch(`/api/build/pages?r=${rand}`, {
           method: 'POST',

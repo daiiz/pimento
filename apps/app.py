@@ -68,47 +68,6 @@ def build_page_api():
   return jsonify({ 'build_options': build_options }), 200
 
 
-# @app.route('/build/pages/<string:page_title_hash>', methods=["POST"])
-# @only_for_local_tools
-# def build_page(page_title_hash):
-#   status, message = validate_page_info(page_title_hash)
-#   if status:
-#     return jsonify({ 'message': message }), status
-#   isWhole = request.args.get('whole') == '1'
-#   insertIndex = request.args.get('index') == '1'
-#   refresh = request.args.get('refresh') == '1'
-#   prefix = 'book_' if isWhole else 'page_'
-#   texFileName = prefix + page_title_hash
-#   texFilePath = texFileName + '.tex'
-#   # ビルド前にauxファイルを削除する
-#   auxFilePath = docDir + texFileName + '.aux'
-
-#   if refresh and os.path.isfile(auxFilePath):
-#     os.remove(auxFilePath)
-#   try:
-#     subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
-#   except Exception as e:
-#     pass
-
-#   # 索引を作る
-#   if insertIndex:
-#     try:
-#       subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd=workDir)
-#       subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
-#     except Exception as e:
-#       pass
-
-#   # TeX文書内の参照番号解決のため、二度実行する
-#   try:
-#     if isWhole:
-#       subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
-#     subprocess.check_call(['cp', workDir + texFileName + '.pdf', docDir + texFileName + '.pdf'])
-#   except Exception as e:
-#     print(e)
-#     return send_file(docDir + texFilePath, mimetype='text/plain')
-#   return send_file(docDir + texFileName + '.pdf')
-
-
 @app.route('/api/convert/images', methods=["POST"])
 @check_app_enabled
 def convert_images():
