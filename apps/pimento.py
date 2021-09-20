@@ -6,6 +6,11 @@ def get_work_dir(docDir):
   return docDir + 'tex/'
 
 
+def create_user_work_dir(docDir):
+  if not docDir:
+    raise Exception('docDir is invalid')
+
+
 def build_page_or_book(page_title_hash, build_options, docDir):
   workDir = get_work_dir(docDir)
   print('workDir: ', workDir)
