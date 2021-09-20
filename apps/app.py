@@ -115,12 +115,9 @@ def upload_page():
 @app.route('/<string:doc_type>s/<string:file_type>/<string:page_title_hash>', methods=["GET"])
 @only_for_local_tools
 def show_page(doc_type, file_type, page_title_hash):
-  if len(page_title_hash) != 32:
-    return jsonify({ 'message': 'Invalid page_title_hash' }), 400
-  if file_type not in ['tex', 'pdf']:
-    return jsonify({ 'message': 'Invalid file_type' }), 400
-  if doc_type not in ['page', 'book']:
-    return jsonify({ 'message': 'Invalid doc_type' }), 400
+  status, message = validate_page_info(page_title_hash, doc_type, file_type)
+  if status:
+    return jsonify({ 'message': message }), status
 
   filePath = docDir + file_type + '/' + doc_type + '_' + page_title_hash + '.' + file_type
   if file_type == 'pdf':

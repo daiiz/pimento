@@ -8,10 +8,13 @@ def validate_firebase_user(user):
   return None, None
 
 
-def validate_page_info(page_title_hash, doc_type = None):
+def validate_page_info(page_title_hash, doc_type = None, file_type = None):
   if len(page_title_hash) != 32:
     return 400, 'Invalid page_title_hash'
   if doc_type:
     if doc_type not in ['pages', 'books']:
       return 400, 'Invalid doc_type "{}"'.format(doc_type)
+  if file_type:
+    if file_type not in ['tex', 'pdf']:
+      return 400, 'Invalid file_type "{}"'.format(file_type)
   return None, None
