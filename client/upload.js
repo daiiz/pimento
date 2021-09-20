@@ -58,36 +58,6 @@ const createTexDocument = ({ pageTitle, pageTitleHash, pageText, pageTemplate, i
 
 const uploadTexDocument = async uploadData => {
   console.log('[uploadTexDocument]', uploadData)
-  // const formattedPageTitle = formatPageTitle(pageTitle)
-  // // maketitle
-  // if (!pageTitle || !pageTitleHash || !pageText) {
-  //   throw new Error('Invalid arguments')
-  // }
-  // let pageHead = [
-  //   '\\begin{filecontents*}{\\jobname.xmpdata}',
-  //   `  \\Title{${formattedPageTitle}}`,
-  //   '\\end{filecontents*}',
-  //   '',
-  //   ...(pageTemplate.headLines || [])
-  // ]
-  // const pageTail = pageTemplate.tailLines || []
-  // if (!includeCover) {
-  //   const ignoreLines = [
-  //     '\\maketitle',
-  //     '\\tableofcontents'
-  //   ]
-  //   pageHead = pageHead
-  //     .filter(line => !ignoreLines.includes(trimTexLine(line)))
-  // }
-
-  // for (let i = 0; i < pageHead.length; i++) {
-  //   const line = trimTexLine(pageHead[i])
-  //   if (/\\title\{[^{}\\]+\}/.test(line)) {
-  //     // 「\title{}」行にpageTitleを挿入する
-  //     pageHead[i] = '\\title{' + formattedPageTitle + '}'
-  //   }
-  // }
-
   let apiUrl = '/api/upload/page'
   if (uploadData.includeCover) {
     apiUrl += '?whole=1'
