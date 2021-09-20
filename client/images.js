@@ -28,8 +28,7 @@ const extractGyazoIcons = async pageGyazoIconUrls => {
       dict[titleLc] = gyazoId
     }
   }
-  // await uploadImages({ gyazoIds: Object.values(dict) })
-  return dict
+  return dict // gyazoIds: Object.values(dict)
 }
 
 module.exports = {

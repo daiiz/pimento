@@ -30,13 +30,13 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
     getAppendixInfo().mode ? format(funcs.appendixContent()) : '',
     getIndexInfo().printIndexLine
   ].join('\n')
-  // await uploadImages({ gyazoIds })
+
   return {
     pageTitle,
     pageTitleHash: pageHash,
     pageText: texDocument,
     includeCover: false,
-    gyazoIds // XXX
+    gyazoIds
   }
 }
 
@@ -75,7 +75,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
         pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
         pageText: texDocument,
         includeCover: true,
-        gyazoIds: refsData.gyazoIds // XXX
+        gyazoIds: refsData.gyazoIds
       }
     }
   }
@@ -97,8 +97,7 @@ const buildRefPages = async refs => {
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
     }
   }
-  // await uploadImages({ gyazoIds })
-  return { gyazoIds } // XXX
+  return { gyazoIds }
 }
 
 let received = false
