@@ -77,7 +77,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
   if refresh and os.path.isfile(auxFilePath):
     os.remove(auxFilePath)
   try:
-    subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
+    subprocess.check_call(['lualatex', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
   except Exception as e:
     pass
 
@@ -85,7 +85,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
   if insertIndex:
     try:
       subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd=workDir)
-      subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
+      subprocess.check_call(['lualatex', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
     except Exception as e:
       print(e)
       return ''
