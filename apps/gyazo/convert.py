@@ -4,8 +4,10 @@ from PIL import Image
 def converter(gyazo_id, dirname, docs_dir, gray = False):
   outPath = docs_dir + '/tex/' + dirname + '/' + gyazo_id + '.jpg'
   if (os.path.exists(outPath)):
-    print('> Hit local file:', outPath)
+    print('> Hit local Gyazo file:', outPath)
     return
+  else:
+    print('> Converting Gyazo file:', gyazo_id)
 
   image_path = docs_dir + '/tex/gyazo-images/' + gyazo_id
   # RGBA -> RGB

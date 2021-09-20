@@ -18,8 +18,10 @@ def download_image(gyazo_id, docs_dir):
   distPath = docs_dir + '/tex/gyazo-images/' + gyazo_id
 
   if (os.path.exists(distPath)):
-    print('> Hit Gyazo ID:', gyazo_id)
+    print('> Hit Gyazo:', gyazo_id)
     return distPath
+  else:
+    print('> Fetch Gyazo:', gyazo_id)
 
   try:
     res = urllib.request.urlopen(url)

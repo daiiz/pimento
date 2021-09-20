@@ -54,7 +54,7 @@ def remove_user_works_dir(user):
   if os.path.exists(user_works_dir_path) \
     and user_works_dir_path.startswith('/tmp/user_') \
     and user_works_dir_path.endswith('/tex'):
-    # shutil.rmtree(user_works_dir_path)
+    shutil.rmtree(user_works_dir_path)
     print('removed:', user_works_dir_path)
 
 
