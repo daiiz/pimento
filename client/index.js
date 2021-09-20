@@ -5,7 +5,7 @@ const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMa
 const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, uploadGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
-const { uploadTexDocument } = require('./upload')
+const { uploadTexDocument, createTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
 require('./globals')
 
@@ -164,9 +164,9 @@ window.onmessage = async function ({ origin, data }) {
         includeCover
       }
 
-      // 実験ここから
+      const uploadData = createTexDocument(generatedData)
       const payload = {
-        data: generatedData,
+        data: uploadData,
         buildOptions: {
           whole: type === 'whole-pages',
           includeIndex: !!getIndexInfo().mode,
@@ -177,15 +177,15 @@ window.onmessage = async function ({ origin, data }) {
 
       if (isInFrame()) {
         // TODO: 向こうでuploadTexDocument
-        await uploadTexDocument(generatedData)
+        // await uploadTexDocument(uploadData)
         console.log('I am in frames.')
         window.parent.postMessage(payload, pimentFrontendOrigin)
         // 実験ここまで
       } else {
         // ローカルツール向け
-        await uploadTexDocument(generatedData)
+        await uploadTexDocument(uploadData)
 
-        console.log('generatedData:', generatedData)
+        console.log('uploadData:', uploadData)
         const buildRes = await fetch(`/api/build/pages?r=${rand}`, {
           method: 'POST',
           headers: {
