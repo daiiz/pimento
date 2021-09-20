@@ -1,10 +1,10 @@
-import os, subprocess
+import os, subprocess, shutil
 from lib import is_local_tools_mode
 
 def get_work_dir(docDir):
   if not docDir:
     raise Exception('docDir is invalid')
-  return docDir + '/tex/'
+  return docDir + '/tex'
 
 
 def get_user_dir_path(user_id):
@@ -25,7 +25,7 @@ def create_user_docs_dir(user):
   user_dir_path = get_user_dir_path(user_id)
   user_docs_dir_path = user_dir_path + '/docs'
 
-  if os.path.exists(user_docs_dir_path):
+  if os.path.exists(get_work_dir(user_docs_dir_path)):
     return user_docs_dir_path
   else:
     os.makedirs(user_docs_dir_path, exist_ok=True)
@@ -41,12 +41,25 @@ def create_user_docs_dir(user):
   return user_docs_dir_path
 
 
-def remove_user_doc_dir(user):
-  pass
+def remove_user_works_dir(user):
+  if not user or is_local_tools_mode():
+    return
+
+  user_id = user.get('uid', None)
+  if not user_id:
+    raise Exception('user_id is required')
+  user_dir_path = get_user_dir_path(user_id)
+  user_works_dir_path = get_work_dir(user_dir_path + '/docs')
+
+  if os.path.exists(user_works_dir_path) \
+    and user_works_dir_path.startswith('/tmp/user_') \
+    and user_works_dir_path.endswith('/tex'):
+    # shutil.rmtree(user_works_dir_path)
+    print('removed:', user_works_dir_path)
 
 
 def build_page_or_book(page_title_hash, build_options, docDir):
-  workDir = get_work_dir(docDir)
+  workDir = get_work_dir(docDir) + '/'
   print('workDir: ', workDir)
 
   # parse build options
