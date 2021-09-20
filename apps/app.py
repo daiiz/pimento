@@ -68,7 +68,7 @@ def build_page_api():
   print('>', page_title_hash, g.user['name'], pdf_file_path)
   return jsonify({ 'build_options': build_options }), 200
 
-
+# つぎはこれ
 @app.route('/api/convert/images', methods=["POST"])
 @check_app_enabled
 def convert_images():
@@ -81,7 +81,6 @@ def convert_images():
   dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids))
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
 
-# つぎはこれ
 @app.route('/api/upload/page', methods=["POST"])
 @check_firebase_user
 def upload_page():
