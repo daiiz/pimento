@@ -4,17 +4,17 @@ FROM nikolaik/python-nodejs:python3.6-nodejs12-stretch
 # apps
 RUN apt clean all && apt upgrade
 RUN apt-get update && apt-get -y install nginx
-RUN pip install flask uwsgi Pillow gunicorn python-dotenv firebase-admin
+RUN pip install flask uwsgi Pillow gunicorn python-dotenv firebase-admin google-cloud-storage google-auth
 RUN python --version
 
 # LuaLaTex
+RUN apt-get install -y wget
 RUN apt-get install -y \
   texlive-lang-japanese \
   texlive-luatex \
   texlive-latex-extra \
   texlive-latex-recommended \
   texlive-lang-cjk \
-  wget \
   xzdec \
   gnupg2 \
   texlive-generic-extra

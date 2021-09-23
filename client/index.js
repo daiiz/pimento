@@ -3,7 +3,7 @@
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
 const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
-const { uploadImages, uploadGyazoIcons } = require('./images')
+const { uploadImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
@@ -30,12 +30,13 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
     getAppendixInfo().mode ? format(funcs.appendixContent()) : '',
     getIndexInfo().printIndexLine
   ].join('\n')
-  await uploadImages({ gyazoIds })
+
   return {
     pageTitle,
     pageTitleHash: pageHash,
     pageText: texDocument,
-    includeCover: false
+    includeCover: false,
+    gyazoIds
   }
 }
 
@@ -56,7 +57,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
     // 製本
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
-      await buildRefPages(Object.values(pages))
+      const refsData = await buildRefPages(Object.values(pages))
       createBook(toc)
       createBookAppendix(toc)
       console.log('REFS:', getPageRefs())
@@ -73,7 +74,8 @@ const main = async ({ type, body, bookTitle, toc }) => {
         pageTitle: bookTitle,
         pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
         pageText: texDocument,
-        includeCover: true
+        includeCover: true,
+        gyazoIds: refsData.gyazoIds
       }
     }
   }
@@ -95,7 +97,7 @@ const buildRefPages = async refs => {
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
     }
   }
-  await uploadImages({ gyazoIds })
+  return { gyazoIds }
 }
 
 let received = false
@@ -108,11 +110,13 @@ window.onmessage = async function ({ origin, data }) {
     'https://scrapbox.io',
     pimentFrontendOrigin
   ]
+
   if (!allowOrigins.includes(origin)) {
     console.error('Invalid origin:', origin)
     return
   }
   const { task, type, refresh, body, icons, template, refs, bookTitle, toc } = data
+  const bookGyazoIds = []
 
   if (received) {
     if (task === 'close') this.close()
@@ -121,7 +125,8 @@ window.onmessage = async function ({ origin, data }) {
   received = true
 
   applyConfigs(template)
-  window.gyazoIcons = await uploadGyazoIcons(icons)
+  window.gyazoIcons = await extractGyazoIcons(icons)
+  bookGyazoIds.push(...Object.values(window.gyazoIcons))
 
   // XXX: 引数形式揃えたい
   if (type === 'whole-pages') {
@@ -131,7 +136,8 @@ window.onmessage = async function ({ origin, data }) {
   }
 
   if (refs && refs.length > 0) {
-    await buildRefPages(refs)
+    const refsData = await buildRefPages(refs)
+    bookGyazoIds.push(...refsData.gyazoIds)
   }
 
   const previewElement = document.querySelector('#preview')
@@ -150,7 +156,8 @@ window.onmessage = async function ({ origin, data }) {
         pageTitle,
         pageTitleHash,
         pageText,
-        includeCover
+        includeCover,
+        gyazoIds
       } = await main({ type, body, bookTitle, toc })
       document.getElementById('pre-text').innerText = pageText
 
@@ -165,8 +172,10 @@ window.onmessage = async function ({ origin, data }) {
       }
 
       const uploadData = createTexDocument(generatedData)
+      const uploadGyazoIds = Array.from(new Set([...bookGyazoIds, ...gyazoIds]))
       const payload = {
         data: uploadData,
+        gyazoIds: uploadGyazoIds,
         buildOptions: {
           whole: type === 'whole-pages',
           includeIndex: !!getIndexInfo().mode,
@@ -181,7 +190,10 @@ window.onmessage = async function ({ origin, data }) {
         window.parent.postMessage(payload, pimentFrontendOrigin)
       } else {
         // ローカルツール向け
+        console.log('uploadGyazoIds:', uploadGyazoIds)
         console.log('uploadData:', uploadData)
+
+        await uploadImages(uploadGyazoIds)
         await uploadTexDocument(uploadData)
 
         const buildRes = await fetch(`/api/build/pages?r=${rand}`, {

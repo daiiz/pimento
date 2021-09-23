@@ -18,8 +18,9 @@ run-bash:
 
 run-server-dev:
 	docker run --rm -it --name pimento \
-		-e TZ=$(TIMEZONE) -e DEBUG=yes -e API_KEY=dev-dev-dev\
+		-e TZ=$(TIMEZONE) -e DEBUG=yes \
 		-p 5000:8080 \
+		-v `pwd`/tmp:/tmp \
 		-v `pwd`/apps:/var/apps \
 		-v `pwd`/.env:/var/apps/.env \
 		-v `pwd`/docs:/var/apps/docs \
