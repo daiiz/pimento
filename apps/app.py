@@ -62,8 +62,8 @@ def build_page_api():
   if is_local_tools_mode():
     return jsonify({
       'tools_mode': 'local',
-      'preview_pdf_path': '/{}/pdf/{}'.format(doc_type, page_title_hash),
-      'preview_tex_path': '/{}/tex/{}'.format(doc_type, page_title_hash)
+      'preview_pdf_path': '/x/{}/pdf/{}'.format(doc_type, page_title_hash),
+      'preview_tex_path': '/x/{}/tex/{}'.format(doc_type, page_title_hash)
     }), 200
 
   # upload to Google Cloud Storage
@@ -132,7 +132,7 @@ def upload_page():
 
 
 # コンパイルせずに既存のファイルを返すだけ
-@app.route('/<string:doc_type>/<string:file_type>/<string:page_title_hash>', methods=["GET"])
+@app.route('/x/<string:doc_type>/<string:file_type>/<string:page_title_hash>', methods=["GET"])
 @only_for_local_tools
 def show_page(doc_type, file_type, page_title_hash):
   status, message = validate_page_info(page_title_hash, doc_type, file_type)
