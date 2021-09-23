@@ -115,7 +115,7 @@ window.onmessage = async function ({ origin, data }) {
     console.error('Invalid origin:', origin)
     return
   }
-  const { task, type, refresh, body, icons, template, refs, bookTitle, toc } = data
+  const { task, type, projectName, refresh, body, icons, template, refs, bookTitle, toc } = data
   const bookGyazoIds = []
 
   if (received) {
@@ -176,6 +176,7 @@ window.onmessage = async function ({ origin, data }) {
       const payload = {
         data: uploadData,
         gyazoIds: uploadGyazoIds,
+        projectName,
         buildOptions: {
           whole: type === 'whole-pages',
           includeIndex: !!getIndexInfo().mode,
