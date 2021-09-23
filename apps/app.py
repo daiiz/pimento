@@ -68,6 +68,7 @@ def build_page_api():
 
   # upload to Google Cloud Storage
   project_id = payload.get('projectName', None)
+  print('[build] project_id:', project_id)
   page_object_name = create_page_object_name(g.user['uid'], project_id, page_title_hash)
   upload_to_gcs('pages', page_object_name, file_path=pdf_file_path)
 
