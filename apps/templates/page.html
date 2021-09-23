@@ -74,26 +74,28 @@
       }
     </style>
   </head>
-  <!-- <h1>Hello!! ({{time}} {{frame}})</h1> -->
-  <div class='container' data-is-frame='{{frame}}'>
-    <div id='pre' class='{{"frame" if frame else ""}}'>
-      <div id='pre-header'>
-        <div id='pre-header-tools' class='{{"frame" if frame else ""}}'>
-          <a class='item tex' target='_blank'>TeX</a>
-          <a class='item pdf' target='_blank'>PDF</a>
-          <span class='item message'>Compiling...</span>
+  <body data-frontend-origin='{{frontend_origin}}'>
+    <!-- <h1>Hello!! ({{time}} {{frame}})</h1> -->
+    <div class='container' data-is-frame='{{frame}}'>
+      <div id='pre' class='{{"frame" if frame else ""}}'>
+        <div id='pre-header'>
+          <div id='pre-header-tools' class='{{"frame" if frame else ""}}'>
+            <a class='item tex' target='_blank'>TeX</a>
+            <a class='item pdf' target='_blank'>PDF</a>
+            <span class='item message'>Compiling...</span>
+          </div>
+          <div id='pre-header-frame-tools' class='{{"frame" if frame else ""}}'>
+            <span class='item message'>Frame mode</span>
+          </div>
         </div>
-        <div id='pre-header-frame-tools' class='{{"frame" if frame else ""}}'>
-          <span class='item message'>Frame mode</span>
-        </div>
+        <pre id='pre-text'></pre>
       </div>
-      <pre id='pre-text'></pre>
-    </div>
 
-    {% if frame != 'true' %}
-    <object id='preview' data='' type='application/pdf'>
-    </object>
-    {% endif %}
-  </div>
-  <script src='/static/js/bundle.js'></script>
+      {% if frame != 'true' %}
+      <object id='preview' data='' type='application/pdf'>
+      </object>
+      {% endif %}
+    </div>
+    <script src='/static/js/bundle.js'></script>
+  </body>
 </html>

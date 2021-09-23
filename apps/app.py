@@ -31,7 +31,10 @@ def index():
 @app.route('/frame', methods=["GET"])
 def index_frame():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
-  return render_template('page.html', time=now, frame='true')
+  return render_template('page.html',
+    time=now,
+    frame='true',
+    frontend_origin=os.environ.get('PIMENTO_FRONTEND_ORIGIN', ''))
 
 
 @app.route('/api/build/pages', methods=['POST'])
