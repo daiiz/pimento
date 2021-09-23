@@ -103,7 +103,6 @@ const buildRefPages = async refs => {
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
-  // const pimentFrontendOrigin = 'http://localhost:3000'
   const pimentFrontendOrigin = document.body.dataset.frontendOrigin
   console.log('pimentFrontendOrigin:', pimentFrontendOrigin)
 
