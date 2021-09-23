@@ -87,6 +87,8 @@ def convert_images():
   print('[convert images] is_local_tools_mode:', is_local_tools_mode())
   docs_dir = pimento.create_user_docs_dir(g.user)
   data = json.loads(request.data.decode('utf-8'))
+  project_id = data.get('projectName', None)
+  print('[convert images] project_id:', project_id)
   # Gyazo画像を保存する
   saved_gyazo_ids = gyazo.download.download_images(data['gyazoIds'] or [], docs_dir)
   # CMYK, Grayに変換して保存する
@@ -102,6 +104,9 @@ def upload_page():
   data = json.loads(request.data.decode('utf-8'))
   print('[upload] is_local_tools_mode:', is_local_tools_mode())
   print('[upload] "{}" by {}'.format(data['pageTitle'], g.user['name']))
+  project_id = data.get('projectName', None)
+  print('[upload] project_id:', project_id)
+
   isWhole = data['includeCover'] == True
   prefix = 'book_' if isWhole else 'page_'
 
