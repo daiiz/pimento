@@ -104,7 +104,8 @@ let received = false
 
 window.onmessage = async function ({ origin, data }) {
   // const pimentFrontendOrigin = 'http://localhost:3000'
-  const pimentFrontendOrigin = 'https://pimento.daiiz.dev'
+  const pimentFrontendOrigin = document.body.dataset.frontendOrigin
+  console.log('pimentFrontendOrigin:', pimentFrontendOrigin)
 
   const allowOrigins = [
     'https://scrapbox.io',
