@@ -141,9 +141,9 @@ window.onmessage = async function ({ origin, data }) {
   }
 
   const previewElement = document.querySelector('#preview')
-  const anchorTex = document.querySelector('#pre-header > a.tex')
-  const anchorPdf = document.querySelector('#pre-header > a.pdf')
-  const message = document.querySelector('#pre-header > span.message')
+  const anchorTex = document.querySelector('#pre-header a.tex')
+  const anchorPdf = document.querySelector('#pre-header a.pdf')
+  const message = document.querySelector('#pre-header span.message')
 
   const rand = Math.floor(Math.random() * 100000000)
   const docType = type === 'whole-pages' ? 'books' : 'pages'
