@@ -51,6 +51,18 @@
         height: 100vh;
         color: #333;
       }
+      #pre.frame {
+        width: 100vw;
+      }
+      #pre-header-tools.frame {
+        display: none;
+      }
+      #pre-header-frame-tools {
+        display: none;
+      }
+      #pre-header-frame-tools.frame {
+        display: block;
+      }
       object {
         display: block;
         width: 60vw;
@@ -62,18 +74,26 @@
       }
     </style>
   </head>
-  <!-- <h1>Hello!! ({{time}})</h1> -->
-  <div class='container'>
-    <div id='pre'>
+  <!-- <h1>Hello!! ({{time}} {{frame}})</h1> -->
+  <div class='container' data-is-frame='{{frame}}'>
+    <div id='pre' class='{{"frame" if frame else ""}}'>
       <div id='pre-header'>
-        <a class='item tex' target='_blank'>TeX</a>
-        <a class='item pdf' target='_blank'>PDF</a>
-        <span class='item message'>Compiling...</span>
+        <div id='pre-header-tools' class='{{"frame" if frame else ""}}'>
+          <a class='item tex' target='_blank'>TeX</a>
+          <a class='item pdf' target='_blank'>PDF</a>
+          <span class='item message'>Compiling...</span>
+        </div>
+        <div id='pre-header-frame-tools' class='{{"frame" if frame else ""}}'>
+          <span class='item message'>Frame mode</span>
+        </div>
       </div>
       <pre id='pre-text'></pre>
     </div>
+
+    {% if frame != 'true' %}
     <object id='preview' data='' type='application/pdf'>
     </object>
+    {% endif %}
   </div>
   <script src='/static/js/bundle.js'></script>
 </html>

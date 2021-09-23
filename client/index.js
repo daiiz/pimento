@@ -3,11 +3,16 @@
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
 const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
-const { uploadImages, uploadGyazoIcons } = require('./images')
+const { uploadImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
-const { uploadTexDocument } = require('./upload')
+const { uploadTexDocument, createTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
 require('./globals')
+
+const isInFrame = () => {
+  const container = document.querySelector('.container')
+  return container.dataset.isFrame === 'true' && window.parent !== window
+}
 
 const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
   // ページ変換関数を登録
@@ -25,12 +30,13 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
     getAppendixInfo().mode ? format(funcs.appendixContent()) : '',
     getIndexInfo().printIndexLine
   ].join('\n')
-  await uploadImages({ gyazoIds })
+
   return {
     pageTitle,
     pageTitleHash: pageHash,
     pageText: texDocument,
-    includeCover: false
+    includeCover: false,
+    gyazoIds
   }
 }
 
@@ -51,7 +57,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
     // 製本
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
-      await buildRefPages(Object.values(pages))
+      const refsData = await buildRefPages(Object.values(pages))
       createBook(toc)
       createBookAppendix(toc)
       console.log('REFS:', getPageRefs())
@@ -68,7 +74,8 @@ const main = async ({ type, body, bookTitle, toc }) => {
         pageTitle: bookTitle,
         pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
         pageText: texDocument,
-        includeCover: true
+        includeCover: true,
+        gyazoIds: refsData.gyazoIds
       }
     }
   }
@@ -90,14 +97,26 @@ const buildRefPages = async refs => {
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
     }
   }
-  await uploadImages({ gyazoIds })
+  return { gyazoIds }
 }
 
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
-  if (origin !== 'https://scrapbox.io') return
+  const pimentFrontendOrigin = 'http://localhost:3000'
+  // const pimentFrontendOrigin = 'https://pimento.daiiz.dev'
+
+  const allowOrigins = [
+    'https://scrapbox.io',
+    pimentFrontendOrigin
+  ]
+
+  if (!allowOrigins.includes(origin)) {
+    console.error('Invalid origin:', origin)
+    return
+  }
   const { task, type, refresh, body, icons, template, refs, bookTitle, toc } = data
+  const bookGyazoIds = []
 
   if (received) {
     if (task === 'close') this.close()
@@ -106,7 +125,8 @@ window.onmessage = async function ({ origin, data }) {
   received = true
 
   applyConfigs(template)
-  window.gyazoIcons = await uploadGyazoIcons(icons)
+  window.gyazoIcons = await extractGyazoIcons(icons)
+  bookGyazoIds.push(...Object.values(window.gyazoIcons))
 
   // XXX: 引数形式揃えたい
   if (type === 'whole-pages') {
@@ -116,7 +136,8 @@ window.onmessage = async function ({ origin, data }) {
   }
 
   if (refs && refs.length > 0) {
-    await buildRefPages(refs)
+    const refsData = await buildRefPages(refs)
+    bookGyazoIds.push(...refsData.gyazoIds)
   }
 
   const previewElement = document.querySelector('#preview')
@@ -127,6 +148,7 @@ window.onmessage = async function ({ origin, data }) {
   const rand = Math.floor(Math.random() * 100000000)
   const docType = type === 'whole-pages' ? 'books' : 'pages'
 
+  console.log('funcs:', window.funcs)
   switch (task) {
     // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {
@@ -134,41 +156,66 @@ window.onmessage = async function ({ origin, data }) {
         pageTitle,
         pageTitleHash,
         pageText,
-        includeCover
+        includeCover,
+        gyazoIds
       } = await main({ type, body, bookTitle, toc })
       document.getElementById('pre-text').innerText = pageText
-      const includeIndex = getIndexInfo().mode
-      await uploadTexDocument({
-        includeCover,
+
+      const generatedData = {
         pageTitle,
         pageTitleHash,
         pageText,
-        pageTemplate: template
-      })
+        pageTemplate: template,
+        // 付随情報
+        docType,
+        includeCover
+      }
 
-      let buildUrl = `/build/pages/${pageTitleHash}?r=${rand}`
-      if (type === 'whole-pages') {
-        buildUrl += '&whole=1'
+      const uploadData = createTexDocument(generatedData)
+      const uploadGyazoIds = Array.from(new Set([...bookGyazoIds, ...gyazoIds]))
+      const payload = {
+        data: uploadData,
+        gyazoIds: uploadGyazoIds,
+        buildOptions: {
+          whole: type === 'whole-pages',
+          includeIndex: !!getIndexInfo().mode,
+          // ビルド前にauxファイルが削除される
+          refresh: !!refresh
+        }
       }
-      if (refresh) {
-        // ビルド前にauxファイルが削除される
-        buildUrl += '&refresh=1'
-      }
-      if (includeIndex) {
-        buildUrl += '&index=1'
-      }
-      await fetch(buildUrl, { method: 'POST' })
 
-      const previewUrl = `/${docType}/pdf/${pageTitleHash}?r=${rand}`
-      previewElement.setAttribute('data', previewUrl)
-      anchorPdf.href = previewUrl
-      anchorTex.href = `/${docType}/tex/${pageTitleHash}?r=${rand}`
-      message.innerText = ''
+      if (isInFrame()) {
+        // upload, buildともに向こうに任せる
+        console.log('I am in frames.')
+        window.parent.postMessage(payload, pimentFrontendOrigin)
+      } else {
+        // ローカルツール向け
+        console.log('uploadGyazoIds:', uploadGyazoIds)
+        console.log('uploadData:', uploadData)
+
+        await uploadImages(uploadGyazoIds)
+        await uploadTexDocument(uploadData)
+
+        const buildRes = await fetch(`/api/build/pages?r=${rand}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        const buildResData = await buildRes.json()
+        console.log('buildRes:', buildResData)
+        const { preview_pdf_path, preview_tex_path } = buildResData
+
+        const previewUrl = `${preview_pdf_path}?r=${rand}`
+        previewElement.setAttribute('data', previewUrl)
+        anchorPdf.href = previewUrl
+        anchorTex.href = `${preview_tex_path}?r=${rand}`
+        message.innerText = ''
+      }
       break
     }
   }
-
-  console.log('funcs:', window.funcs)
 }
 
 window.format = text => {
