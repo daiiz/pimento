@@ -3,6 +3,7 @@ import os, subprocess, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
 from middlewares import check_firebase_user, only_for_local_tools
+from gcs_helpers import upload_to_gcs, create_page_object_name
 
 from validates import validate_page_info
 
@@ -61,6 +62,11 @@ def build_page_api():
     }), 200
 
   print('\n-----')
+
+  # upload to Google Cloud Storage
+  page_object_name = create_page_object_name(g.user['uid'], 'test', page_title_hash)
+  upload_to_gcs('pages', page_object_name, file_path=pdf_file_path)
+
   print('>', '/{}/pdf/{}'.format(doc_type, page_title_hash))
   print('>', page_title_hash, g.user['name'], pdf_file_path)
   pimento.remove_user_works_dir(g.user)
