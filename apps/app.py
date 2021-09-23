@@ -2,7 +2,7 @@ from flask import Flask, g, render_template, send_file, jsonify, request, abort
 import os, subprocess, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
-from middlewares import check_firebase_user, only_for_local_tools
+from middlewares import check_firebase_user, check_project_id, only_for_local_tools
 from gcs_helpers import upload_to_gcs, create_page_object_name
 
 from validates import validate_page_info
@@ -31,11 +31,15 @@ def index():
 @app.route('/frame', methods=["GET"])
 def index_frame():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
-  return render_template('page.html', time=now, frame='true')
+  return render_template('page.html',
+    time=now,
+    frame='true',
+    frontend_origin=os.environ.get('PIMENTO_FRONTEND_ORIGIN', ''))
 
 
 @app.route('/api/build/pages', methods=['POST'])
 @check_firebase_user
+@check_project_id
 def build_page_api():
   print('[build] is_local_tools_mode:', is_local_tools_mode())
 
@@ -53,24 +57,25 @@ def build_page_api():
   # get internal file path
   docs_dir = pimento.create_user_docs_dir(g.user)
   pdf_file_path = pimento.build_page_or_book(page_title_hash, build_options, docs_dir)
+  print('\n-----')
 
   if is_local_tools_mode():
     return jsonify({
       'tools_mode': 'local',
-      'preview_pdf_path': '/{}/pdf/{}'.format(doc_type, page_title_hash),
-      'preview_tex_path': '/{}/tex/{}'.format(doc_type, page_title_hash)
+      'preview_pdf_path': '/x/{}/pdf/{}'.format(doc_type, page_title_hash),
+      'preview_tex_path': '/x/{}/tex/{}'.format(doc_type, page_title_hash)
     }), 200
 
-  print('\n-----')
-
   # upload to Google Cloud Storage
-  page_object_name = create_page_object_name(g.user['uid'], 'test', page_title_hash)
+  print('[build] project_id:', g.project_id)
+  page_object_name = create_page_object_name(g.user['uid'], g.project_id, page_title_hash)
   upload_to_gcs('pages', page_object_name, file_path=pdf_file_path)
 
   print('>', '/{}/pdf/{}'.format(doc_type, page_title_hash))
   print('>', page_title_hash, g.user['name'], pdf_file_path)
   pimento.remove_user_works_dir(g.user)
   return jsonify({
+    'tools_mode': 'cloud',
     'doc_type': doc_type,
     'page_title_hash': page_title_hash
   }), 200
@@ -78,10 +83,13 @@ def build_page_api():
 
 @app.route('/api/convert/images', methods=["POST"])
 @check_firebase_user
+@check_project_id
 def convert_images():
   print('[convert images] is_local_tools_mode:', is_local_tools_mode())
   docs_dir = pimento.create_user_docs_dir(g.user)
   data = json.loads(request.data.decode('utf-8'))
+  print('[convert images] project_id:', g.project_id)
+
   # Gyazo画像を保存する
   saved_gyazo_ids = gyazo.download.download_images(data['gyazoIds'] or [], docs_dir)
   # CMYK, Grayに変換して保存する
@@ -93,10 +101,13 @@ def convert_images():
 
 @app.route('/api/upload/page', methods=["POST"])
 @check_firebase_user
+@check_project_id
 def upload_page():
   data = json.loads(request.data.decode('utf-8'))
   print('[upload] is_local_tools_mode:', is_local_tools_mode())
   print('[upload] "{}" by {}'.format(data['pageTitle'], g.user['name']))
+  print('[upload] project_id:', g.project_id)
+
   isWhole = data['includeCover'] == True
   prefix = 'book_' if isWhole else 'page_'
 
@@ -121,7 +132,7 @@ def upload_page():
 
 
 # コンパイルせずに既存のファイルを返すだけ
-@app.route('/<string:doc_type>/<string:file_type>/<string:page_title_hash>', methods=["GET"])
+@app.route('/x/<string:doc_type>/<string:file_type>/<string:page_title_hash>', methods=["GET"])
 @only_for_local_tools
 def show_page(doc_type, file_type, page_title_hash):
   status, message = validate_page_info(page_title_hash, doc_type, file_type)
@@ -129,10 +140,14 @@ def show_page(doc_type, file_type, page_title_hash):
     return jsonify({ 'message': message }), status
 
   docs_dir = pimento.create_user_docs_dir(None)
+  # 複数形を単数形に変換: pages, books -> page, book
+  doc_type = doc_type[:-1] if doc_type.endswith('s') else doc_type
+
   filePath = docs_dir + '/' + file_type + '/' + doc_type + '_' + page_title_hash + '.' + file_type
   if file_type == 'pdf':
     filePath = docs_dir + '/' + doc_type + '_' + page_title_hash + '.pdf'
   try:
+    print('>', filePath)
     return send_file(filePath)
   except:
     return jsonify({ 'message': 'Not found' }), 404

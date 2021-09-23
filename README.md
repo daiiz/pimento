@@ -10,6 +10,8 @@ $ make build
 ## Run local server on docker
 ```
 $ make run-server
+# or
+$ make run-server-dev
 ```
 Start the local server on port 5000.
 

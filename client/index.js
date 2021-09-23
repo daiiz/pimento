@@ -103,8 +103,8 @@ const buildRefPages = async refs => {
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
-  // const pimentFrontendOrigin = 'http://localhost:3000'
-  const pimentFrontendOrigin = 'https://pimento.daiiz.dev'
+  const pimentFrontendOrigin = document.body.dataset.frontendOrigin
+  console.log('pimentFrontendOrigin:', pimentFrontendOrigin)
 
   const allowOrigins = [
     'https://scrapbox.io',
@@ -115,7 +115,7 @@ window.onmessage = async function ({ origin, data }) {
     console.error('Invalid origin:', origin)
     return
   }
-  const { task, type, refresh, body, icons, template, refs, bookTitle, toc } = data
+  const { task, type, projectName, refresh, body, icons, template, refs, bookTitle, toc } = data
   const bookGyazoIds = []
 
   if (received) {
@@ -141,9 +141,9 @@ window.onmessage = async function ({ origin, data }) {
   }
 
   const previewElement = document.querySelector('#preview')
-  const anchorTex = document.querySelector('#pre-header > a.tex')
-  const anchorPdf = document.querySelector('#pre-header > a.pdf')
-  const message = document.querySelector('#pre-header > span.message')
+  const anchorTex = document.querySelector('#pre-header a.tex')
+  const anchorPdf = document.querySelector('#pre-header a.pdf')
+  const message = document.querySelector('#pre-header span.message')
 
   const rand = Math.floor(Math.random() * 100000000)
   const docType = type === 'whole-pages' ? 'books' : 'pages'
@@ -176,6 +176,7 @@ window.onmessage = async function ({ origin, data }) {
       const payload = {
         data: uploadData,
         gyazoIds: uploadGyazoIds,
+        projectName,
         buildOptions: {
           whole: type === 'whole-pages',
           includeIndex: !!getIndexInfo().mode,

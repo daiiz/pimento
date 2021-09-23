@@ -1,5 +1,5 @@
 # 参考: https://github.com/daiiz/nlp-api-server/blob/main/middlewares.py
-import os
+import os, json
 from flask import request, g
 from functools import wraps
 
@@ -8,6 +8,18 @@ from firebase_helpers import detect_firebase_user
 from validates import validate_firebase_user
 
 MESSAGE_INVALID_ENDPOINT = '[L] Not Found\n'
+MESSAGE_INVALID_PROJECT_ID = 'Bad Request: project_id is required.'
+
+def check_project_id(f):
+  @wraps(f)
+  def decorated_function(*args, **kwargs):
+    data = json.loads(request.data.decode('utf-8'))
+    project_id = data.get('projectName', None)
+    g.project_id = project_id
+    if not is_local_tools_mode() and not project_id:
+      return MESSAGE_INVALID_PROJECT_ID, 400
+    return f(*args, **kwargs)
+  return decorated_function
 
 
 def check_firebase_user(f):
