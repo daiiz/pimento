@@ -103,8 +103,8 @@ const buildRefPages = async refs => {
 let received = false
 
 window.onmessage = async function ({ origin, data }) {
-  const pimentFrontendOrigin = 'http://localhost:3000'
-  // const pimentFrontendOrigin = 'https://pimento.daiiz.dev'
+  // const pimentFrontendOrigin = 'http://localhost:3000'
+  const pimentFrontendOrigin = 'https://pimento.daiiz.dev'
 
   const allowOrigins = [
     'https://scrapbox.io',
