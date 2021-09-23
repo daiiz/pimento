@@ -18,6 +18,10 @@ def md5 (text):
 
 
 def create_page_object_name(user_id, project_id, page_title_hash):
+  if not project_id:
+    raise Exception('project_is is empty.')
+  if not page_title_hash:
+    raise Exception('page_title_hash is empty.')
   return 'u_{}/p_{}/a_{}.pdf'.format(md5(user_id), md5(project_id), page_title_hash)
 
 
