@@ -40,7 +40,7 @@ def create_tex_object_name(user_id, project_id, page_title_hash):
   err_message = validate_object_info(project_id, page_title_hash)
   if err_message:
     raise Exception(err_message)
-  return 'u_{}/p_{}/a_{}.tex'.format(md5(user_id), md5(project_id), page_title_hash)
+  return 'u_{}/p_{}/a_{}/raw.tex'.format(md5(user_id), md5(project_id), page_title_hash)
 
 
 def check_bucket_names_dict():
@@ -73,5 +73,9 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
   bucket = gcs_client.get_bucket(bucket_name)
   blob = bucket.blob(object_name)
   print('Uploading...', '{}/{}'.format(bucket_name, object_name))
-  blob.upload_from_filename(file_path)
+
+  content_type = 'application/pdf'
+  if object_name.endswith('.tex'):
+    content_type = 'text/plain; charset="UTF-8"'
+  blob.upload_from_filename(file_path, content_type=content_type)
   print('Uploading... done.')

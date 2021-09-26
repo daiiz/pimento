@@ -3,7 +3,7 @@ import os, subprocess, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
 from middlewares import check_firebase_user, check_project_id, only_for_local_tools
-from gcs_helpers import upload_to_gcs, create_page_object_name
+from gcs_helpers import upload_to_gcs, create_page_object_name, create_tex_object_name
 
 from validates import validate_page_info
 
@@ -117,14 +117,20 @@ def upload_page():
   if status:
     return jsonify({ 'message': message }), status
 
+  # ページ単位でのTeXドキュメントを保存する
+  # get internal file path
   docs_dir = pimento.create_user_docs_dir(g.user)
-
   file_name = prefix + page_title_hash + '.tex'
   file_path = docs_dir + '/tex/' + file_name
   texDocument = data['pageHead'] + '\n\n' + data['pageText'] + '\n\n' + data['pageTail']
   with open(file_path, 'w') as f:
     f.write(texDocument)
-  # ページ単位でのTeXドキュメントを保存する
+
+  # upload to Google Cloud Storage
+  if not is_local_tools_mode():
+    tex_object_name = create_tex_object_name(g.user['uid'], g.project_id, page_title_hash)
+    upload_to_gcs('artifacts', tex_object_name, file_path=file_path)
+
   return jsonify({
     "page_title_hash": page_title_hash,
     "tex_file_name": file_name
