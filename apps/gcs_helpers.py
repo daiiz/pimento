@@ -17,16 +17,30 @@ def md5 (text):
   return hashlib.md5((text + '/' + hash_salt).encode('utf-8')).hexdigest()
 
 
-def create_page_object_name(user_id, project_id, page_title_hash):
+def is_valid_bucket_name_key(name_key):
+  return name_key in bucket_names_dict.keys()
+
+
+def validate_object_info(project_id, page_title_hash):
   if not project_id:
-    raise Exception('project_is is empty.')
+    return 'project_is is empty.'
   if not page_title_hash:
-    raise Exception('page_title_hash is empty.')
+    return 'page_title_hash is empty.'
+  return None
+
+
+def create_page_object_name(user_id, project_id, page_title_hash):
+  err_message = validate_object_info(project_id, page_title_hash)
+  if err_message:
+    raise Exception(err_message)
   return 'u_{}/p_{}/a_{}.pdf'.format(md5(user_id), md5(project_id), page_title_hash)
 
 
-def is_valid_bucket_name_key(name_key):
-  return name_key in bucket_names_dict.keys()
+def create_tex_object_name(user_id, project_id, page_title_hash):
+  err_message = validate_object_info(project_id, page_title_hash)
+  if err_message:
+    raise Exception(err_message)
+  return 'u_{}/p_{}/a_{}.tex'.format(md5(user_id), md5(project_id), page_title_hash)
 
 
 def check_bucket_names_dict():
