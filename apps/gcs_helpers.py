@@ -79,3 +79,7 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
     content_type = 'text/plain; charset="UTF-8"'
   blob.upload_from_filename(file_path, content_type=content_type)
   print('Uploading... done.')
+
+
+def download_from_gcs(bucket_name_key, object_name, dest_file_path = None):
+  pass
