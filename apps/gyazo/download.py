@@ -2,11 +2,28 @@ import urllib.error
 import urllib.request
 import os
 
-def download_images(gyazo_ids, docs_dir):
+# 原画と変換後のすべての画像がGCSに存在することを確かめる
+def exists_images_in_artifacts(gyazo_id, object_base_name):
+  if not object_base_name:
+    return False
+  image_types = ['gyazo-images', 'cmyk-gray-gyazo-images', 'cmyk-gyazo-images']
+  for image_type in image_types:
+    object_name = '{}/{}/{}'.format(object_base_name, image_type, gyazo_id)
+    if image_type.startswith('cmyk-'):
+      object_name += '.jpg'
+    print("--->", object_name)
+  return False
+
+
+def download_images(gyazo_ids, docs_dir, object_base_name = None):
   saved_gyazo_ids = []
   if len(gyazo_ids) > 0:
     print('Gyazo image nums:', len(gyazo_ids))
   for gyazo_id in gyazo_ids:
+    # すでにartifactsに存在する場合はダウンロード処理をスキップする
+    if exists_images_in_artifacts(gyazo_id, object_base_name):
+      print('> Hit Gyazo in artifacts:', gyazo_id)
+      continue
     download_image(gyazo_id, docs_dir)
     saved_gyazo_ids.append(gyazo_id)
   return saved_gyazo_ids
