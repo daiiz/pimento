@@ -105,4 +105,3 @@ def build_page_or_book(page_title_hash, build_options, docDir):
     return ''
 
   return pdf_file_path
-
