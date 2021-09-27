@@ -122,6 +122,17 @@ def download_from_gcs(bucket_name_key, object_name, dest_file_path = None):
   if not exists_object(bucket_name_key, object_name):
     return
   bucket_name = bucket_names_dict.get(bucket_name_key)
+  bucket = gcs_client.get_bucket(bucket_name)
+  blob = bucket.blob(object_name)
   print('Downloading...', '{}/{}'.format(bucket_name, object_name))
   blob.download_to_filename(dest_file_path)
   print('Downloading... done.')
+
+
+# GCSに保持しているartifactsを手元の作業ディレクトリに展開する
+def extract_artifacts(user_id, project_id, page_title_hash):
+  err_message = validate_object_info(project_id, page_title_hash)
+  if err_message:
+    raise Exception(err_message)
+  dir_name = 'u_{}/p_{}/a_{}'.format(md5(user_id), md5(project_id), page_title_hash)
+  # bucket_name = bucket_names_dict.get('artifacts')

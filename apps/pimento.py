@@ -106,7 +106,3 @@ def build_page_or_book(page_title_hash, build_options, docDir):
 
   return pdf_file_path
 
-
-# GCSに保持しているartifactsを手元の作業ディレクトリに展開する
-def extract_artifacts():
-  pass
