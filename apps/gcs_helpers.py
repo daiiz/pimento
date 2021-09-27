@@ -130,9 +130,20 @@ def download_from_gcs(bucket_name_key, object_name, dest_file_path = None):
 
 
 # GCSに保持しているartifactsを手元の作業ディレクトリに展開する
-def extract_artifacts(user_id, project_id, page_title_hash):
+# https://scrapbox.io/daiiz-bookmarks/Python_-_download_entire_directory_from_Google_Cloud_Storage_-_Stack_Overflow
+def extract_artifacts(user_id, project_id, page_title_hash, work_dir):
   err_message = validate_object_info(project_id, page_title_hash)
   if err_message:
     raise Exception(err_message)
-  dir_name = 'u_{}/p_{}/a_{}'.format(md5(user_id), md5(project_id), page_title_hash)
-  # bucket_name = bucket_names_dict.get('artifacts')
+  if not work_dir.endswith('/'):
+    work_dir += '/'
+
+  dir_name = 'u_{}/p_{}/a_{}'.format(md5(user_id), md5(project_id), page_title_hash) + '/'
+
+  bucket_name = bucket_names_dict.get('artifacts')
+  bucket = gcs_client.get_bucket(bucket_name)
+  blobs = bucket.list_blobs(prefix=dir_name)
+  for blob in blobs:
+    filename = work_dir + blob.name.replace(dir_name, '')
+    print('Downloading...', filename)
+
