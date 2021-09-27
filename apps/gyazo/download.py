@@ -12,7 +12,6 @@ def exists_images_in_artifacts(gyazo_id, object_base_name):
     object_name = '{}/{}/{}'.format(object_base_name, image_type, gyazo_id)
     if image_type.startswith('cmyk-'):
       object_name += '.jpg'
-    # print("--->", object_name)
   return exists_object('artifacts', object_name)
 
 
