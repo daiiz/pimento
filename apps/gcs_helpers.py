@@ -46,11 +46,20 @@ def create_page_object_name(user_id, project_id, page_title_hash):
   return 'u_{}/p_{}/a_{}.pdf'.format(md5(user_id), md5(project_id), page_title_hash)
 
 
-def create_tex_object_name(user_id, project_id, page_title_hash):
+def create_tex_object_name(user_id, project_id, prefix, page_title_hash):
   err_message = validate_object_info(project_id, page_title_hash)
   if err_message:
     raise Exception(err_message)
-  return 'u_{}/p_{}/a_{}/raw.tex'.format(md5(user_id), md5(project_id), page_title_hash)
+  filename = '{}{}.tex'.format(prefix, page_title_hash)
+  return 'u_{}/p_{}/a_{}/{}'.format(md5(user_id), md5(project_id), page_title_hash, filename)
+
+
+# 記事フォルダの部分までのパスを返す
+def create_image_object_base_name(user_id, project_id, page_title_hash):
+  err_message = validate_object_info(project_id, page_title_hash)
+  if err_message:
+    raise Exception(err_message)
+  return 'u_{}/p_{}/a_{}'.format(md5(user_id), md5(project_id), page_title_hash)
 
 
 def check_bucket_names_dict():
@@ -72,6 +81,13 @@ check_bucket_names_dict()
 gcs_client = get_gcs_client()
 
 
+# 引数の検証は呼び出し元で済ませる
+def exists_object(bucket_name, object_name):
+  bucket = gcs_client.get_bucket(bucket_name)
+  blob = bucket.blob(object_name)
+  return blob.exists()
+
+
 def upload_to_gcs(bucket_name_key, object_name, file_path = None):
   err_message = validate_gcs_file(bucket_name_key, object_name, file_path)
   if err_message:
@@ -79,6 +95,9 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
   bucket_name = bucket_names_dict.get(bucket_name_key)
   bucket = gcs_client.get_bucket(bucket_name)
   blob = bucket.blob(object_name)
+
+  if not os.path.exists(file_path):
+    return
   print('Uploading...', '{}/{}'.format(bucket_name, object_name))
 
   content_type = 'application/pdf'
@@ -88,5 +107,15 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
   print('Uploading... done.')
 
 
+# GCSにファイルが存在すれば指定されたパスにダウンロードする
 def download_from_gcs(bucket_name_key, object_name, dest_file_path = None):
-  pass
+  err_message = validate_gcs_file(bucket_name_key, object_name, dest_file_path)
+  if err_message:
+    raise Exception(err_message)
+  bucket_name = bucket_names_dict.get(bucket_name_key)
+  # 存在を確認する
+  if not exists_object(bucket_name, object_name):
+    return
+  print('Downloading...', '{}/{}'.format(bucket_name, object_name))
+  blob.download_to_filename(dest_file_path)
+  print('Downloading... done.')
