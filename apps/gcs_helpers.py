@@ -101,9 +101,14 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
     return
   print('Uploading...', '{}/{}'.format(bucket_name, object_name))
 
-  content_type = 'application/pdf'
+  content_type = 'application/octet-stream'
   if object_name.endswith('.tex'):
     content_type = 'text/plain; charset="UTF-8"'
+  elif object_name.endswith('.jpg'):
+    content_type = 'image/jpeg'
+  elif object_name.endswith('.pdf'):
+    content_type = 'application/pdf'
+
   blob.upload_from_filename(file_path, content_type=content_type)
   print('Uploading... done.')
 
