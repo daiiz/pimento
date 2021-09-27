@@ -74,7 +74,7 @@ def build_page_api():
 
   print('>', '/{}/pdf/{}'.format(doc_type, page_title_hash))
   print('>', page_title_hash, g.user['name'], pdf_file_path)
-  pimento.remove_user_works_dir(g.user) # XXX
+  pimento.remove_user_works_dir(g.user)
   pimento.remove_user_pdf_file(pdf_file_path)
 
   return jsonify({
