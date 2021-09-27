@@ -3,7 +3,8 @@ import os, subprocess, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
 from middlewares import check_firebase_user, check_project_id, only_for_local_tools
-from gcs_helpers import upload_to_gcs, create_page_object_name, create_tex_object_name
+from gcs_helpers import upload_to_gcs, \
+  create_page_object_name, create_tex_object_name, create_image_object_base_name
 
 from validates import validate_page_info
 
@@ -73,7 +74,9 @@ def build_page_api():
 
   print('>', '/{}/pdf/{}'.format(doc_type, page_title_hash))
   print('>', page_title_hash, g.user['name'], pdf_file_path)
-  pimento.remove_user_works_dir(g.user)
+  pimento.remove_user_works_dir(g.user) # XXX
+  pimento.remove_user_pdf_file(pdf_file_path)
+
   return jsonify({
     'tools_mode': 'cloud',
     'doc_type': doc_type,
@@ -90,10 +93,16 @@ def convert_images():
   data = json.loads(request.data.decode('utf-8'))
   print('[convert images] project_id:', g.project_id)
 
+  # detect page title hash
+  page_title_hash = data.get('pageTitleHash', '')
+  object_base_name = None
+  if not is_local_tools_mode():
+    object_base_name = create_image_object_base_name(g.user['uid'], g.project_id, page_title_hash)
+
   # Gyazo画像を保存する
-  saved_gyazo_ids = gyazo.download.download_images(data['gyazoIds'] or [], docs_dir)
+  saved_gyazo_ids = gyazo.download.download_images(data.get('gyazoIds', []), docs_dir, object_base_name)
   # CMYK, Grayに変換して保存する
-  dirnames = []
+  dirnames = ['gyazo-images']
   dirnames.append(gyazo.convert.convert_to_cmyk(saved_gyazo_ids, docs_dir))
   dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids, docs_dir))
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
@@ -128,7 +137,7 @@ def upload_page():
 
   # upload to Google Cloud Storage
   if not is_local_tools_mode():
-    tex_object_name = create_tex_object_name(g.user['uid'], g.project_id, page_title_hash)
+    tex_object_name = create_tex_object_name(g.user['uid'], g.project_id, prefix, page_title_hash)
     upload_to_gcs('artifacts', tex_object_name, file_path=file_path)
 
   return jsonify({

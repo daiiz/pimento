@@ -1,6 +1,7 @@
 import urllib.error
 import urllib.request
 import os
+from gcs_helpers import exists_object, upload_to_gcs
 
 # 原画と変換後のすべての画像がGCSに存在することを確かめる
 def exists_images_in_artifacts(gyazo_id, object_base_name):
@@ -11,8 +12,8 @@ def exists_images_in_artifacts(gyazo_id, object_base_name):
     object_name = '{}/{}/{}'.format(object_base_name, image_type, gyazo_id)
     if image_type.startswith('cmyk-'):
       object_name += '.jpg'
-    print("--->", object_name)
-  return False
+    # print("--->", object_name)
+  return exists_object('artifacts', object_name)
 
 
 def download_images(gyazo_ids, docs_dir, object_base_name = None):
@@ -24,12 +25,12 @@ def download_images(gyazo_ids, docs_dir, object_base_name = None):
     if exists_images_in_artifacts(gyazo_id, object_base_name):
       print('> Hit Gyazo in artifacts:', gyazo_id)
       continue
-    download_image(gyazo_id, docs_dir)
+    download_image(gyazo_id, docs_dir, object_base_name)
     saved_gyazo_ids.append(gyazo_id)
   return saved_gyazo_ids
 
 
-def download_image(gyazo_id, docs_dir):
+def download_image(gyazo_id, docs_dir, object_base_name = None):
   if (len(gyazo_id) != 32):
     return ''
 
@@ -54,5 +55,10 @@ def download_image(gyazo_id, docs_dir):
   except urllib.error.URLError as err:
     print(err)
     return ''
+
+  # upload to Google Cloud Storage
+  if object_base_name:
+    objectName = object_base_name + '/gyazo-images/' + gyazo_id
+    upload_to_gcs('artifacts', objectName, distPath)
 
   return distPath

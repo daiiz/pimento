@@ -82,7 +82,8 @@ gcs_client = get_gcs_client()
 
 
 # 引数の検証は呼び出し元で済ませる
-def exists_object(bucket_name, object_name):
+def exists_object(bucket_name_key, object_name):
+  bucket_name = bucket_names_dict.get(bucket_name_key)
   bucket = gcs_client.get_bucket(bucket_name)
   blob = bucket.blob(object_name)
   return blob.exists()
@@ -112,10 +113,10 @@ def download_from_gcs(bucket_name_key, object_name, dest_file_path = None):
   err_message = validate_gcs_file(bucket_name_key, object_name, dest_file_path)
   if err_message:
     raise Exception(err_message)
-  bucket_name = bucket_names_dict.get(bucket_name_key)
   # 存在を確認する
-  if not exists_object(bucket_name, object_name):
+  if not exists_object(bucket_name_key, object_name):
     return
+  bucket_name = bucket_names_dict.get(bucket_name_key)
   print('Downloading...', '{}/{}'.format(bucket_name, object_name))
   blob.download_to_filename(dest_file_path)
   print('Downloading... done.')
