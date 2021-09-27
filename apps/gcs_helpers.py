@@ -113,22 +113,6 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
   print('Uploading... done.')
 
 
-# GCSにファイルが存在すれば指定されたパスにダウンロードする
-# def download_from_gcs(bucket_name_key, object_name, dest_file_path = None):
-#   err_message = validate_gcs_file(bucket_name_key, object_name, dest_file_path)
-#   if err_message:
-#     raise Exception(err_message)
-#   # 存在を確認する
-#   if not exists_object(bucket_name_key, object_name):
-#     return
-#   bucket_name = bucket_names_dict.get(bucket_name_key)
-#   bucket = gcs_client.get_bucket(bucket_name)
-#   blob = bucket.blob(object_name)
-#   print('Downloading...', '{}/{}'.format(bucket_name, object_name))
-#   blob.download_to_filename(dest_file_path)
-#   print('Downloading... done.')
-
-
 # GCSに保持しているartifactsを手元の作業ディレクトリに展開する
 # https://scrapbox.io/daiiz-bookmarks/Python_-_download_entire_directory_from_Google_Cloud_Storage_-_Stack_Overflow
 def extract_artifacts(user_id, project_id, page_title_hash, work_dir):
