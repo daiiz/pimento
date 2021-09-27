@@ -3,7 +3,7 @@ import os, subprocess, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
 from middlewares import check_firebase_user, check_project_id, only_for_local_tools
-from gcs_helpers import upload_to_gcs, \
+from gcs_helpers import upload_to_gcs, extract_artifacts, \
   create_page_object_name, create_tex_object_name, create_image_object_base_name
 
 from validates import validate_page_info
@@ -57,6 +57,11 @@ def build_page_api():
 
   # get internal file path
   docs_dir = pimento.create_user_docs_dir(g.user)
+
+  # Google Cloud Storageに保持しているアーティファクトを手元に展開する
+  if not is_local_tools_mode():
+    extract_artifacts(g.user['uid'], g.project_id, page_title_hash, pimento.get_work_dir(docs_dir))
+
   pdf_file_path = pimento.build_page_or_book(page_title_hash, build_options, docs_dir)
   print('\n-----')
 
@@ -105,6 +110,9 @@ def convert_images():
   dirnames = ['gyazo-images']
   dirnames.append(gyazo.convert.convert_to_cmyk(saved_gyazo_ids, docs_dir, object_base_name))
   dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids, docs_dir, object_base_name))
+  if not is_local_tools_mode():
+    pimento.remove_user_works_dir(g.user)
+
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
 
 
@@ -139,6 +147,7 @@ def upload_page():
   if not is_local_tools_mode():
     tex_object_name = create_tex_object_name(g.user['uid'], g.project_id, prefix, page_title_hash)
     upload_to_gcs('artifacts', tex_object_name, file_path=file_path)
+    pimento.remove_user_works_dir(g.user)
 
   return jsonify({
     "page_title_hash": page_title_hash,

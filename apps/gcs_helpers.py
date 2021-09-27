@@ -114,19 +114,19 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
 
 
 # GCSにファイルが存在すれば指定されたパスにダウンロードする
-def download_from_gcs(bucket_name_key, object_name, dest_file_path = None):
-  err_message = validate_gcs_file(bucket_name_key, object_name, dest_file_path)
-  if err_message:
-    raise Exception(err_message)
-  # 存在を確認する
-  if not exists_object(bucket_name_key, object_name):
-    return
-  bucket_name = bucket_names_dict.get(bucket_name_key)
-  bucket = gcs_client.get_bucket(bucket_name)
-  blob = bucket.blob(object_name)
-  print('Downloading...', '{}/{}'.format(bucket_name, object_name))
-  blob.download_to_filename(dest_file_path)
-  print('Downloading... done.')
+# def download_from_gcs(bucket_name_key, object_name, dest_file_path = None):
+#   err_message = validate_gcs_file(bucket_name_key, object_name, dest_file_path)
+#   if err_message:
+#     raise Exception(err_message)
+#   # 存在を確認する
+#   if not exists_object(bucket_name_key, object_name):
+#     return
+#   bucket_name = bucket_names_dict.get(bucket_name_key)
+#   bucket = gcs_client.get_bucket(bucket_name)
+#   blob = bucket.blob(object_name)
+#   print('Downloading...', '{}/{}'.format(bucket_name, object_name))
+#   blob.download_to_filename(dest_file_path)
+#   print('Downloading... done.')
 
 
 # GCSに保持しているartifactsを手元の作業ディレクトリに展開する
@@ -144,6 +144,6 @@ def extract_artifacts(user_id, project_id, page_title_hash, work_dir):
   bucket = gcs_client.get_bucket(bucket_name)
   blobs = bucket.list_blobs(prefix=dir_name)
   for blob in blobs:
-    filename = work_dir + blob.name.replace(dir_name, '')
-    print('Downloading...', filename)
-
+    dest_file_path = work_dir + blob.name.replace(dir_name, '')
+    print('Downloading...', dest_file_path)
+    blob.download_to_filename(dest_file_path)
