@@ -114,7 +114,6 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
 
 
 # GCSに保持しているartifactsを手元の作業ディレクトリに展開する
-# https://scrapbox.io/daiiz-bookmarks/Python_-_download_entire_directory_from_Google_Cloud_Storage_-_Stack_Overflow
 def extract_artifacts(user_id, project_id, page_title_hash, work_dir):
   err_message = validate_object_info(project_id, page_title_hash)
   if err_message:
