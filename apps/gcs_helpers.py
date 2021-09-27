@@ -29,6 +29,16 @@ def validate_object_info(project_id, page_title_hash):
   return None
 
 
+def validate_gcs_file(bucket_name_key, object_name, file_path):
+  if not is_valid_bucket_name_key(bucket_name_key):
+    return 'bucket_name_key is invalid.'
+  if not object_name:
+    return 'object_name is invalid.'
+  if (not file_path) or (not file_path.startswith('/tmp/user_')):
+    return 'file_path is invalid.'
+  return None
+
+
 def create_page_object_name(user_id, project_id, page_title_hash):
   err_message = validate_object_info(project_id, page_title_hash)
   if err_message:
@@ -63,12 +73,9 @@ gcs_client = get_gcs_client()
 
 
 def upload_to_gcs(bucket_name_key, object_name, file_path = None):
-  if not is_valid_bucket_name_key(bucket_name_key):
-    raise Exception('bucket_name_key is invalid.')
-  if not object_name:
-    raise Exception('object_name is invalid.')
-  if (not file_path) or (not file_path.startswith('/tmp/user_')):
-    raise Exception('file_path is invalid.')
+  err_message = validate_gcs_file(bucket_name_key, object_name, file_path)
+  if err_message:
+    raise Exception(err_message)
   bucket_name = bucket_names_dict.get(bucket_name_key)
   bucket = gcs_client.get_bucket(bucket_name)
   blob = bucket.blob(object_name)
