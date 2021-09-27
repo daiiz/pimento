@@ -1,5 +1,6 @@
 import os
 from PIL import Image
+from gcs_helpers import upload_to_gcs
 
 def converter(gyazo_id, dirname, docs_dir, object_base_name, gray = False):
   filename = dirname + '/' + gyazo_id + '.jpg'
@@ -8,7 +9,7 @@ def converter(gyazo_id, dirname, docs_dir, object_base_name, gray = False):
     print('> Hit local Gyazo file:', outPath)
     return
   else:
-    print('> Converting Gyazo file:', gyazo_id)
+    print('> Converting Gyazo file ({}):'.format(dirname), gyazo_id)
 
   image_path = docs_dir + '/tex/gyazo-images/' + gyazo_id
   # RGBA -> RGB
@@ -32,7 +33,7 @@ def converter(gyazo_id, dirname, docs_dir, object_base_name, gray = False):
   # upload to Google Cloud Storage
   if object_base_name:
     objectName = object_base_name + '/' + filename
-    print("####", objectName)
+    upload_to_gcs('artifacts', objectName, file_path=outPath)
   return
 
 def convert_to_cmyk(gyazo_ids, docs_dir, object_base_name = None):
