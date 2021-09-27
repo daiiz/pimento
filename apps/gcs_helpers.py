@@ -32,7 +32,7 @@ def validate_object_info(project_id, page_title_hash):
 def validate_gcs_file(bucket_name_key, object_name, file_path):
   if not is_valid_bucket_name_key(bucket_name_key):
     return 'bucket_name_key is invalid.'
-  if not object_name:
+  if not object_name or (not object_name.startswith('u_')):
     return 'object_name is invalid.'
   if (not file_path) or (not file_path.startswith('/tmp/user_')):
     return 'file_path is invalid.'
