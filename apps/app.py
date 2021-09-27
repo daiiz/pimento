@@ -103,8 +103,8 @@ def convert_images():
   saved_gyazo_ids = gyazo.download.download_images(data.get('gyazoIds', []), docs_dir, object_base_name)
   # CMYK, Grayに変換して保存する
   dirnames = ['gyazo-images']
-  dirnames.append(gyazo.convert.convert_to_cmyk(saved_gyazo_ids, docs_dir))
-  dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids, docs_dir))
+  dirnames.append(gyazo.convert.convert_to_cmyk(saved_gyazo_ids, docs_dir, object_base_name))
+  dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids, docs_dir, object_base_name))
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
 
 

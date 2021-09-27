@@ -24,7 +24,7 @@ def download_images(gyazo_ids, docs_dir, object_base_name = None):
     # すでにartifactsに存在する場合はダウンロード処理をスキップする
     if exists_images_in_artifacts(gyazo_id, object_base_name):
       print('> Hit Gyazo in artifacts:', gyazo_id)
-      continue
+      # continue # TODO
     download_image(gyazo_id, docs_dir, object_base_name)
     saved_gyazo_ids.append(gyazo_id)
   return saved_gyazo_ids
