@@ -3,7 +3,7 @@ import os, subprocess, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
 from middlewares import check_firebase_user, check_project_id, only_for_local_tools
-from gcs_helpers import upload_to_gcs, extract_artifacts, get_artifacts_metadata, \
+from gcs_helpers import upload_to_gcs, extract_artifacts \
   create_page_object_name, create_tex_object_name, create_image_object_base_name
 
 from validates import validate_page_info
@@ -156,20 +156,6 @@ def upload_page():
     "page_title_hash": page_title_hash,
     "tex_file_name": file_name
   }), 200
-
-
-@app.route('/api/artifacts/metadata', methods=['POST'])
-@check_firebase_user
-@check_project_id
-def show_artifacts_metadata():
-  if is_local_tools_mode():
-    return jsonify({}), 200
-  print('[artifacts/metadata] project_id:', g.project_id)
-
-  data = json.loads(request.data.decode('utf-8'))
-  page_title_hash = data.get('pageTitleHash', '')
-  data = get_artifacts_metadata(g.user['uid'], g.project_id, page_title_hash)
-  return jsonify(data), 200
 
 
 # コンパイルせずに既存のファイルを返すだけ
