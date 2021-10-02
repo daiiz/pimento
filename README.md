@@ -46,5 +46,3 @@ $ make run-bash
 ```
 $ npm run watch
 ```
-
-v2
