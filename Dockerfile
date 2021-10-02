@@ -20,28 +20,27 @@ RUN apt-get install -y \
   texlive-generic-extra
 
 # tlmgr
-RUN tlmgr init-usertree
-RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/
-# RUN tlmgr install gentombow
-# RUN tlmgr install bxpapersize
-RUN tlmgr install pdfx
-RUN tlmgr install xmpincl
-RUN tlmgr install etoolbox
-RUN tlmgr install xcolor
-RUN tlmgr install titlesec
-RUN tlmgr install bxpapersize
-
-RUN tlmgr install tcolorbox
-RUN tlmgr install pgf
-RUN tlmgr install environ
-RUN tlmgr install trimspaces
-RUN tlmgr install colorprofiles
-
 RUN tlmgr version
+RUN tlmgr init-usertree
+# RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/
+# RUN tlmgr install gentombow
+# RUN tlmgr install pdfx
+# RUN tlmgr install xmpincl
+# RUN tlmgr install etoolbox
+# RUN tlmgr install xcolor
+# RUN tlmgr install titlesec
+# RUN tlmgr install bxpapersize
+
+# RUN tlmgr install tcolorbox
+# RUN tlmgr install pgf
+# RUN tlmgr install environ
+# RUN tlmgr install trimspaces
+# RUN tlmgr install colorprofiles
+
 RUN tlmgr list --only-installed
 
 # gentombow v0.9kやカスタムstyを追加する
-# RUN rm /usr/share/texlive/texmf-dist/tex/latex/gentombow/gentombow.sty
+RUN rm /usr/share/texlive/texmf-dist/tex/latex/gentombow/gentombow.sty
 COPY sty /usr/share/texlive/texmf-dist/tex/latex/pimento_sty
 RUN texhash
 
