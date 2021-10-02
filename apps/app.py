@@ -3,7 +3,7 @@ import os, subprocess, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
 from middlewares import check_firebase_user, check_project_id, only_for_local_tools
-from gcs_helpers import upload_to_gcs, extract_artifacts \
+from gcs_helpers import upload_to_gcs, extract_artifacts, \
   create_page_object_name, create_tex_object_name, create_image_object_base_name
 
 from validates import validate_page_info
