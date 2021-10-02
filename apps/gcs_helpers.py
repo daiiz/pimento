@@ -1,4 +1,4 @@
-import os, json, hashlib
+import os, json, hashlib, datetime
 from google.cloud import storage
 from google.oauth2.service_account import Credentials
 from dotenv import load_dotenv
@@ -89,7 +89,7 @@ def exists_object(bucket_name_key, object_name):
   return blob.exists()
 
 
-def upload_to_gcs(bucket_name_key, object_name, file_path = None):
+def upload_to_gcs(bucket_name_key, object_name, file_path = None, metadata = None):
   err_message = validate_gcs_file(bucket_name_key, object_name, file_path)
   if err_message:
     raise Exception(err_message)
@@ -110,6 +110,10 @@ def upload_to_gcs(bucket_name_key, object_name, file_path = None):
     content_type = 'application/pdf'
 
   blob.upload_from_filename(file_path, content_type=content_type)
+  if metadata:
+    blob.metadata = metadata
+    blob.patch()
+
   print('Uploading... done.')
 
 
@@ -132,3 +136,42 @@ def extract_artifacts(user_id, project_id, page_title_hash, work_dir):
       continue
     print('Downloading...', dest_file_path)
     blob.download_to_filename(dest_file_path)
+
+
+def get_artifacts_metadata(user_id, project_id, page_title_hash):
+  err_message = validate_object_info(project_id, page_title_hash)
+  if err_message:
+    raise Exception(err_message)
+
+  dir_name = 'u_{}/p_{}/a_{}'.format(md5(user_id), md5(project_id), page_title_hash) + '/'
+
+  bucket_name = bucket_names_dict.get('artifacts')
+  bucket = gcs_client.get_bucket(bucket_name)
+  blobs = bucket.list_blobs(prefix=dir_name)
+
+  res = {
+    'documents': [],
+    'images': []
+  }
+  for blob in blobs:
+    name = blob.name.replace(dir_name, '')
+    # documents
+    if name.endswith('.tex'):
+      block_name = '-'
+      if blob.metadata:
+        block_name = blob.metadata.get('page_title', block_name)
+      res['documents'].append({
+        'name': name,
+        'block_name': block_name,
+        'bytes': blob.size,
+        'updated': int(datetime.datetime.timestamp(blob.updated))
+      })
+    # images
+    if name.startswith('gyazo-images/'):
+      res['images'].append({
+        'name': name.split('/')[-1] + '.jpg',
+        'bytes': blob.size,
+        'updated': int(datetime.datetime.timestamp(blob.updated))
+      })
+    print(blob.metadata)
+  return res
