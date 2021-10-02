@@ -128,5 +128,7 @@ def extract_artifacts(user_id, project_id, page_title_hash, work_dir):
   blobs = bucket.list_blobs(prefix=dir_name)
   for blob in blobs:
     dest_file_path = work_dir + blob.name.replace(dir_name, '')
+    if '/gyazo-images/' in dest_file_path:
+      continue
     print('Downloading...', dest_file_path)
     blob.download_to_filename(dest_file_path)
