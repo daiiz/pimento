@@ -4,6 +4,9 @@ TIMEZONE := Asia/Tokyo
 build:
 	docker build -t daiiz/pimento:$(VERSION) .
 
+build-no-cache:
+	docker build --no-cache -t daiiz/pimento:$(VERSION) .
+
 run-server:
 	docker run --rm -it --name pimento \
 		-e TZ=$(TIMEZONE) \
