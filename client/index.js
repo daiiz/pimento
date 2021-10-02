@@ -182,7 +182,9 @@ window.onmessage = async function ({ origin, data }) {
           includeIndex: !!getIndexInfo().mode,
           // ビルド前にauxファイルが削除される
           refresh: !!refresh
-        }
+        },
+        // 付随情報
+        configs: window.pimentoConfigs || {}
       }
 
       if (isInFrame()) {
