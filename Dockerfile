@@ -22,7 +22,7 @@ RUN apt-get install -y \
 # tlmgr
 RUN tlmgr version
 RUN tlmgr init-usertree
-# RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2019/tlnet-final/
+# RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2018/tlnet-final/
 # RUN tlmgr install gentombow
 # RUN tlmgr install pdfx
 # RUN tlmgr install xmpincl
