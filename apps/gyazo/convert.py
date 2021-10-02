@@ -1,13 +1,15 @@
 import os
 from PIL import Image
+from gcs_helpers import upload_to_gcs
 
-def converter(gyazo_id, dirname, docs_dir, gray = False):
-  outPath = docs_dir + '/tex/' + dirname + '/' + gyazo_id + '.jpg'
+def converter(gyazo_id, dirname, docs_dir, object_base_name, gray = False):
+  filename = dirname + '/' + gyazo_id + '.jpg'
+  outPath = docs_dir + '/tex/' + filename
   if (os.path.exists(outPath)):
     print('> Hit local Gyazo file:', outPath)
     return
   else:
-    print('> Converting Gyazo file:', gyazo_id)
+    print('> Converting Gyazo file ({}):'.format(dirname), gyazo_id)
 
   image_path = docs_dir + '/tex/gyazo-images/' + gyazo_id
   # RGBA -> RGB
@@ -27,16 +29,21 @@ def converter(gyazo_id, dirname, docs_dir, gray = False):
     imCmyk = im.convert('CMYK')
 
   imCmyk.save(outPath)
+
+  # upload to Google Cloud Storage
+  if object_base_name:
+    objectName = object_base_name + '/' + filename
+    upload_to_gcs('artifacts', objectName, file_path=outPath)
   return
 
-def convert_to_cmyk(gyazo_ids, docs_dir):
+def convert_to_cmyk(gyazo_ids, docs_dir, object_base_name = None):
   dirname = 'cmyk-gyazo-images'
   for gyazo_id in gyazo_ids:
-    converter(gyazo_id, dirname, docs_dir, False)
+    converter(gyazo_id, dirname, docs_dir, object_base_name, False)
   return dirname
 
-def convert_to_gray(gyazo_ids, docs_dir):
+def convert_to_gray(gyazo_ids, docs_dir, object_base_name = None):
   dirname = 'cmyk-gray-gyazo-images'
   for gyazo_id in gyazo_ids:
-    converter(gyazo_id, dirname, docs_dir, True)
+    converter(gyazo_id, dirname, docs_dir, object_base_name, True)
   return dirname

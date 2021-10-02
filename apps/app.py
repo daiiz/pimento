@@ -3,7 +3,8 @@ import os, subprocess, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
 from middlewares import check_firebase_user, check_project_id, only_for_local_tools
-from gcs_helpers import upload_to_gcs, create_page_object_name
+from gcs_helpers import upload_to_gcs, extract_artifacts, get_artifacts_metadata, \
+  create_page_object_name, create_tex_object_name, create_image_object_base_name
 
 from validates import validate_page_info
 
@@ -56,6 +57,11 @@ def build_page_api():
 
   # get internal file path
   docs_dir = pimento.create_user_docs_dir(g.user)
+
+  # Google Cloud Storageに保持しているアーティファクトを手元に展開する
+  if not is_local_tools_mode():
+    extract_artifacts(g.user['uid'], g.project_id, page_title_hash, pimento.get_work_dir(docs_dir))
+
   pdf_file_path = pimento.build_page_or_book(page_title_hash, build_options, docs_dir)
   print('\n-----')
 
@@ -74,6 +80,8 @@ def build_page_api():
   print('>', '/{}/pdf/{}'.format(doc_type, page_title_hash))
   print('>', page_title_hash, g.user['name'], pdf_file_path)
   pimento.remove_user_works_dir(g.user)
+  pimento.remove_user_pdf_file(pdf_file_path)
+
   return jsonify({
     'tools_mode': 'cloud',
     'doc_type': doc_type,
@@ -90,12 +98,21 @@ def convert_images():
   data = json.loads(request.data.decode('utf-8'))
   print('[convert images] project_id:', g.project_id)
 
+  # detect page title hash
+  page_title_hash = data.get('pageTitleHash', '')
+  object_base_name = None
+  if not is_local_tools_mode():
+    object_base_name = create_image_object_base_name(g.user['uid'], g.project_id, page_title_hash)
+
   # Gyazo画像を保存する
-  saved_gyazo_ids = gyazo.download.download_images(data['gyazoIds'] or [], docs_dir)
+  saved_gyazo_ids = gyazo.download.download_images(data.get('gyazoIds', []), docs_dir, object_base_name)
   # CMYK, Grayに変換して保存する
-  dirnames = []
-  dirnames.append(gyazo.convert.convert_to_cmyk(saved_gyazo_ids, docs_dir))
-  dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids, docs_dir))
+  dirnames = ['gyazo-images']
+  dirnames.append(gyazo.convert.convert_to_cmyk(saved_gyazo_ids, docs_dir, object_base_name))
+  dirnames.append(gyazo.convert.convert_to_gray(saved_gyazo_ids, docs_dir, object_base_name))
+  if not is_local_tools_mode():
+    pimento.remove_user_works_dir(g.user)
+
   return jsonify({ "gyazo_ids": saved_gyazo_ids, "dirnames": dirnames }), 200
 
 
@@ -117,18 +134,42 @@ def upload_page():
   if status:
     return jsonify({ 'message': message }), status
 
+  # ページ単位でのTeXドキュメントを保存する
+  # get internal file path
   docs_dir = pimento.create_user_docs_dir(g.user)
-
   file_name = prefix + page_title_hash + '.tex'
   file_path = docs_dir + '/tex/' + file_name
   texDocument = data['pageHead'] + '\n\n' + data['pageText'] + '\n\n' + data['pageTail']
   with open(file_path, 'w') as f:
     f.write(texDocument)
-  # ページ単位でのTeXドキュメントを保存する
+
+  # upload to Google Cloud Storage
+  if not is_local_tools_mode():
+    tex_object_name = create_tex_object_name(g.user['uid'], g.project_id, prefix, page_title_hash)
+    metadata = {
+      'page_title': data.get('pageTitle', '')
+    }
+    upload_to_gcs('artifacts', tex_object_name, file_path=file_path, metadata=metadata)
+    pimento.remove_user_works_dir(g.user)
+
   return jsonify({
     "page_title_hash": page_title_hash,
     "tex_file_name": file_name
   }), 200
+
+
+@app.route('/api/artifacts/metadata', methods=['POST'])
+@check_firebase_user
+@check_project_id
+def show_artifacts_metadata():
+  if is_local_tools_mode():
+    return jsonify({}), 200
+  print('[artifacts/metadata] project_id:', g.project_id)
+
+  data = json.loads(request.data.decode('utf-8'))
+  page_title_hash = data.get('pageTitleHash', '')
+  data = get_artifacts_metadata(g.user['uid'], g.project_id, page_title_hash)
+  return jsonify(data), 200
 
 
 # コンパイルせずに既存のファイルを返すだけ

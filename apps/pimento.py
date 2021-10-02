@@ -43,7 +43,6 @@ def create_user_docs_dir(user):
 def remove_user_works_dir(user):
   if not user or is_local_tools_mode():
     return
-
   user_id = user.get('uid', None)
   if not user_id:
     raise Exception('user_id is required')
@@ -55,6 +54,12 @@ def remove_user_works_dir(user):
     and user_works_dir_path.endswith('/tex'):
     shutil.rmtree(user_works_dir_path)
     print('removed:', user_works_dir_path)
+
+
+def remove_user_pdf_file(file_path):
+  if file_path.startswith('/tmp/user_') and os.path.exists(file_path):
+    os.remove(file_path)
+    print('removed:', file_path)
 
 
 def build_page_or_book(page_title_hash, build_options, docDir):
