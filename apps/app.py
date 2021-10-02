@@ -164,7 +164,7 @@ def upload_page():
 def show_artifacts_metadata():
   if is_local_tools_mode():
     return jsonify({}), 200
-  print('[upload] project_id:', g.project_id)
+  print('[artifacts/metadata] project_id:', g.project_id)
 
   data = json.loads(request.data.decode('utf-8'))
   page_title_hash = data.get('pageTitleHash', '')
