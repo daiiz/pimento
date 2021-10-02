@@ -1,4 +1,4 @@
-FROM nikolaik/python-nodejs:python3.6-nodejs12-stretch
+FROM nikolaik/python-nodejs:python3.6-nodejs14
 
 # Python
 # apps
