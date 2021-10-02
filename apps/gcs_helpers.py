@@ -173,5 +173,4 @@ def get_artifacts_metadata(user_id, project_id, page_title_hash):
         'bytes': blob.size,
         'updated': int(datetime.datetime.timestamp(blob.updated))
       })
-    print(blob.metadata)
   return res
