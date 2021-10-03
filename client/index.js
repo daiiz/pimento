@@ -85,11 +85,17 @@ const main = async ({ type, body, bookTitle, toc }) => {
 // refs: [{ title, lines }]
 const buildRefPages = async refs => {
   const gyazoIds = []
+  const gyazoIdsGroup = Object.create(null) // { pageHash: [gyazoId,] }
   for (let { title, lines } of refs) {
     lines = lines.map(text => ({ text }))
     const res = parseScrapboxPage({ lines })
     const pageHash = addToPageRefs(title)
     const texts = ['%------------------------------', ...res.texts]
+    // 画像参照を記録
+    if (!gyazoIdsGroup[pageHash]) {
+      gyazoIdsGroup[pageHash] = []
+    }
+    gyazoIdsGroup[pageHash].push(...res.gyazoIds)
     gyazoIds.push(...(res.gyazoIds || []))
     // ページ変換関数を登録
     const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
@@ -97,7 +103,8 @@ const buildRefPages = async refs => {
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
     }
   }
-  return { gyazoIds }
+  // テキストブロックに含まれる画像を解決する
+  return { gyazoIds, gyazoIdsGroup }
 }
 
 let received = false
