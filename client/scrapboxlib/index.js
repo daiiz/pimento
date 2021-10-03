@@ -38,7 +38,7 @@ const removeLineComments = texts => {
   return newTexts
 }
 
-const parseScrapboxPage = ({ lines }) => {
+const parseScrapboxPage = ({ title, lines }) => {
   const rawTexts = lines.map(line => line.text)
   let { abstractFuncCall, lineTexts } = separateAbstractFromTexts(rawTexts)
   // 最終行が空行になるよう調整する
@@ -56,7 +56,7 @@ const parseScrapboxPage = ({ lines }) => {
   for (const line of lineObjects) {
     // 独自に追加した特殊なタイプを処理
     if (line._type) {
-      texts.push(...handleSpecialLine(line))
+      texts.push(...handleSpecialLine(line, title))
       continue
     }
     // ブロックノードを処理

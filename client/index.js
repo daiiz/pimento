@@ -48,7 +48,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
     // 製本 (目次以外のページで起動されたとき)
     case 'page': {
       const { title, lines } = body
-      const res = parseScrapboxPage({ lines })
+      const res = parseScrapboxPage({ title, lines })
       return createPage({
         pageTitle: title,
         pageHash: addToPageRefs(lines[0].text),
@@ -90,7 +90,7 @@ const buildRefPages = async refs => {
   const gyazoIdsGroup = Object.create(null) // { pageHash: [gyazoId,] }
   for (let { title, lines } of refs) {
     lines = lines.map(text => ({ text }))
-    const res = parseScrapboxPage({ lines })
+    const res = parseScrapboxPage({ title, lines })
     const pageHash = addToPageRefs(title)
     const texts = [
       '%------------------------------',
