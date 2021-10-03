@@ -31,7 +31,20 @@ const extractGyazoIcons = async pageGyazoIconUrls => {
   return dict // gyazoIds: Object.values(dict)
 }
 
+// アップロードすべき画像を特定する
+const identifyRenderedImages = (gyazoIdsGroup, renderedPageTitleHashs) => {
+  const res = []
+  for (const pageTitleHash of renderedPageTitleHashs) {
+    const gyazoIds = gyazoIdsGroup[pageTitleHash] || []
+    for (const gyazoId of gyazoIds) {
+      if (!res.includes(gyazoId)) res.push(gyazoId)
+    }
+  }
+  return res
+}
+
 module.exports = {
   uploadImages,
+  identifyRenderedImages,
   extractGyazoIcons
 }
