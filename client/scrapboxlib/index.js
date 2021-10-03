@@ -53,6 +53,8 @@ const parseScrapboxPage = ({ title, lines }) => {
   normalizeTextBlockLevels(lineObjects)
   lineObjects = addBlockInfo(lineObjects)
 
+  // console.log("$$$$$$$$", lineObjects)
+
   const texts = []
   for (const line of lineObjects) {
     // 独自に追加した特殊なタイプを処理
