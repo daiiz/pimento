@@ -92,7 +92,6 @@ const parseScrapboxPage = ({ title, lines }) => {
   // 最終生成物
   return {
     texts: removeEmptyLinesBothEnds(pageTexts)
-    // gyazoIds
   }
 }
 

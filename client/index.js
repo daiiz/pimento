@@ -37,7 +37,6 @@ const createPage = async ({ texts, pageTitle, pageHash }) => {
     pageTitleHash: pageHash,
     pageText: texDocument,
     includeCover: false
-    // gyazoIds
   }
 }
 
@@ -76,7 +75,6 @@ const main = async ({ type, body, bookTitle, toc }) => {
         pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
         pageText: texDocument,
         includeCover: true
-        // gyazoIds: refsData.gyazoIds
       }
     }
   }
@@ -85,7 +83,6 @@ const main = async ({ type, body, bookTitle, toc }) => {
 // XXX: たぶんいい感じにmainと共通化できる
 // refs: [{ title, lines }]
 const buildRefPages = async refs => {
-  // const gyazoIdsGroup = Object.create(null) // { pageHash: [gyazoId,] }
   for (let { title, lines } of refs) {
     lines = lines.map(text => ({ text }))
     const res = parseScrapboxPage({ title, lines })
@@ -94,11 +91,6 @@ const buildRefPages = async refs => {
       '%------------------------------',
       ...res.texts
     ]
-    // 画像参照を記録
-    // if (!gyazoIdsGroup[pageHash]) {
-    //   gyazoIdsGroup[pageHash] = []
-    // }
-    // gyazoIdsGroup[pageHash].push(...(res.gyazoIds || []))
     // ページ変換関数を登録
     const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
     window.funcs[`page_${pageHash}`] = function (level, showNumber) {
@@ -107,11 +99,6 @@ const buildRefPages = async refs => {
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
     }
   }
-  // テキストブロックに含まれる画像を解決する
-  // return {
-  //   gyazoIds: Object.values(gyazoIdsGroup).flatMap(x => x),
-  //   gyazoIdsGroup
-  // }
 }
 
 let received = false
@@ -175,11 +162,9 @@ window.onmessage = async function ({ origin, data }) {
         pageTitleHash,
         pageText,
         includeCover
-        // gyazoIds
       } = await main({ type, body, bookTitle, toc })
 
       document.getElementById('pre-text').innerText = pageText
-      // bookGyazoIds.push(...gyazoIds)
 
       const generatedData = {
         pageTitle,

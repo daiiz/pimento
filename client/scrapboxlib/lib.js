@@ -37,23 +37,17 @@ const addToPageRefs = (title) => {
   return hash
 }
 
+// 画像が挿入されているページのpageTitleHashをnodeに保持する
 const decorateImageNodes = (lines, title) => {
-  // const gayzoIds = []
   // XXX: 本当は再帰的に見ていくべきだが、いまは雑にやる
   for (const line of lines) {
-    if (!line.nodes) continue
-    for (const node of line.nodes) {
+    for (const node of line.nodes || []) {
       if (node.type !== 'image') continue
-      // const gayzoId = getGyazoImageId(node.src)
-      // if (gayzoId) {
-      //   gayzoIds.push(gayzoId)
-      // }
       if (title) {
         line._hostPageTitleHash = calcPageTitleHash(title)
       }
     }
   }
-  // return gayzoIds
 }
 
 // アイコンが挿入されているページのpageTitleHashをnodeに保持する
