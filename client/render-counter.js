@@ -1,4 +1,8 @@
-const renderCounter = Object.create(null)
+let renderCounter
+
+const initPageRenderCounter = () => {
+  renderCounter = Object.create(null)
+}
 
 // 本文中で表示実績のあるテキストブロックのpageTitleHashリストを返す
 // TODO: page-embed-counterとの使い分けを明文化する
@@ -21,6 +25,7 @@ const incrementPageRenderCounter = pageTitleHash => {
 }
 
 module.exports = {
+  initPageRenderCounter,
   getRenderedPages,
   incrementPageRenderCounter
 }

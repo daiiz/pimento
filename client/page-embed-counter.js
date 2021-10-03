@@ -11,7 +11,7 @@ const initPageEmbedCounter = titles => {
   }
 }
 
-// 参照回数を管理する
+// ページの参照回数を管理する
 const incrementPageEmbedCounter = pageTitleHash => {
   if (!existsPage(pageTitleHash)) {
     // XXX: 仮定義付き単ページプレビュー機能時に確実にエラーになるのでログ出力に留める
@@ -24,6 +24,16 @@ const incrementPageEmbedCounter = pageTitleHash => {
   }
   window.rawData.pageEmbedCounter[pageTitleHash] += 1
 }
+
+// アイコンの参照元を管理する
+// const keepEmbeddedIcons = (pageTitleHash, gyazoId) => {
+//   // if (!embeddedIcons[pageTitleHash]) {
+//   //   embeddedIcons[pageTitleHash] = []
+//   // }
+//   // if (!embeddedIcons[pageTitleHash].includes(gyazoId)) {
+//   //   embeddedIcons[pageTitleHash].push(gyazoId)
+//   // }
+// }
 
 const existsPage = pageTitleHash => {
   return pageTitleHash in window.rawData.pageEmbedCounter

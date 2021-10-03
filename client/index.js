@@ -7,7 +7,7 @@ const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./i
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
-const { getRenderedPages, incrementPageRenderCounter } = require('./page-render-counter')
+const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
 require('./globals')
 
 const isInFrame = () => {
@@ -135,8 +135,7 @@ window.onmessage = async function ({ origin, data }) {
   received = true
 
   applyConfigs(template)
-  // 埋め込み実績のあるテキストブロックのアイコン画像だけを受け取っている？
-  // -> そうでもなさそう
+  // TODO: 埋め込み実績のあるテキストブロックのアイコン画像だけにしぼりたい
   window.gyazoIcons = await extractGyazoIcons(icons)
   bookGyazoIds.push(...Object.values(window.gyazoIcons))
 
@@ -146,6 +145,7 @@ window.onmessage = async function ({ origin, data }) {
   } else if (type === 'page' && refs) {
     initPageEmbedCounter(refs.map(page => page.title))
   }
+  initPageRenderCounter()
 
   let gyazoIdsGroup = {}
   if (refs && refs.length > 0) {
