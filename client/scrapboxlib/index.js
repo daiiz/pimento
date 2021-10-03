@@ -1,5 +1,5 @@
 const { parse } = require('@progfay/scrapbox-parser')
-const { extractGyazoIds, indentStr, backSlash } = require('./lib')
+const { extractGyazoIds, decorateIconNodes, indentStr, backSlash } = require('./lib')
 const { separateAbstractFromTexts } = require('./abstract')
 const { addBlockInfo, normalizeTextBlockLevels } = require('./blockify')
 const { Texify } = require('./texify')
@@ -49,6 +49,7 @@ const parseScrapboxPage = ({ title, lines }) => {
   let lineObjects = parse(lineTexts.join('\n'))
 
   const gyazoIds = extractGyazoIds(lineObjects)
+  decorateIconNodes(lineObjects, title) // ここから！
   normalizeTextBlockLevels(lineObjects)
   lineObjects = addBlockInfo(lineObjects)
 

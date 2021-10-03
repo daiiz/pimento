@@ -53,6 +53,13 @@ const extractGyazoIds = lines => {
   return gayzoIds
 }
 
+// アイコンが挿入されているページのpageTitleHashをnodeに保持する
+const decorateIconNodes = (lines, title) => {
+  for (const line of lines) {
+    // TODO
+  }
+}
+
 const getGyazoImageId = srcUrl => {
   const gyazoOrigin = 'https://gyazo.com/'
   if (!srcUrl.startsWith(gyazoOrigin)) return null
@@ -154,6 +161,7 @@ const finalAdjustment = texts => {
 
 module.exports = {
   extractGyazoIds,
+  decorateIconNodes,
   getGyazoImageId,
   calcPageTitleHash,
   addToPageRefs,
