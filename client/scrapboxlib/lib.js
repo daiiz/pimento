@@ -55,6 +55,7 @@ const extractGyazoIds = lines => {
 
 // アイコンが挿入されているページのpageTitleHashをnodeに保持する
 const decorateIconNodes = (lines, title) => {
+  if (!title) return
   for (const line of lines) {
     for (const node of line.nodes || []) {
       if (node.type !== 'icon') continue
