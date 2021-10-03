@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "./node_modules/.bin/browserify client/index.js -o static/js/bundle.js -v",
-    "watch": "./node_modules/.bin/watchify client/index.js -o static/js/bundle.js -v",
+    "dev": "./node_modules/.bin/watchify client/index.js -o static/js/bundle.js -v",
     "test": "run-s test:*",
     "test:mocha": "mocha client/**/test/*.js --timeout 90000"
   },
