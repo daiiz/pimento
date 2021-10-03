@@ -1,5 +1,4 @@
 const { incrementPageEmbedCounter } = require('../page-embed-counter')
-const { incrementPageRenderCounter } = require('../page-render-counter')
 const { getImageInfo } = require('../configs')
 const { Texify } = require('./texify')
 const {
