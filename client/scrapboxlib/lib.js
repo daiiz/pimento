@@ -51,7 +51,7 @@ const extractGyazoIds = (lines, title) => {
         gayzoIds.push(gayzoId)
       }
       if (title) {
-        node.hostPageTitleHash = calcPageTitleHash(title)
+        line._hostPageTitleHash = calcPageTitleHash(title)
       }
     }
   }

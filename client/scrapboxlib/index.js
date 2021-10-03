@@ -48,7 +48,7 @@ const parseScrapboxPage = ({ title, lines }) => {
   lineTexts = removeLineComments(lineTexts)
   let lineObjects = parse(lineTexts.join('\n'))
 
-  const gyazoIds = extractGyazoIds(lineObjects)
+  const gyazoIds = extractGyazoIds(lineObjects, title)
   decorateIconNodes(lineObjects, title)
   normalizeTextBlockLevels(lineObjects)
   lineObjects = addBlockInfo(lineObjects)
