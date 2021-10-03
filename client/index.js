@@ -96,7 +96,7 @@ const buildRefPages = async refs => {
     if (!gyazoIdsGroup[pageHash]) {
       gyazoIdsGroup[pageHash] = []
     }
-    gyazoIdsGroup[pageHash].push(...res.gyazoIds)
+    gyazoIdsGroup[pageHash].push(...(res.gyazoIds || []))
     gyazoIds.push(...(res.gyazoIds || []))
     // ページ変換関数を登録
     const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
