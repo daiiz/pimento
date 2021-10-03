@@ -25,16 +25,6 @@ const incrementPageEmbedCounter = pageTitleHash => {
   window.rawData.pageEmbedCounter[pageTitleHash] += 1
 }
 
-// アイコンの参照元を管理する
-// const keepEmbeddedIcons = (pageTitleHash, gyazoId) => {
-//   // if (!embeddedIcons[pageTitleHash]) {
-//   //   embeddedIcons[pageTitleHash] = []
-//   // }
-//   // if (!embeddedIcons[pageTitleHash].includes(gyazoId)) {
-//   //   embeddedIcons[pageTitleHash].push(gyazoId)
-//   // }
-// }
-
 const existsPage = pageTitleHash => {
   return pageTitleHash in window.rawData.pageEmbedCounter
 }
