@@ -3,10 +3,11 @@
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
 const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
-const { uploadImages, extractGyazoIcons } = require('./images')
+const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
+const { getRenderedPages, incrementPageRenderCounter } = require('./page-render-counter')
 require('./globals')
 
 const isInFrame = () => {
@@ -100,6 +101,8 @@ const buildRefPages = async refs => {
     // ページ変換関数を登録
     const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
     window.funcs[`page_${pageHash}`] = function (level, showNumber) {
+      // 呼び出し実績を利用して表示回数を管理する
+      incrementPageRenderCounter(pageHash)
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
     }
   }
@@ -132,6 +135,8 @@ window.onmessage = async function ({ origin, data }) {
   received = true
 
   applyConfigs(template)
+  // 埋め込み実績のあるテキストブロックのアイコン画像だけを受け取っている？
+  // -> そうでもなさそう
   window.gyazoIcons = await extractGyazoIcons(icons)
   bookGyazoIds.push(...Object.values(window.gyazoIcons))
 
@@ -142,9 +147,10 @@ window.onmessage = async function ({ origin, data }) {
     initPageEmbedCounter(refs.map(page => page.title))
   }
 
+  let gyazoIdsGroup = {}
   if (refs && refs.length > 0) {
     const refsData = await buildRefPages(refs)
-    bookGyazoIds.push(...refsData.gyazoIds)
+    gyazoIdsGroup = refsData.gyazoIdsGroup
   }
 
   const previewElement = document.querySelector('#preview')
@@ -166,7 +172,9 @@ window.onmessage = async function ({ origin, data }) {
         includeCover,
         gyazoIds
       } = await main({ type, body, bookTitle, toc })
+
       document.getElementById('pre-text').innerText = pageText
+      bookGyazoIds.push(...gyazoIds)
 
       const generatedData = {
         pageTitle,
@@ -178,8 +186,10 @@ window.onmessage = async function ({ origin, data }) {
         includeCover
       }
 
+      // 埋め込み実績のあるテキストブロックの画像だけを集める
+      bookGyazoIds.push(...identifyRenderedImages(gyazoIdsGroup, getRenderedPages()))
+      const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
-      const uploadGyazoIds = Array.from(new Set([...bookGyazoIds, ...gyazoIds]))
       const payload = {
         data: uploadData,
         gyazoIds: uploadGyazoIds,

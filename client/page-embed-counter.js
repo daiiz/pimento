@@ -29,10 +29,6 @@ const existsPage = pageTitleHash => {
   return pageTitleHash in window.rawData.pageEmbedCounter
 }
 
-const isPageEmbedded = pageTitleHash => {
-  return existsPage(pageTitleHash) && window.rawData.pageEmbedCounter[pageTitleHash] >= 1
-}
-
 // 本文中で埋め込まれていないページは付録として扱う
 const getAppendixPages = () => {
   const pageTitleHashs = Object.keys(window.rawData.pageEmbedCounter) // Order?
@@ -69,7 +65,6 @@ module.exports = {
   initPageEmbedCounter,
   incrementPageEmbedCounter,
   existsPage,
-  isPageEmbedded,
   getAppendixPages,
   keepChapterHashs,
   isChapter
