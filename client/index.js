@@ -162,8 +162,13 @@ window.onmessage = async function ({ origin, data }) {
   const docType = type === 'whole-pages' ? 'books' : 'pages'
 
   console.log('funcs:', window.funcs)
+
+  if (task !== 'transfer-data') {
+    console.error(`Invalid task: ${task}`)
+    return
+  }
+
   switch (task) {
-    // XXX: typeをタスク名にしたほうがいい
     case 'transfer-data': {
       const {
         pageTitle,
