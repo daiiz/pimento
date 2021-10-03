@@ -92,7 +92,10 @@ const buildRefPages = async refs => {
     lines = lines.map(text => ({ text }))
     const res = parseScrapboxPage({ lines })
     const pageHash = addToPageRefs(title)
-    const texts = ['%------------------------------', ...res.texts]
+    const texts = [
+      '%------------------------------',
+      ...res.texts
+    ]
     // 画像参照を記録
     if (!gyazoIdsGroup[pageHash]) {
       gyazoIdsGroup[pageHash] = []
