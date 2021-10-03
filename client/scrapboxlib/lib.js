@@ -60,7 +60,6 @@ const decorateIconNodes = (lines, title) => {
     for (const node of line.nodes || []) {
       if (node.type !== 'icon') continue
       node.hostPageTitleHash = calcPageTitleHash(title)
-      console.log(">>>>>>>>>>", node)
     }
   }
 }

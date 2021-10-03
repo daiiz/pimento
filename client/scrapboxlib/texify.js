@@ -1,5 +1,5 @@
 const { addToPageRefs, texEscape, texEscapeForFormula, texEscapeForRef, toTitleLc, backSlash } = require('./lib')
-const { isChapter, existsPage } = require('../page-embed-counter')
+const { isChapter, existsPage, memoPageEmbedIconGyazoIds } = require('../page-embed-counter')
 const { getIconInfo, getAppendixInfo } = require('../configs')
 
 const getHeadingNumberInfo = () => {
@@ -69,6 +69,8 @@ const Texify = node => {
       }
       const title = node.path
       const { mode, gyazoId } = getIconInfo(toTitleLc(title))
+      // アイコンが挿入されているページの情報を記録する
+      memoPageEmbedIconGyazoIds(node.hostPageTitleHash, [gyazoId])
       switch (mode) {
         case 'gray': {
           return `${backSlash}scrapboxicon{./cmyk-gray-gyazo-images/${gyazoId}.jpg}`

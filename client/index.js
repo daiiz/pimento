@@ -6,7 +6,7 @@ const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
-const { initPageEmbedCounter, keepChapterHashs } = require('./page-embed-counter')
+const { initPageEmbedCounter, keepChapterHashs, getIconGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
 require('./globals')
 
@@ -86,7 +86,6 @@ const main = async ({ type, body, bookTitle, toc }) => {
 // XXX: たぶんいい感じにmainと共通化できる
 // refs: [{ title, lines }]
 const buildRefPages = async refs => {
-  const gyazoIds = []
   const gyazoIdsGroup = Object.create(null) // { pageHash: [gyazoId,] }
   for (let { title, lines } of refs) {
     lines = lines.map(text => ({ text }))
@@ -101,7 +100,6 @@ const buildRefPages = async refs => {
       gyazoIdsGroup[pageHash] = []
     }
     gyazoIdsGroup[pageHash].push(...(res.gyazoIds || []))
-    gyazoIds.push(...(res.gyazoIds || []))
     // ページ変換関数を登録
     const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
     window.funcs[`page_${pageHash}`] = function (level, showNumber) {
@@ -111,7 +109,10 @@ const buildRefPages = async refs => {
     }
   }
   // テキストブロックに含まれる画像を解決する
-  return { gyazoIds, gyazoIdsGroup }
+  return {
+    gyazoIds: Object.values(gyazoIdsGroup).flatMap(x => x),
+    gyazoIdsGroup
+  }
 }
 
 let received = false
@@ -139,9 +140,7 @@ window.onmessage = async function ({ origin, data }) {
   received = true
 
   applyConfigs(template)
-  // TODO: 埋め込み実績のあるテキストブロックのアイコン画像だけにしぼりたい
   window.gyazoIcons = await extractGyazoIcons(icons)
-  bookGyazoIds.push(...Object.values(window.gyazoIcons))
 
   // XXX: 引数形式揃えたい
   if (type === 'whole-pages') {
@@ -195,8 +194,11 @@ window.onmessage = async function ({ origin, data }) {
         includeCover
       }
 
-      // 埋め込み実績のあるテキストブロックの画像だけを集める
-      bookGyazoIds.push(...identifyRenderedImages(gyazoIdsGroup, getRenderedPages()))
+      // 描画実績のあるテキストブロックの画像だけを集める
+      const renderedPageTitleHashs = getRenderedPages(pageTitleHash)
+      bookGyazoIds.push(...identifyRenderedImages(gyazoIdsGroup, renderedPageTitleHashs))
+      bookGyazoIds.push(...identifyRenderedImages(getIconGyazoIdsGroup(), renderedPageTitleHashs))
+
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
       const payload = {
