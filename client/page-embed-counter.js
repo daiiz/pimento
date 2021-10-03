@@ -82,12 +82,12 @@ const memoPageEmbedGyazoIds = (pageTitleHash, gyazoIds = [], imageType = 'defaul
   }
 }
 
-const getGyazoIdsGroup = () => {
-  return Object.freeze(window.rawData.pageEmbedGyazoIds) // { pageHash: [gyazoId,] }
-}
-
-const getIconGyazoIdsGroup = () => {
-  return Object.freeze(window.rawData.pageEmbedIconGyazoIds) // { pageHash: [gyazoId,] }
+const getGyazoIdsGroup = (imageType = 'default') => { // { pageHash: [gyazoId,] }
+  if (imageType === 'icon') {
+    return Object.freeze(window.rawData.pageEmbedIconGyazoIds)
+  } else {
+    return Object.freeze(window.rawData.pageEmbedGyazoIds)
+  }
 }
 
 module.exports = {
@@ -98,6 +98,5 @@ module.exports = {
   keepChapterHashs,
   isChapter,
   memoPageEmbedGyazoIds,
-  getGyazoIdsGroup,
-  getIconGyazoIdsGroup
+  getGyazoIdsGroup
 }

@@ -37,25 +37,23 @@ const addToPageRefs = (title) => {
   return hash
 }
 
-// TODO: decorateImageNodesに改名するかも
-const extractGyazoIds = (lines, title) => {
-  const gayzoIds = []
+const decorateImageNodes = (lines, title) => {
+  // const gayzoIds = []
   // XXX: 本当は再帰的に見ていくべきだが、いまは雑にやる
   for (const line of lines) {
-    const { nodes, type } = line
-    if (!nodes) continue
-    for (const node of nodes) {
+    if (!line.nodes) continue
+    for (const node of line.nodes) {
       if (node.type !== 'image') continue
-      const gayzoId = getGyazoImageId(node.src)
-      if (gayzoId) {
-        gayzoIds.push(gayzoId)
-      }
+      // const gayzoId = getGyazoImageId(node.src)
+      // if (gayzoId) {
+      //   gayzoIds.push(gayzoId)
+      // }
       if (title) {
         line._hostPageTitleHash = calcPageTitleHash(title)
       }
     }
   }
-  return gayzoIds
+  // return gayzoIds
 }
 
 // アイコンが挿入されているページのpageTitleHashをnodeに保持する
@@ -170,7 +168,7 @@ const finalAdjustment = texts => {
 }
 
 module.exports = {
-  extractGyazoIds,
+  decorateImageNodes,
   decorateIconNodes,
   getGyazoImageId,
   calcPageTitleHash,
