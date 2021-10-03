@@ -45,6 +45,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
   keepChapterHashs(toc)
   switch (type) {
     // 単一ページのプレビュー
+    // 製本 (目次以外のページで起動されたとき)
     case 'page': {
       const { title, lines } = body
       const res = parseScrapboxPage({ lines })
@@ -55,7 +56,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
         gyazoIds: res.gyazoIds
       })
     }
-    // 製本
+    // 製本 (目次ページで起動されたとき)
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
       const refsData = await buildRefPages(Object.values(pages))
