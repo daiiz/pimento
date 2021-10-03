@@ -30,6 +30,7 @@ const getPageRefs = () => {
   return Object.freeze(pageRefs)
 }
 
+// pageTitleHashを計算してpageRefsに保持する
 const addToPageRefs = (title) => {
   const hash = calcPageTitleHash(title)
   pageRefs[hash] = title
