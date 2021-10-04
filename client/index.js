@@ -112,6 +112,7 @@ const buildRefPages = async refs => {
 }
 
 let received = false
+let timerForApiReady = null
 
 window.onmessage = async function ({ origin, data }) {
   const pimentFrontendOrigin = document.body.dataset.frontendOrigin
@@ -121,6 +122,11 @@ window.onmessage = async function ({ origin, data }) {
     'https://scrapbox.io',
     pimentFrontendOrigin
   ]
+
+  if (origin === location.origin) {
+    // 自分には応答しない
+    return
+  }
 
   if (!allowOrigins.includes(origin)) {
     console.error('Invalid origin:', origin)
@@ -133,7 +139,9 @@ window.onmessage = async function ({ origin, data }) {
     if (task === 'close') this.close()
     return
   }
+
   received = true
+  window.clearInterval(timerForApiReady)
 
   applyConfigs(template)
   // TODO: 埋め込み実績のあるテキストブロックのアイコン画像だけにしぼりたい
@@ -247,3 +255,18 @@ window.onmessage = async function ({ origin, data }) {
 window.format = text => {
   return formatMarks(text)
 }
+
+window.addEventListener('load', () => {
+  if (!isInFrame()) {
+    return
+  }
+  const pimentFrontendOrigin = document.body.dataset.frontendOrigin
+  if (!timerForApiReady) {
+    const rand = Math.floor(Math.random() * 100)
+    const intervalTime = 300 + rand
+    timerForApiReady = setInterval(() => {
+      console.log(rand)
+      window.parent.postMessage({ pimentoApiReady: true }, pimentFrontendOrigin)
+    }, intervalTime)
+  }
+})
