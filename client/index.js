@@ -263,7 +263,7 @@ window.addEventListener('load', () => {
   const pimentFrontendOrigin = document.body.dataset.frontendOrigin
   if (!timerForApiReady) {
     const rand = Math.floor(Math.random() * 100)
-    const intervalTime = 300 + rand
+    const intervalTime = 200 + rand
     let runCounter = 0
     timerForApiReady = setInterval(() => {
       runCounter += 1
