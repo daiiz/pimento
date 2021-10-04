@@ -264,9 +264,16 @@ window.addEventListener('load', () => {
   if (!timerForApiReady) {
     const rand = Math.floor(Math.random() * 100)
     const intervalTime = 300 + rand
+    let runCounter = 0
     timerForApiReady = setInterval(() => {
-      console.log(`[timer] ${intervalTime} ms`)
-      window.parent.postMessage({ pimentoApiReady: true }, pimentFrontendOrigin)
+      runCounter += 1
+      if (runCounter > 200) { // 約1分
+        console.log('[ready] timeout')
+        window.clearInterval(timerForApiReady)
+      } else {
+        console.log(`[ready] ${intervalTime}ms`, runCounter)
+        window.parent.postMessage({ pimentoApiReady: true }, pimentFrontendOrigin)
+      }
     }, intervalTime)
   }
 })
