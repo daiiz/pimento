@@ -265,7 +265,7 @@ window.addEventListener('load', () => {
     const rand = Math.floor(Math.random() * 100)
     const intervalTime = 300 + rand
     timerForApiReady = setInterval(() => {
-      console.log(rand)
+      console.log(`[timer] ${intervalTime} ms`)
       window.parent.postMessage({ pimentoApiReady: true }, pimentFrontendOrigin)
     }, intervalTime)
   }
