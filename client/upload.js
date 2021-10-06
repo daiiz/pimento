@@ -48,7 +48,7 @@ const createTexDocument = ({ pageTitle, pageTitleHash, pageText, pageTemplate, i
     pageHead: pageHead.join('\n'),
     pageTail: pageTail.join('\n'),
     // 付随情報
-    // pageTemplate,
+    pageTemplate,
     includeCover,
     docType
   }
