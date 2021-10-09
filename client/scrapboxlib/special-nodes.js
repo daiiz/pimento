@@ -1,7 +1,8 @@
-const { incrementPageEmbedCounter } = require('../page-embed-counter')
+const { incrementPageEmbedCounter, memoPageEmbedGyazoIds } = require('../page-embed-counter')
 const { getImageInfo } = require('../configs')
 const { Texify } = require('./texify')
 const {
+  calcPageTitleHash,
   addToPageRefs,
   indentStr,
   buildOptions,
@@ -15,7 +16,7 @@ const patternWidthRef = /^width=([\d\.]+),\s*(?:ref|label)=(.+)$/i
 const patternWidth = /^width=([\d\.]+),*\s*$/i
 const patternRef = /^(?:ref|label)=(.+),*\s*$/i
 
-const handleSpecialLine = (line) => {
+const handleSpecialLine = (line, title) => {
   switch (line._type) {
     case 'title': {
       const hash = addToPageRefs(line.text)
@@ -30,6 +31,8 @@ const handleSpecialLine = (line) => {
         // https://scrapbox.io/teamj/pimento_v2:_節の埋め込み記法
         const hash = addToPageRefs(line._text)
         incrementPageEmbedCounter(hash)
+        // TODO: 参照グラフを更新 (描画実績は見ないので表示されていることは保証しない)
+        // console.log("###", `${title} (${calcPageTitleHash(title)})`, "->", hash)
         return [`\$\{window.funcs.page_${hash}(level + 1 + ${line._level})\}`]
       } else {
         return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${line._text}}`]
@@ -138,7 +141,10 @@ const handleSpecialLine = (line) => {
         return ['% Omitted image line']
       }
 
-      const { indent } = line
+      const { indent, _hostPageTitleHash, _gyazoImageId } = line
+      // 画像が挿入されているページの情報を記録する
+      memoPageEmbedGyazoIds(_hostPageTitleHash, [_gyazoImageId], 'default')
+
       if (indent > 0) {
         // inline image
         const prefixBegin = line.indent > 0 ? indentStr(line.indent + 1) + `${backSlash}item ` : ''

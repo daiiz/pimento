@@ -6,8 +6,11 @@ const initPageRenderCounter = () => {
 
 // 本文中で表示実績のあるテキストブロックのpageTitleHashリストを返す
 // TODO: page-embed-counterとの使い分けを明文化する
-const getRenderedPages = () => {
+const getRenderedPages = (rootPageTitleHash = '') => {
   const res = []
+  if (rootPageTitleHash) {
+    res.push(rootPageTitleHash)
+  }
   for (const pageTitleHash in renderCounter) {
     if (renderCounter[pageTitleHash] >= 1) {
       res.push(pageTitleHash)

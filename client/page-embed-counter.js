@@ -6,6 +6,8 @@ const { calcPageTitleHash } = require('./scrapboxlib/lib')
 
 // postMessageで受信したページ情報に基づいて初期化される
 const initPageEmbedCounter = titles => {
+  window.rawData.pageEmbedGyazoIds = Object.create(null)
+  window.rawData.pageEmbedIconGyazoIds = Object.create(null)
   for (const title of titles) {
     window.rawData.pageEmbedCounter[calcPageTitleHash(title)] = 0
   }
@@ -61,11 +63,40 @@ const isChapter = titleHash => {
   return window.rawData.chapterHashs.includes(titleHash)
 }
 
+const memoPageEmbedGyazoIds = (pageTitleHash, gyazoIds = [], imageType = 'default') => {
+  if (!pageTitleHash || gyazoIds.length === 0) {
+    return
+  }
+
+  const currentGyazoIds = imageType === 'icon'
+    ? window.rawData.pageEmbedIconGyazoIds
+    : window.rawData.pageEmbedGyazoIds
+
+  if (!currentGyazoIds[pageTitleHash]) {
+    currentGyazoIds[pageTitleHash] = []
+  }
+  for (const gyazoId of gyazoIds) {
+    if (!currentGyazoIds[pageTitleHash].includes(gyazoId)) {
+      currentGyazoIds[pageTitleHash].push(gyazoId)
+    }
+  }
+}
+
+const getGyazoIdsGroup = (imageType = 'default') => { // { pageHash: [gyazoId,] }
+  if (imageType === 'icon') {
+    return Object.freeze(window.rawData.pageEmbedIconGyazoIds)
+  } else {
+    return Object.freeze(window.rawData.pageEmbedGyazoIds)
+  }
+}
+
 module.exports = {
   initPageEmbedCounter,
   incrementPageEmbedCounter,
   existsPage,
   getAppendixPages,
   keepChapterHashs,
-  isChapter
+  isChapter,
+  memoPageEmbedGyazoIds,
+  getGyazoIdsGroup
 }
