@@ -6,6 +6,7 @@ const { calcPageTitleHash } = require('./scrapboxlib/lib')
 
 // postMessageで受信したページ情報に基づいて初期化される
 const initPageEmbedCounter = titles => {
+  window.rawData.pageEmbedGyazoIds = Object.create(null)
   window.rawData.pageEmbedIconGyazoIds = Object.create(null)
   for (const title of titles) {
     window.rawData.pageEmbedCounter[calcPageTitleHash(title)] = 0
@@ -62,20 +63,31 @@ const isChapter = titleHash => {
   return window.rawData.chapterHashs.includes(titleHash)
 }
 
-const memoPageEmbedIconGyazoIds = (pageTitleHash, gyazoIds = []) => {
-  if (!pageTitleHash || gyazoIds.length === 0) return
-  if (!window.rawData.pageEmbedIconGyazoIds[pageTitleHash]) {
-    window.rawData.pageEmbedIconGyazoIds[pageTitleHash] = []
+const memoPageEmbedGyazoIds = (pageTitleHash, gyazoIds = [], imageType = 'default') => {
+  if (!pageTitleHash || gyazoIds.length === 0) {
+    return
+  }
+
+  const currentGyazoIds = imageType === 'icon'
+    ? window.rawData.pageEmbedIconGyazoIds
+    : window.rawData.pageEmbedGyazoIds
+
+  if (!currentGyazoIds[pageTitleHash]) {
+    currentGyazoIds[pageTitleHash] = []
   }
   for (const gyazoId of gyazoIds) {
-    if (!window.rawData.pageEmbedIconGyazoIds[pageTitleHash].includes(gyazoId)) {
-      window.rawData.pageEmbedIconGyazoIds[pageTitleHash].push(gyazoId)
+    if (!currentGyazoIds[pageTitleHash].includes(gyazoId)) {
+      currentGyazoIds[pageTitleHash].push(gyazoId)
     }
   }
 }
 
-const getIconGyazoIdsGroup = () => {
-  return Object.freeze(window.rawData.pageEmbedIconGyazoIds) // { pageHash: [gyazoId,] }
+const getGyazoIdsGroup = (imageType = 'default') => { // { pageHash: [gyazoId,] }
+  if (imageType === 'icon') {
+    return Object.freeze(window.rawData.pageEmbedIconGyazoIds)
+  } else {
+    return Object.freeze(window.rawData.pageEmbedGyazoIds)
+  }
 }
 
 module.exports = {
@@ -85,6 +97,6 @@ module.exports = {
   getAppendixPages,
   keepChapterHashs,
   isChapter,
-  memoPageEmbedIconGyazoIds,
-  getIconGyazoIdsGroup
+  memoPageEmbedGyazoIds,
+  getGyazoIdsGroup
 }

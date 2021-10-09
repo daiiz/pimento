@@ -27,6 +27,7 @@ window.funcs = Object.create(null)
 // postMessageで受信したデータに基づく情報
 window.rawData = Object.create(null)
 window.rawData.pageEmbedCounter = Object.create(null)
+window.rawData.pageEmbedGyazoIds = Object.create(null)
 window.rawData.pageEmbedIconGyazoIds = Object.create(null)
 window.rawData.chapterHashs = []
 

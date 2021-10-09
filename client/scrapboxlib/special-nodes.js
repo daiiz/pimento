@@ -1,4 +1,4 @@
-const { incrementPageEmbedCounter } = require('../page-embed-counter')
+const { incrementPageEmbedCounter, memoPageEmbedGyazoIds } = require('../page-embed-counter')
 const { getImageInfo } = require('../configs')
 const { Texify } = require('./texify')
 const {
@@ -141,7 +141,10 @@ const handleSpecialLine = (line, title) => {
         return ['% Omitted image line']
       }
 
-      const { indent } = line
+      const { indent, _hostPageTitleHash, _gyazoImageId } = line
+      // 画像が挿入されているページの情報を記録する
+      memoPageEmbedGyazoIds(_hostPageTitleHash, [_gyazoImageId], 'default')
+
       if (indent > 0) {
         // inline image
         const prefixBegin = line.indent > 0 ? indentStr(line.indent + 1) + `${backSlash}item ` : ''

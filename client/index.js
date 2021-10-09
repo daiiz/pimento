@@ -6,7 +6,7 @@ const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
-const { initPageEmbedCounter, keepChapterHashs, getIconGyazoIdsGroup } = require('./page-embed-counter')
+const { initPageEmbedCounter, keepChapterHashs, getGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
 require('./globals')
 
@@ -15,7 +15,7 @@ const isInFrame = () => {
   return container.dataset.isFrame === 'true' && window.parent !== window
 }
 
-const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
+const createPage = async ({ texts, pageTitle, pageHash }) => {
   // ページ変換関数を登録
   const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
   window.funcs.pageContent = function (level) {
@@ -36,8 +36,7 @@ const createPage = async ({ texts, pageTitle, pageHash, gyazoIds }) => {
     pageTitle,
     pageTitleHash: pageHash,
     pageText: texDocument,
-    includeCover: false,
-    gyazoIds
+    includeCover: false
   }
 }
 
@@ -52,14 +51,13 @@ const main = async ({ type, body, bookTitle, toc }) => {
       return createPage({
         pageTitle: title,
         pageHash: addToPageRefs(lines[0].text),
-        texts: res.texts,
-        gyazoIds: res.gyazoIds
+        texts: res.texts
       })
     }
     // 製本 (目次ページで起動されたとき)
     case 'whole-pages': {
       const pages = body // { pageId: { title, lines } }
-      const refsData = await buildRefPages(Object.values(pages))
+      await buildRefPages(Object.values(pages))
       createBook(toc)
       createBookAppendix(toc)
       console.log('REFS:', getPageRefs())
@@ -76,8 +74,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
         pageTitle: bookTitle,
         pageTitleHash: calcPageTitleHash(`whole_${bookTitle}`),
         pageText: texDocument,
-        includeCover: true,
-        gyazoIds: refsData.gyazoIds
+        includeCover: true
       }
     }
   }
@@ -86,7 +83,6 @@ const main = async ({ type, body, bookTitle, toc }) => {
 // XXX: たぶんいい感じにmainと共通化できる
 // refs: [{ title, lines }]
 const buildRefPages = async refs => {
-  const gyazoIdsGroup = Object.create(null) // { pageHash: [gyazoId,] }
   for (let { title, lines } of refs) {
     lines = lines.map(text => ({ text }))
     const res = parseScrapboxPage({ title, lines })
@@ -95,11 +91,6 @@ const buildRefPages = async refs => {
       '%------------------------------',
       ...res.texts
     ]
-    // 画像参照を記録
-    if (!gyazoIdsGroup[pageHash]) {
-      gyazoIdsGroup[pageHash] = []
-    }
-    gyazoIdsGroup[pageHash].push(...(res.gyazoIds || []))
     // ページ変換関数を登録
     const funcBody = 'return `' + finalAdjustment(texts).join('\n') + '`'
     window.funcs[`page_${pageHash}`] = function (level, showNumber) {
@@ -107,11 +98,6 @@ const buildRefPages = async refs => {
       incrementPageRenderCounter(pageHash)
       return new Function('level', 'showNumber', funcBody)(level, showNumber)
     }
-  }
-  // テキストブロックに含まれる画像を解決する
-  return {
-    gyazoIds: Object.values(gyazoIdsGroup).flatMap(x => x),
-    gyazoIdsGroup
   }
 }
 
@@ -150,10 +136,8 @@ window.onmessage = async function ({ origin, data }) {
   }
   initPageRenderCounter()
 
-  let gyazoIdsGroup = {}
   if (refs && refs.length > 0) {
-    const refsData = await buildRefPages(refs)
-    gyazoIdsGroup = refsData.gyazoIdsGroup
+    await buildRefPages(refs)
   }
 
   const previewElement = document.querySelector('#preview')
@@ -177,12 +161,10 @@ window.onmessage = async function ({ origin, data }) {
         pageTitle,
         pageTitleHash,
         pageText,
-        includeCover,
-        gyazoIds
+        includeCover
       } = await main({ type, body, bookTitle, toc })
 
       document.getElementById('pre-text').innerText = pageText
-      bookGyazoIds.push(...gyazoIds)
 
       const generatedData = {
         pageTitle,
@@ -196,8 +178,8 @@ window.onmessage = async function ({ origin, data }) {
 
       // 描画実績のあるテキストブロックの画像だけを集める
       const renderedPageTitleHashs = getRenderedPages(pageTitleHash)
-      bookGyazoIds.push(...identifyRenderedImages(gyazoIdsGroup, renderedPageTitleHashs))
-      bookGyazoIds.push(...identifyRenderedImages(getIconGyazoIdsGroup(), renderedPageTitleHashs))
+      bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('default'), renderedPageTitleHashs))
+      bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('icon'), renderedPageTitleHashs))
 
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
