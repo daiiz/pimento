@@ -102,6 +102,7 @@ const buildRefPages = async refs => {
 }
 
 let received = false
+let timerForApiReady = null
 
 window.onmessage = async function ({ origin, data }) {
   const pimentFrontendOrigin = document.body.dataset.frontendOrigin
@@ -111,6 +112,11 @@ window.onmessage = async function ({ origin, data }) {
     'https://scrapbox.io',
     pimentFrontendOrigin
   ]
+
+  if (origin === location.origin) {
+    // 自分には応答しない
+    return
+  }
 
   if (!allowOrigins.includes(origin)) {
     console.error('Invalid origin:', origin)
@@ -123,7 +129,9 @@ window.onmessage = async function ({ origin, data }) {
     if (task === 'close') this.close()
     return
   }
+
   received = true
+  window.clearInterval(timerForApiReady)
 
   applyConfigs(template)
   window.gyazoIcons = await extractGyazoIcons(icons)
@@ -234,3 +242,25 @@ window.onmessage = async function ({ origin, data }) {
 window.format = text => {
   return formatMarks(text)
 }
+
+window.addEventListener('load', () => {
+  if (!isInFrame()) {
+    return
+  }
+  const pimentFrontendOrigin = document.body.dataset.frontendOrigin
+  if (!timerForApiReady) {
+    const rand = Math.floor(Math.random() * 100)
+    const intervalTime = 200 + rand
+    let runCounter = 0
+    timerForApiReady = setInterval(() => {
+      runCounter += 1
+      if (runCounter > 200) { // 約1分
+        console.log('[ready] timeout')
+        window.clearInterval(timerForApiReady)
+      } else {
+        console.log(`[ready] ${intervalTime}ms`, runCounter)
+        window.parent.postMessage({ pimentoApiReady: true }, pimentFrontendOrigin)
+      }
+    }, intervalTime)
+  }
+})
