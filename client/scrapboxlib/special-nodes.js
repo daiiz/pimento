@@ -32,7 +32,7 @@ const handleSpecialLine = (line, title) => {
         const hash = addToPageRefs(line._text)
         incrementPageEmbedCounter(hash)
         // TODO: 参照グラフを更新 (描画実績は見ないので表示されていることは保証しない)
-        console.log("###", `${title} (${calcPageTitleHash(title)})`, "->", hash)
+        // console.log("###", `${title} (${calcPageTitleHash(title)})`, "->", hash)
         return [`\$\{window.funcs.page_${hash}(level + 1 + ${line._level})\}`]
       } else {
         return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${line._text}}`]
