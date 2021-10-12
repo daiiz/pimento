@@ -41,4 +41,6 @@ def is_allowed_user(firebase_user):
     return False
   if len(allowed_user_emails) == 0:
     return False
+  if '*' in allowed_user_emails:
+    return True
   return email in allowed_user_emails
