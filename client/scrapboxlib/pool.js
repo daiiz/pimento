@@ -4,10 +4,9 @@ const { calcPageTitleHash } = require('./lib')
 const parsedScrapboxPages = Object.create(null)
 
 const addToScrapboxPagesPool = (title, lines) => {
+  if (!title) return
+
   const pageTitleHash = calcPageTitleHash(title)
-  if (!title) {
-    throw new Error('title is required.')
-  }
   if (parsedScrapboxPages[pageTitleHash]) {
     return
   }
