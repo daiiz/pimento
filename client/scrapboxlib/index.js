@@ -5,6 +5,7 @@ const { addBlockInfo, normalizeTextBlockLevels } = require('./blockify')
 const { Texify } = require('./texify')
 const { handleScrapboxBlockNode } = require('./block-nodes')
 const { handleSpecialLine } = require('./special-nodes')
+const { addToScrapboxPagesPool } = require('./pool')
 
 const removeEmptyLinesBothEnds = lines => {
   if (lines.length <= 2) return lines
@@ -39,6 +40,7 @@ const removeLineComments = texts => {
 }
 
 const parseScrapboxPage = ({ title, lines }) => {
+  addToScrapboxPagesPool(title, lines)
   const rawTexts = lines.map(line => line.text)
   let { abstractFuncCall, lineTexts } = separateAbstractFromTexts(rawTexts)
   // 最終行が空行になるよう調整する
