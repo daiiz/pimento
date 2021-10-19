@@ -34,7 +34,7 @@ const addToScrapboxPagesPool = (title, lines) => {
 const getParsedScrapboxPages = (pageTitleHashs = [], bookHashTagName = '') => {
   const pages = []
   const formattedBookHashTagName = bookHashTagName.trim().replace(/\s/g, '_')
-  const bookHashTag = '#' + formattedBookHashTagName
+  const bookHashTag = `[# #${formattedBookHashTagName}]`
 
   for (const pageTitleHash of pageTitleHashs) {
     const page = parsedScrapboxPages[pageTitleHash]
