@@ -2,6 +2,7 @@
 
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
+const { getParsedScrapboxPages } = require('./scrapboxlib/pool')
 const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
@@ -188,6 +189,8 @@ window.onmessage = async function ({ origin, data }) {
       const renderedPageTitleHashs = getRenderedPages(pageTitleHash)
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('default'), renderedPageTitleHashs))
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('icon'), renderedPageTitleHashs))
+      const scrapboxData = getParsedScrapboxPages(renderedPageTitleHashs, bookTitle)
+      console.log('---->', scrapboxData)
 
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)

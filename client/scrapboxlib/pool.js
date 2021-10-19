@@ -13,6 +13,8 @@ const addToScrapboxPagesPool = (title, lines) => {
   }
   const lineTexts = []
   for (const line of lines) {
+    // TODO: コメントを削除する
+    // TODO: 文末の空行の塊を削除する
     lineTexts.push(line.text || '')
   }
   if (lineTexts[lineTexts.length - 1] !== '') {
@@ -26,15 +28,29 @@ const addToScrapboxPagesPool = (title, lines) => {
     title,
     lines: lineTexts
   }
-  console.log('addToScrapboxPagesPool:', title)
+  // console.log('addToScrapboxPagesPool:', title)
 }
 
-const getParsedScrapboxPages = (pageTitleHashs = [], bookHashTag = '') => {
+const getParsedScrapboxPages = (pageTitleHashs = [], bookHashTagName = '') => {
+  const pages = []
+  const formattedBookHashTagName = bookHashTagName.trim().replace(/\s/g, '_')
+  const bookHashTag = '#' + formattedBookHashTagName
+
   for (const pageTitleHash of pageTitleHashs) {
-    //
+    const page = parsedScrapboxPages[pageTitleHash]
+    if (!page) {
+      continue
+    }
+    if (formattedBookHashTagName && !page.lines.includes(bookHashTag)) {
+      page.lines.push(bookHashTag)
+    }
+    // TODO: 目次を生成する？
+    pages.push(page)
   }
+  return { pages }
 }
 
 module.exports = {
-  addToScrapboxPagesPool
+  addToScrapboxPagesPool,
+  getParsedScrapboxPages
 }
