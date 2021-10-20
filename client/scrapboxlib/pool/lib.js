@@ -17,19 +17,46 @@ const removeTrailingEmptyLines = lines => {
 }
 
 const removeCommentLines = lines => {
-  const markOpen = '[#'
-  const markClose = ']'
+  const markCommentOpen = '[#'
 
-  const parse = line => {
+  const removeComments = line => {
+    const commentRanges = []
+    const range = []
+    let unclosedBracketsCounter = 0
+    for (let charIdx = 0; charIdx < line.length; charIdx++) {
+      const char = line[charIdx]
+      const seq = char + (line[charIdx + 1] || '')
+      if (range.length === 0 && seq === markCommentOpen) {
+        range.push(charIdx)
+      } else if (char === ']') {
+        if (unclosedBracketsCounter === 0) {
+          range.push(charIdx)
+          commentRanges.push([range[0], range[1]])
+          range.length = 0
+        } else {
+          unclosedBracketsCounter -= 1
+        }
+      } else if (char === '[') {
+        unclosedBracketsCounter += 1
+      }
+    }
+
+    console.log("###", commentRanges)
+    let newLine = ''
+    for (const commentRange of commentRanges) {
+
+    }
+
+    return line
   }
 
   const newLines = []
   for (const line of lines) {
-    if (!line.includes(markOpen)) {
+    if (!line.includes(markCommentOpen)) {
       newLines.push(line)
       continue
     }
-    parse(line)
+    newLines.push(removeComments(line))
   }
   return newLines
 }
