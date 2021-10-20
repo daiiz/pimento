@@ -1,4 +1,5 @@
-const { calcPageTitleHash } = require('./lib')
+const { calcPageTitleHash } = require('../lib')
+const { removeTrailingEmptyLines, removeCommentLines } = require('./lib')
 
 // 解析したScrapboxページ本文情報を保持する
 const parsedScrapboxPages = Object.create(null)
@@ -10,12 +11,13 @@ const addToScrapboxPagesPool = (title, lines) => {
   if (parsedScrapboxPages[pageTitleHash]) {
     return
   }
-  const lineTexts = []
+  let lineTexts = []
   for (const line of lines) {
-    // TODO: コメントを削除する
-    // TODO: 文末の空行の塊を削除する
     lineTexts.push(line.text || '')
   }
+  // 不要な情報を削除する
+  lineTexts = removeCommentLines(lineTexts)
+  lineTexts = removeTrailingEmptyLines(lineTexts)
   if (lineTexts[lineTexts.length - 1] !== '') {
     lineTexts.push('')
   }

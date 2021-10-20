@@ -5,7 +5,7 @@ const { addBlockInfo, normalizeTextBlockLevels } = require('./blockify')
 const { Texify } = require('./texify')
 const { handleScrapboxBlockNode } = require('./block-nodes')
 const { handleSpecialLine } = require('./special-nodes')
-const { addToScrapboxPagesPool } = require('./pool')
+const { addToScrapboxPagesPool } = require('./pool/')
 
 const removeEmptyLinesBothEnds = lines => {
   if (lines.length <= 2) return lines

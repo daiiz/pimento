@@ -2,7 +2,7 @@
 
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
-const { getParsedScrapboxPages } = require('./scrapboxlib/pool')
+const { getParsedScrapboxPages } = require('./scrapboxlib/pool/')
 const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
