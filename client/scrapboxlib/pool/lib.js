@@ -20,13 +20,18 @@ const removeCommentLines = lines => {
   const markOpen = '[#'
   const markClose = ']'
 
-  //
-  const parse = line => {}
+  const parse = line => {
+  }
 
+  const newLines = []
   for (const line of lines) {
+    if (!line.includes(markOpen)) {
+      newLines.push(line)
+      continue
+    }
     parse(line)
   }
-  return lines
+  return newLines
 }
 
 module.exports = {
