@@ -41,13 +41,15 @@ const removeCommentLines = lines => {
       }
     }
 
-    console.log("###", commentRanges)
-    let newLine = ''
+    const newLine = []
+    let startPosition = 0
     for (const commentRange of commentRanges) {
-
+      const subStr = line.substring(startPosition, commentRange[0])
+      newLine.push(subStr)
+      startPosition = commentRange[1] + 1
     }
-
-    return line
+    newLine.push(line.substring(startPosition, line.length))
+    return newLine.join('')
   }
 
   const newLines = []
