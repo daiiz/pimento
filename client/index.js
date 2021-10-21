@@ -190,12 +190,12 @@ window.onmessage = async function ({ origin, data }) {
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('default'), renderedPageTitleHashs))
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('icon'), renderedPageTitleHashs))
       const scrapboxData = getParsedScrapboxPages(renderedPageTitleHashs, bookTitle)
-      console.log('---->', scrapboxData)
 
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
       const payload = {
         data: uploadData,
+        scrapboxData,
         gyazoIds: uploadGyazoIds,
         projectName,
         buildOptions: {
