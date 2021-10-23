@@ -3,14 +3,15 @@ const initDependencies = () => {
   window.rawData.textBlockDeps = Object.create(null)
 }
 
-// const existsTextBlock = pageTitleHash => {
-//   return pageTitleHash in window.rawData.textBlockDeps
-// }
-
 // 参照元と参照先を登録する
 const addToTextBlockDependencies = (pageTitleHashFrom, pageTitleHashTo) => {
-  if (pageTitleHashFrom && pageTitleHashTo) {
-    window.rawData.textBlockDeps[pageTitleHashFrom] = pageTitleHashTo
+  if (!pageTitleHashFrom || !pageTitleHashTo) return
+  const deps = window.rawData.textBlockDeps
+  if (!deps[pageTitleHashFrom]) {
+    deps[pageTitleHashFrom] = []
+  }
+  if (!deps[pageTitleHashFrom].includes(pageTitleHashTo)) {
+    deps[pageTitleHashFrom].push(pageTitleHashTo)
   }
 }
 
