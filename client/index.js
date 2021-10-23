@@ -9,6 +9,7 @@ const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs, getGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
+const { initDependencies } = require('./dependencies')
 require('./globals')
 
 const isInFrame = () => {
@@ -42,6 +43,7 @@ const createPage = async ({ texts, pageTitle, pageHash }) => {
 }
 
 const main = async ({ type, body, bookTitle, toc }) => {
+  console.log("####---", toc)
   keepChapterHashs(toc)
   switch (type) {
     // 単一ページのプレビュー
@@ -144,6 +146,7 @@ window.onmessage = async function ({ origin, data }) {
     initPageEmbedCounter(refs.map(page => page.title))
   }
   initPageRenderCounter()
+  initDependencies()
 
   if (refs && refs.length > 0) {
     await buildRefPages(refs)
@@ -197,6 +200,7 @@ window.onmessage = async function ({ origin, data }) {
         data: uploadData,
         scrapboxData,
         gyazoIds: uploadGyazoIds,
+        textBlockDeps: [],
         projectName,
         buildOptions: {
           whole: type === 'whole-pages',
