@@ -43,13 +43,12 @@ const createPage = async ({ texts, pageTitle, pageHash }) => {
 }
 
 const main = async ({ type, body, bookTitle, toc }) => {
-  console.log("####---", toc)
-  keepChapterHashs(toc)
   switch (type) {
     // 単一ページのプレビュー
     // 製本 (目次以外のページで起動されたとき)
     case 'page': {
       const { title, lines } = body
+      keepChapterHashs({ flatChaps: [title] })
       const res = parseScrapboxPage({ title, lines })
       return createPage({
         pageTitle: title,
@@ -59,6 +58,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
     }
     // 製本 (目次ページで起動されたとき)
     case 'whole-pages': {
+      keepChapterHashs(toc)
       const pages = body // { pageId: { title, lines } }
       await buildRefPages(Object.values(pages))
       createBook(toc)
@@ -193,6 +193,7 @@ window.onmessage = async function ({ origin, data }) {
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('default'), renderedPageTitleHashs))
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('icon'), renderedPageTitleHashs))
       const scrapboxData = getParsedScrapboxPages(renderedPageTitleHashs, bookTitle)
+      // console.log("####$", pageTitle, pageTitleHash, renderedPageTitleHashs)
 
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
