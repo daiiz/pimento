@@ -14,6 +14,7 @@ const initPageEmbedCounter = titles => {
 }
 
 // ページの参照回数を管理する
+// linesに追加された際に実行される
 const incrementPageEmbedCounter = pageTitleHash => {
   if (!existsPage(pageTitleHash)) {
     // XXX: 仮定義付き単ページプレビュー機能時に確実にエラーになるのでログ出力に留める
