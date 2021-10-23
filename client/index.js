@@ -7,7 +7,7 @@ const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
-const { initPageEmbedCounter, keepChapterHashs, getChapterHashs, getGyazoIdsGroup } = require('./page-embed-counter')
+const { initPageEmbedCounter, keepChapterHashs, getChapterHashs, getAppendixPages, getGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
 const { initDependencies, getTableOfContents } = require('./dependencies')
 require('./globals')
@@ -194,8 +194,8 @@ window.onmessage = async function ({ origin, data }) {
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('icon'), renderedPageTitleHashs))
       const scrapboxData = getParsedScrapboxPages(renderedPageTitleHashs, bookTitle)
       // console.log("####$", pageTitle, pageTitleHash, renderedPageTitleHashs)
-      const textBlockDeps = getTableOfContents(getChapterHashs())
-      console.log('&&&', textBlockDeps)
+      const mainDeps = getTableOfContents(getChapterHashs())
+      const appendixDeps = getTableOfContents(getAppendixPages())
 
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
@@ -203,7 +203,10 @@ window.onmessage = async function ({ origin, data }) {
         data: uploadData,
         scrapboxData,
         gyazoIds: uploadGyazoIds,
-        textBlockDeps,
+        textBlockDeps: {
+          main: mainDeps,
+          appendix: appendixDeps
+        },
         projectName,
         buildOptions: {
           whole: type === 'whole-pages',
@@ -214,6 +217,7 @@ window.onmessage = async function ({ origin, data }) {
         // 付随情報
         configs: window.pimentoConfigs || {}
       }
+      console.log("$$$", payload)
 
       if (isInFrame()) {
         // upload, buildともに向こうに任せる

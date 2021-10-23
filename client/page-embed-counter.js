@@ -34,6 +34,11 @@ const existsPage = pageTitleHash => {
 
 // 本文中で埋め込まれていないページは付録として扱う
 const getAppendixPages = () => {
+  // 既に計算済みであるならばそれを返す
+  const appendixChapterHashs = window.rawData.appendixChapterHashs
+  if (appendixChapterHashs.length > 0) {
+    return appendixChapterHashs
+  }
   const pageTitleHashs = Object.keys(window.rawData.pageEmbedCounter) // Order?
   const res = []
   for (const hash of pageTitleHashs) {
@@ -41,6 +46,7 @@ const getAppendixPages = () => {
       res.push(hash)
     }
   }
+  window.rawData.appendixChapterHashs = res
   return res
 }
 

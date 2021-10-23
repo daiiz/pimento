@@ -28,11 +28,9 @@ const getTableOfContents = (rootPageTitleHashs = []) => {
       printDependencies(depPageTitleHash, level + 1)
     }
   }
-
   for (const pageTitleHash of rootPageTitleHashs) {
     printDependencies(pageTitleHash, 0)
   }
-
   return res
 }
 
