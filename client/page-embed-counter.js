@@ -52,7 +52,6 @@ const getAppendixPages = () => {
 
 // 章立て情報を保持する
 const keepChapterHashs = (toc = {}) => {
-  console.log("####", toc)
   const chapterHashs = new Set()
   for (const title of (toc.flatChaps || [])) {
     chapterHashs.add(calcPageTitleHash(title))

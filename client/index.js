@@ -193,7 +193,7 @@ window.onmessage = async function ({ origin, data }) {
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('default'), renderedPageTitleHashs))
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('icon'), renderedPageTitleHashs))
       const scrapboxData = getParsedScrapboxPages(renderedPageTitleHashs, bookTitle)
-      // console.log("####$", pageTitle, pageTitleHash, renderedPageTitleHashs)
+
       const mainDeps = getTableOfContents(getChapterHashs())
       const appendixDeps = getTableOfContents(getAppendixPages())
 
@@ -217,7 +217,6 @@ window.onmessage = async function ({ origin, data }) {
         // 付随情報
         configs: window.pimentoConfigs || {}
       }
-      console.log("$$$", payload)
 
       if (isInFrame()) {
         // upload, buildともに向こうに任せる
