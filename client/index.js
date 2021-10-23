@@ -7,9 +7,9 @@ const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
-const { initPageEmbedCounter, keepChapterHashs, getGyazoIdsGroup } = require('./page-embed-counter')
+const { initPageEmbedCounter, keepChapterHashs, getChapterHashs, getGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
-const { initDependencies } = require('./dependencies')
+const { initDependencies, getTableOfContents } = require('./dependencies')
 require('./globals')
 
 const isInFrame = () => {
@@ -194,6 +194,8 @@ window.onmessage = async function ({ origin, data }) {
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('icon'), renderedPageTitleHashs))
       const scrapboxData = getParsedScrapboxPages(renderedPageTitleHashs, bookTitle)
       // console.log("####$", pageTitle, pageTitleHash, renderedPageTitleHashs)
+      const textBlockDeps = getTableOfContents(getChapterHashs())
+      console.log('&&&', textBlockDeps)
 
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
@@ -201,7 +203,7 @@ window.onmessage = async function ({ origin, data }) {
         data: uploadData,
         scrapboxData,
         gyazoIds: uploadGyazoIds,
-        textBlockDeps: [],
+        textBlockDeps,
         projectName,
         buildOptions: {
           whole: type === 'whole-pages',

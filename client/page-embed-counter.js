@@ -65,6 +65,10 @@ const isChapter = titleHash => {
   return window.rawData.chapterHashs.includes(titleHash)
 }
 
+const getChapterHashs = () => {
+  return [...window.rawData.chapterHashs]
+}
+
 const memoPageEmbedGyazoIds = (pageTitleHash, gyazoIds = [], imageType = 'default') => {
   if (!pageTitleHash || gyazoIds.length === 0) {
     return
@@ -98,6 +102,7 @@ module.exports = {
   existsPage,
   getAppendixPages,
   keepChapterHashs,
+  getChapterHashs,
   isChapter,
   memoPageEmbedGyazoIds,
   getGyazoIdsGroup
