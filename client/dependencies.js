@@ -12,14 +12,13 @@ const getTableOfContents = (rootPageTitleHashs = []) => {
   const deps = window.rawData.textBlockDeps
   const renderedPages = new Set([...rootPageTitleHashs, ...getRenderedPages()])
   const pageRefs = getPageRefs()
-  console.log('---->', rootPageTitleHashs, pageRefs, renderedPages)
+  // console.log('---->', rootPageTitleHashs, pageRefs, renderedPages)
 
   // 深さ優先で探索する
   const visited = new Set()
   const printDependencies = (pageTitleHash, level = 0) => {
     visited.add(pageTitleHash)
     if (renderedPages.has(pageTitleHash)) {
-      // console.log(pageTitleHash, level)
       res.push({ pageTitleHash, pageTitle: pageRefs[pageTitleHash], level })
     }
     for (const depPageTitleHash of deps[pageTitleHash] || []) {
