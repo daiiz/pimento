@@ -14,6 +14,7 @@ const initPageEmbedCounter = titles => {
 }
 
 // ページの参照回数を管理する
+// linesに追加された際に実行される
 const incrementPageEmbedCounter = pageTitleHash => {
   if (!existsPage(pageTitleHash)) {
     // XXX: 仮定義付き単ページプレビュー機能時に確実にエラーになるのでログ出力に留める
@@ -32,7 +33,12 @@ const existsPage = pageTitleHash => {
 }
 
 // 本文中で埋め込まれていないページは付録として扱う
-const getAppendixPages = () => {
+const getAppendixHashs = () => {
+  // 既に計算済みであるならばそれを返す
+  const appendixChapterHashs = window.rawData.appendixChapterHashs
+  if (appendixChapterHashs.length > 0) {
+    return [...appendixChapterHashs]
+  }
   const pageTitleHashs = Object.keys(window.rawData.pageEmbedCounter) // Order?
   const res = []
   for (const hash of pageTitleHashs) {
@@ -40,6 +46,7 @@ const getAppendixPages = () => {
       res.push(hash)
     }
   }
+  window.rawData.appendixChapterHashs = res
   return res
 }
 
@@ -61,6 +68,10 @@ const keepChapterHashs = (toc = {}) => {
 
 const isChapter = titleHash => {
   return window.rawData.chapterHashs.includes(titleHash)
+}
+
+const getChapterHashs = () => {
+  return [...window.rawData.chapterHashs]
 }
 
 const memoPageEmbedGyazoIds = (pageTitleHash, gyazoIds = [], imageType = 'default') => {
@@ -94,8 +105,9 @@ module.exports = {
   initPageEmbedCounter,
   incrementPageEmbedCounter,
   existsPage,
-  getAppendixPages,
+  getAppendixHashs,
   keepChapterHashs,
+  getChapterHashs,
   isChapter,
   memoPageEmbedGyazoIds,
   getGyazoIdsGroup

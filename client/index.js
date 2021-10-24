@@ -7,8 +7,9 @@ const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
-const { initPageEmbedCounter, keepChapterHashs, getGyazoIdsGroup } = require('./page-embed-counter')
+const { initPageEmbedCounter, keepChapterHashs, getChapterHashs, getAppendixHashs, getGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
+const { initDependencies, getTableOfContents } = require('./dependencies')
 require('./globals')
 
 const isInFrame = () => {
@@ -42,12 +43,12 @@ const createPage = async ({ texts, pageTitle, pageHash }) => {
 }
 
 const main = async ({ type, body, bookTitle, toc }) => {
-  keepChapterHashs(toc)
   switch (type) {
     // 単一ページのプレビュー
     // 製本 (目次以外のページで起動されたとき)
     case 'page': {
       const { title, lines } = body
+      keepChapterHashs({ flatChaps: [title] })
       const res = parseScrapboxPage({ title, lines })
       return createPage({
         pageTitle: title,
@@ -57,6 +58,7 @@ const main = async ({ type, body, bookTitle, toc }) => {
     }
     // 製本 (目次ページで起動されたとき)
     case 'whole-pages': {
+      keepChapterHashs(toc)
       const pages = body // { pageId: { title, lines } }
       await buildRefPages(Object.values(pages))
       createBook(toc)
@@ -144,6 +146,7 @@ window.onmessage = async function ({ origin, data }) {
     initPageEmbedCounter(refs.map(page => page.title))
   }
   initPageRenderCounter()
+  initDependencies()
 
   if (refs && refs.length > 0) {
     await buildRefPages(refs)
@@ -191,12 +194,19 @@ window.onmessage = async function ({ origin, data }) {
       bookGyazoIds.push(...identifyRenderedImages(getGyazoIdsGroup('icon'), renderedPageTitleHashs))
       const scrapboxData = getParsedScrapboxPages(renderedPageTitleHashs, bookTitle)
 
+      const mainDeps = getTableOfContents(getChapterHashs())
+      const appendixDeps = getTableOfContents(getAppendixHashs())
+
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
       const payload = {
         data: uploadData,
         scrapboxData,
         gyazoIds: uploadGyazoIds,
+        textBlockDeps: {
+          main: mainDeps,
+          appendix: appendixDeps
+        },
         projectName,
         buildOptions: {
           whole: type === 'whole-pages',

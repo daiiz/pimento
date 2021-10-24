@@ -30,6 +30,7 @@ window.rawData.pageEmbedCounter = Object.create(null)
 window.rawData.pageEmbedGyazoIds = Object.create(null)
 window.rawData.pageEmbedIconGyazoIds = Object.create(null)
 window.rawData.chapterHashs = []
+window.rawData.appendixChapterHashs = []
 
 // See: configs.js
 window.pimentoConfigs = {
