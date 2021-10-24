@@ -1,8 +1,8 @@
 const { calcPageTitleHash, texEscape, backSlash } = require('./scrapboxlib/lib')
-const { incrementPageEmbedCounter, getAppendixPages } = require('./page-embed-counter')
+const { incrementPageEmbedCounter, getAppendixHashs } = require('./page-embed-counter')
 
 const createBookAppendix = (toc = { parts: {} }) => {
-  const appendixHashs = getAppendixPages()
+  const appendixHashs = getAppendixHashs()
   console.log('APPENDIXS:', appendixHashs)
   if (appendixHashs.length === 0) {
     window.funcs.appendixContent = () => {

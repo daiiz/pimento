@@ -7,7 +7,7 @@ const { applyConfigs, getIndexInfo, getAppendixInfo } = require('./configs')
 const { uploadImages, identifyRenderedImages, extractGyazoIcons } = require('./images')
 const { createBook, createBookAppendix } = require('./book')
 const { uploadTexDocument, createTexDocument } = require('./upload')
-const { initPageEmbedCounter, keepChapterHashs, getChapterHashs, getAppendixPages, getGyazoIdsGroup } = require('./page-embed-counter')
+const { initPageEmbedCounter, keepChapterHashs, getChapterHashs, getAppendixHashs, getGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
 const { initDependencies, getTableOfContents } = require('./dependencies')
 require('./globals')
@@ -195,7 +195,7 @@ window.onmessage = async function ({ origin, data }) {
       const scrapboxData = getParsedScrapboxPages(renderedPageTitleHashs, bookTitle)
 
       const mainDeps = getTableOfContents(getChapterHashs())
-      const appendixDeps = getTableOfContents(getAppendixPages())
+      const appendixDeps = getTableOfContents(getAppendixHashs())
 
       const uploadGyazoIds = Array.from(new Set(bookGyazoIds))
       const uploadData = createTexDocument(generatedData)
