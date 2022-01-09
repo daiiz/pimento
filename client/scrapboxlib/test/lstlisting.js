@@ -32,24 +32,24 @@ const cases = [
       '\\end{lstlisting}'
     ]
   },
-  {
-    name: 'user-tex block',
-    source: [
-      'code:tex',
-      '\t% Comments',
-      '\t\\begin{displaymath}',
-      '\t  \\int^{b}_{a} f(x) dx = \\lim_{n \\to \\infty} \\sum^{n-1}_{i=0} f(x_{i}) \\Delta x',
-      '\t\\end{displaymath}'
-    ],
-    expect: [
-      '%===== <user-tex> =====',
-      '% Comments',
-      '\\begin{displaymath}',
-      '  \\int^{b}_{a} f(x) dx = \\lim_{n \\to \\infty} \\sum^{n-1}_{i=0} f(x_{i}) \\Delta x',
-      '\\end{displaymath}',
-      '%===== </user-tex> ====='
-    ]
-  },
+  // {
+  //   name: 'user-tex block',
+  //   source: [
+  //     'code:tex',
+  //     '\t% Comments',
+  //     '\t\\begin{displaymath}',
+  //     '\t  \\int^{b}_{a} f(x) dx = \\lim_{n \\to \\infty} \\sum^{n-1}_{i=0} f(x_{i}) \\Delta x',
+  //     '\t\\end{displaymath}'
+  //   ],
+  //   expect: [
+  //     '%===== <user-tex> =====',
+  //     '% Comments',
+  //     '\\begin{displaymath}',
+  //     '  \\int^{b}_{a} f(x) dx = \\lim_{n \\to \\infty} \\sum^{n-1}_{i=0} f(x_{i}) \\Delta x',
+  //     '\\end{displaymath}',
+  //     '%===== </user-tex> ====='
+  //   ]
+  // },
   {
     name: 'keep blank lines',
     source: [
@@ -175,44 +175,44 @@ const cases = [
       '',
       'Good!\\\\'
     ]
-  },
-  {
-    name: 'user-tex in itemize',
-    source: [
-      'Example of placing code blocks inside bullets',
-      '\tlevel-1',
-      '\t\tlevel-2',
-      '\t\t\tcode:level-3.txt',
-      '\t\t\t\tHello,',
-      '\t\t\t\tWorld!',
-      '\t\t\tcode:tex',
-      '\t\t\t\t\\begin{eqnarray*}',
-      '\t\t\t\t  2x_1 + x_2 & = & 10 \\\\',
-      '\t\t\t\t  3x_2 & = & 6',
-      '\t\t\t\t\\end{eqnarray*}'
-    ],
-    expect: [
-      'Example of placing code blocks inside bullets',
-      '\\begin{itemize}', // 1
-      '  \\item level-1',
-      '  \\begin{itemize}', // 2
-      '    \\item level-2',
-      '    \\begin{itemize}', // 3
-      '      \\item \\begin{lstlisting}[style=pimento-inline,frame=tb,caption=level-3.txt]',
-      'Hello,',
-      'World!',
-      '      \\end{lstlisting}',
-      '      \\item %===== <user-tex> =====',
-      '\\begin{eqnarray*}',
-      '  2x_1 + x_2 & = & 10 \\\\',
-      '  3x_2 & = & 6',
-      '\\end{eqnarray*}',
-      '      %===== </user-tex> =====',
-      '    \\end{itemize}', // 3
-      '  \\end{itemize}', // 2
-      '\\end{itemize}' // 1
-    ]
   }
+  // {
+  //   name: 'user-tex in itemize',
+  //   source: [
+  //     'Example of placing code blocks inside bullets',
+  //     '\tlevel-1',
+  //     '\t\tlevel-2',
+  //     '\t\t\tcode:level-3.txt',
+  //     '\t\t\t\tHello,',
+  //     '\t\t\t\tWorld!',
+  //     '\t\t\tcode:tex',
+  //     '\t\t\t\t\\begin{eqnarray*}',
+  //     '\t\t\t\t  2x_1 + x_2 & = & 10 \\\\',
+  //     '\t\t\t\t  3x_2 & = & 6',
+  //     '\t\t\t\t\\end{eqnarray*}'
+  //   ],
+  //   expect: [
+  //     'Example of placing code blocks inside bullets',
+  //     '\\begin{itemize}', // 1
+  //     '  \\item level-1',
+  //     '  \\begin{itemize}', // 2
+  //     '    \\item level-2',
+  //     '    \\begin{itemize}', // 3
+  //     '      \\item \\begin{lstlisting}[style=pimento-inline,frame=tb,caption=level-3.txt]',
+  //     'Hello,',
+  //     'World!',
+  //     '      \\end{lstlisting}',
+  //     '      \\item %===== <user-tex> =====',
+  //     '\\begin{eqnarray*}',
+  //     '  2x_1 + x_2 & = & 10 \\\\',
+  //     '  3x_2 & = & 6',
+  //     '\\end{eqnarray*}',
+  //     '      %===== </user-tex> =====',
+  //     '    \\end{itemize}', // 3
+  //     '  \\end{itemize}', // 2
+  //     '\\end{itemize}' // 1
+  //   ]
+  // }
 ]
 
 runTest('Convert to lstlisting', cases)
