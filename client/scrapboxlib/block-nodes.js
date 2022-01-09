@@ -45,11 +45,11 @@ const handleScrapboxBlockNode = (line) => {
       info.frame = 'tb'
       if (fileName === 'tex') {
         // ユーザーが書いたTeXドキュメントを直接埋め込む
-        return [
-          prefixBegin + '%===== <user-tex> =====',
-          ...contentLines.map(line => texEscapeForCodeBlock(line)),
-          prefixEnd + '%===== </user-tex> ====='
-        ]
+        // return [
+        //   prefixBegin + '%===== <user-tex> =====',
+        //   ...contentLines.map(line => texEscapeForCodeBlock(line)),
+        //   prefixEnd + '%===== </user-tex> ====='
+        // ]
       }
       if (codeHeadPattern.test(fileName)) {
         const [, ref, caption] = fileName.match(codeHeadPattern)
