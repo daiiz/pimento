@@ -65,6 +65,8 @@ def remove_user_pdf_file(file_path):
 def run_command(cmd_list = [], workDir = None):
   if len(cmd_list) == 0:
     raise Exception('Invalid cmd_list')
+  if (cmd_list[0] not in ['lualatex', 'upmendex', 'cp']):
+    raise Exception('Invalid command!')
   new_env = dict()
   new_env['PATH'] = os.environ['PATH']
   subprocess.run(cmd_list, shell=False, cwd=workDir, env=new_env, check=True)
