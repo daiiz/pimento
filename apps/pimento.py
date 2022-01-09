@@ -82,17 +82,17 @@ def build_page_or_book(page_title_hash, build_options, docDir):
     os.remove(auxFilePath)
   try:
     if is_local_tools_mode():
-      subprocess.check_call(['lualatex', texFileName], shell=False, cwd=workDir)
+      subprocess.check_call(['lualatex', '-no-shell-escape', texFileName], shell=False, cwd=workDir)
     else:
-      subprocess.check_call(['lualatex', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
+      subprocess.check_call(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
   except Exception as e:
     pass
 
   # 索引を作る
   if insertIndex:
     try:
-      subprocess.check_call(['upmendex', '-g', texFileName], shell=False, cwd=workDir)
-      subprocess.check_call(['lualatex', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
+      subprocess.check_call(['upmendex', '-no-shell-escape', '-g', texFileName], shell=False, cwd=workDir)
+      subprocess.check_call(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
     except Exception as e:
       print(e)
       return ''
@@ -101,7 +101,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
   try:
     # TeX文書内の参照番号解決のため、二度実行する
     if isWhole:
-      subprocess.check_call(['lualatex', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
+      subprocess.check_call(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
     subprocess.check_call(['cp', workDir + texFileName + '.pdf', pdf_file_path], shell=False)
   except Exception as e:
     print(e)
