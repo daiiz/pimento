@@ -1,5 +1,5 @@
 from flask import Flask, g, render_template, send_file, jsonify, request, abort
-import os, subprocess, datetime, hashlib, json
+import os, datetime, hashlib, json
 import pimento, gyazo
 from lib import is_debug, is_local_tools_mode
 from middlewares import check_firebase_user, check_project_id, only_for_local_tools
