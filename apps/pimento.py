@@ -62,6 +62,13 @@ def remove_user_pdf_file(file_path):
     print('removed:', file_path)
 
 
+def run_command(cmd_list = [], workDir = None):
+  if len(cmd_list) == 0:
+    raise Exception('Invalid cmd_list')
+  new_env = dict()
+  new_env['PATH'] = os.environ['PATH']
+  subprocess.run(cmd_list, shell=False, cwd=workDir, env=new_env, check=True)
+
 def build_page_or_book(page_title_hash, build_options, docDir):
   workDir = get_work_dir(docDir) + '/'
   print('workDir: ', workDir)
@@ -82,17 +89,17 @@ def build_page_or_book(page_title_hash, build_options, docDir):
     os.remove(auxFilePath)
   try:
     if is_local_tools_mode():
-      subprocess.check_call(['lualatex', '-no-shell-escape', texFileName], shell=False, cwd=workDir)
+      run_command(['lualatex', '-no-shell-escape', texFileName], workDir)
     else:
-      subprocess.check_call(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
+      run_command(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], workDir)
   except Exception as e:
     pass
 
   # 索引を作る
   if insertIndex:
     try:
-      subprocess.check_call(['upmendex', '-no-shell-escape', '-g', texFileName], shell=False, cwd=workDir)
-      subprocess.check_call(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
+      run_command(['upmendex', '-no-shell-escape', '-g', texFileName], workDir)
+      run_command(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], workDir)
     except Exception as e:
       print(e)
       return ''
@@ -101,8 +108,8 @@ def build_page_or_book(page_title_hash, build_options, docDir):
   try:
     # TeX文書内の参照番号解決のため、二度実行する
     if isWhole:
-      subprocess.check_call(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
-    subprocess.check_call(['cp', workDir + texFileName + '.pdf', pdf_file_path], shell=False)
+      run_command(['lualatex', '-shell-escape', '-interaction', 'batchmode', texFileName], workDir)
+    run_command(['cp', workDir + texFileName + '.pdf', pdf_file_path])
   except Exception as e:
     print(e)
     return ''
