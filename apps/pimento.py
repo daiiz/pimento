@@ -71,6 +71,7 @@ def run_command(cmd_list = [], workDir = None):
   new_env['PATH'] = os.environ['PATH']
   subprocess.run(cmd_list, shell=False, cwd=workDir, env=new_env, check=True)
 
+
 def build_page_or_book(page_title_hash, build_options, docDir):
   workDir = get_work_dir(docDir) + '/'
   print('workDir: ', workDir)
