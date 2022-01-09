@@ -102,7 +102,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
     # TeX文書内の参照番号解決のため、二度実行する
     if isWhole:
       subprocess.check_call(['lualatex', '-interaction', 'batchmode', texFileName], shell=False, cwd=workDir)
-    subprocess.check_call(['cp', workDir + texFileName + '.pdf', pdf_file_path])
+    subprocess.check_call(['cp', workDir + texFileName + '.pdf', pdf_file_path], shell=False)
   except Exception as e:
     print(e)
     return ''
