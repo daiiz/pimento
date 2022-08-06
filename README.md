@@ -3,29 +3,35 @@
 ![Converter](https://github.com/daiiz/pimento/workflows/Converter/badge.svg)
 
 ## Build docker image
+
 ```
 $ make build
 ```
 
 ## Run local server on docker
+
 ```
 $ make run-server
 # or
 $ make run-server-dev
 ```
-Start the local server on port 5000.
+
+Start the local server on port 5001.
 
 ## Scrapbox UserScript
+
 ```js
 // script.js
-import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js"
-setPimentoOrigin("http://localhost:5000")
+import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js";
+setPimentoOrigin("http://localhost:5001");
 ```
 
 ## Settings
+
 See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
 
 ### Options
+
 ```tex
 % =====pimento-options=====
 % icons=gray // gray, color, text*, ignore
@@ -36,6 +42,7 @@ See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
 ```
 
 ## DevTips: Build TeX documents
+
 ```
 $ make run-bash
 # cd /var/apps/docs
@@ -43,6 +50,7 @@ $ make run-bash
 ```
 
 ## DevTips: Develop client app
+
 ```
 $ npm run watch
 ```
