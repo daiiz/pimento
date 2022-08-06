@@ -1,4 +1,5 @@
-FROM nikolaik/python-nodejs:python3.6-nodejs14
+# https://hub.docker.com/r/nikolaik/python-nodejs
+FROM nikolaik/python-nodejs:python3.10-nodejs16
 
 # Python
 # apps
