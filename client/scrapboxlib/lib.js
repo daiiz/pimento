@@ -63,9 +63,11 @@ const decorateIconNodes = (lines, title) => {
 }
 
 const getGyazoImageId = srcUrl => {
-  const gyazoOrigin = 'https://gyazo.com/'
-  if (!srcUrl.startsWith(gyazoOrigin)) return null
-  return srcUrl.replace(gyazoOrigin, '').split('/')[0]
+  const gyazoOrigin = /^https?:\/\/(i\.)?gyazo\.com\//
+  if (!gyazoOrigin.test(srcUrl)) {
+    return null
+  }
+  return srcUrl.replace(gyazoOrigin, '').split(/[/.]/)[0]
 }
 
 const indentStr = (indent, showItemLabel = false) => {
