@@ -34,6 +34,7 @@ const getPageRefs = () => {
 const addToPageRefs = (title) => {
   const hash = calcPageTitleHash(title)
   pageRefs[hash] = title
+  console.log("....pageRefs", pageRefs)
   return hash
 }
 

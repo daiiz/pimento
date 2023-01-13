@@ -1,5 +1,6 @@
 const { calcPageTitleHash } = require('../lib')
 const { removeTrailingEmptyLines, removeCommentLines } = require('./lib')
+const { extractProjectNameAndPageTitle } = require('../texify')
 
 // 解析したScrapboxページ本文情報を保持する
 const parsedScrapboxPages = Object.create(null)
@@ -22,7 +23,9 @@ const addToScrapboxPagesPool = (title, lines) => {
     lineTexts.push('')
   }
   if (lineTexts[0] !== title) {
-    throw new Error(`Invalid lineTexts: ${title}`)
+    if (lineTexts[0] !== extractProjectNameAndPageTitle(title)[1]) {
+      throw new Error(`Invalid lineTexts: ${title}`)
+    }
   }
   // https://gyazo.com/3da60ef6ba212bfe7a026ea66c4e7f7d
   parsedScrapboxPages[pageTitleHash] = {

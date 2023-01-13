@@ -85,10 +85,12 @@ const main = async ({ type, body, bookTitle, toc }) => {
 
 // XXX: たぶんいい感じにmainと共通化できる
 // refs: [{ title, lines }]
-const buildRefPages = async refs => {
-  for (let { title, lines } of refs) {
+const buildRefPages = async (refs) => {
+  for (const ref of refs) {
+    let { lines, projectName } = ref
     lines = lines.map(text => ({ text }))
-    const res = parseScrapboxPage({ title, lines })
+    const title = projectName ? `/${projectName}/${ref.title}` : ref.title
+    const res = parseScrapboxPage({ title, lines, projectName })
     const pageHash = addToPageRefs(title)
     const texts = [
       '%------------------------------',
@@ -154,15 +156,18 @@ window.onmessage = async function ({ origin, data }) {
 
   // XXX: 引数形式揃えたい
   if (type === 'whole-pages') {
+    // XXX: Object.values(body) と refs は等しいっぽい
     initPageEmbedCounter(Object.values(body).map(page => page.title))
   } else if (type === 'page' && refs) {
-    initPageEmbedCounter(refs.map(page => page.title))
+    initPageEmbedCounter(refs.map(page => page.projectName ? `/${page.projectName}/${page.title}` : page.title))
   }
   initPageRenderCounter()
   initDependencies()
 
-  if (refs && refs.length > 0) {
-    await buildRefPages(refs)
+  if (type === 'page') {
+    if (refs && refs.length > 0) {
+      await buildRefPages(refs)
+    }
   }
 
   const previewElement = document.querySelector('#preview')
