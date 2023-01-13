@@ -161,8 +161,10 @@ window.onmessage = async function ({ origin, data }) {
   initPageRenderCounter()
   initDependencies()
 
-  if (refs && refs.length > 0) {
-    await buildRefPages(refs)
+  if (type === 'page') {
+    if (refs && refs.length > 0) {
+      await buildRefPages(refs)
+    }
   }
 
   const previewElement = document.querySelector('#preview')
