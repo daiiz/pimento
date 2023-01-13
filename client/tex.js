@@ -1,4 +1,5 @@
 // Scrapbox記法の変換に必要不可欠なものはシステム側で定義しておく
+// template.texで上書き可能
 const appTemplateHeadLines = `% [by pimento] BEGIN
 % ベーシックな設定
 \\usepackage{hyperref}
@@ -74,6 +75,13 @@ const appTemplateHeadLines = `% [by pimento] BEGIN
 \\def\\subsectionautorefname~#1\\null{#1節}
 \\def\\subsubsectionautorefname#1\\null{#1節}
 \\def\\appendixautorefname#1\\null{付録#1\\null}
+
+% タイトル、著者名、日付の設定
+\\makeatletter
+\\renewcommand{\\title}[1]{\\gdef\\@title{\\bfseries\\sffamily\\gtfamily{#1}}}
+\\renewcommand{\\author}[1]{\\gdef\\@author{\\bfseries\\sffamily\\gtfamily{#1}}}
+\\renewcommand{\\date}[1]{\\gdef\\@date{\\bfseries\\sffamily\\gtfamily{#1}}}
+\\makeatother
 
 % [by pimento] END`.split('\n')
 
