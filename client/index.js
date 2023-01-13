@@ -1,5 +1,4 @@
 /* eslint-env browser */
-
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
 const { getParsedScrapboxPages } = require('./scrapboxlib/pool/')
@@ -10,6 +9,7 @@ const { uploadTexDocument, createTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs, getChapterHashs, getAppendixHashs, getGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
 const { initDependencies, getTableOfContents } = require('./dependencies')
+const { appTemplateHeadLines } = require('./tex')
 require('./globals')
 
 const isInFrame = () => {
@@ -135,6 +135,16 @@ window.onmessage = async function ({ origin, data }) {
 
   received = true
   window.clearInterval(timerForApiReady)
+
+  if (template.headLines) {
+    template.headLines = template.headLines.flatMap(x => {
+      if (x === '% =====pimento-system-defs=====') {
+        return ['', ...appTemplateHeadLines, '']
+      }
+      return x
+    })
+  }
+  console.log(".....!!!!!!2", template)
 
   applyConfigs(template)
   window.gyazoIcons = await extractGyazoIcons(icons)
