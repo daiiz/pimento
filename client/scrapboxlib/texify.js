@@ -126,6 +126,7 @@ const Texify = node => {
         }
       } else if (pathType === 'root') {
         // 外部プロジェクトへの参照
+        // ここを読む
         const url = texEscape('https://scrapbox.io' + href)
         return `${backSlash}url{` + texEscape(href) + '}' + `${backSlash}footnote{${backSlash}url{` + url + '}}'
       }
