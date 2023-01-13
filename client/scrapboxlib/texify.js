@@ -94,7 +94,14 @@ const Texify = node => {
       return text
     }
     case 'link': {
-      const { pathType, href } = node
+      const pathType = node.pathType
+      let href = node.href
+      if (pathType === 'root') {
+        // /daiiz/foo/bar -> foo/bar
+        const toks = href.replace(/^\//, '').split('/')
+        toks.shift()
+        href = toks.join('/')
+      }
       if (pathType === 'relative' || pathType === 'root') {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
