@@ -228,7 +228,8 @@ window.onmessage = async function ({ origin, data }) {
           refresh: !!refresh
         },
         // 付随情報
-        configs: window.pimentoConfigs || {}
+        configs: window.pimentoConfigs || {},
+        refs: refs || []
       }
 
       if (isInFrame()) {
