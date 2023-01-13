@@ -20,10 +20,7 @@ const patternRef = /^(?:ref|label)=(.+),*\s*$/i
 const handleSpecialLine = (line, title) => {
   switch (line._type) {
     case 'title': {
-      const text = line._projectName
-        ? `/${line._projectName}/${line.text}`
-        : line.text
-      const hash = addToPageRefs(text)
+      const hash = addToPageRefs(line.text)
       return [
         `\$\{window.textBlockName(level, showNumber)\}${texEscape(line.text)}} % Scrapbox page title line`,
         `${backSlash}label{textBlock-${hash}}`

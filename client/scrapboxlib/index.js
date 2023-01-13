@@ -39,7 +39,7 @@ const removeLineComments = texts => {
   return newTexts
 }
 
-const parseScrapboxPage = ({ title, lines, projectName }) => {
+const parseScrapboxPage = ({ title, lines }) => {
   addToScrapboxPagesPool(title, lines)
   const rawTexts = lines.map(line => line.text)
   let { abstractFuncCall, lineTexts } = separateAbstractFromTexts(rawTexts)
@@ -57,9 +57,6 @@ const parseScrapboxPage = ({ title, lines, projectName }) => {
 
   const texts = []
   for (const line of lineObjects) {
-    if (projectName) {
-      line._projectName = projectName
-    }
     // 独自に追加した特殊なタイプを処理
     if (line._type) {
       texts.push(...handleSpecialLine(line, title))

@@ -205,7 +205,7 @@ const normalizeTextBlockLevels = lines => {
         } else if (firstChildNode.pathType === 'root') {
           const [, pageTitle] = extractProjectNameAndPageTitle(firstChildNode.href)
           if (pageTitle) {
-            line._text = firstChildNode.href
+            line._text = pageTitle
             line._embed = true
           }
         }

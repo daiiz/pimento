@@ -108,7 +108,7 @@ const Texify = node => {
       if (pathType === 'root') {
         const [, pageTitle] = extractProjectNameAndPageTitle(node.href)
         if (pageTitle) {
-          // href = pageTitle
+          href = pageTitle
         } else {
           // [/daiiz/] のようなpageLinkだったとき
           isPage = false
@@ -117,7 +117,6 @@ const Texify = node => {
       if (pathType === 'relative' || (pathType === 'root' && isPage)) {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
-        console.log("[link]", node)
         const hash = addToPageRefs(href)
         // XXX: すべてのページリンクに対してインデックスをはってみる
         const index = `${backSlash}index{${texEscape(href)}}`
@@ -135,7 +134,6 @@ const Texify = node => {
             return `${texEscape(href)}${index} {${backSlash}scriptsize ${refStr}}`
           }
         } else {
-          // console.log("~~~~~~~~~~", hash, node.href, existsPage(hash))
           // EmptyLinkやInterLinkへの参照はプレーンテキスト扱いする
           return `${texEscape(href)}${index}`
         }
