@@ -95,7 +95,7 @@ const Texify = node => {
     }
     case 'link': {
       const { pathType, href } = node
-      if (pathType === 'relative') {
+      if (pathType === 'relative' || pathType === 'root') {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
         const hash = addToPageRefs(href)
