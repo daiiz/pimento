@@ -198,6 +198,7 @@ const normalizeTextBlockLevels = lines => {
         break
       }
       case 'link': {
+        // ここも拡張する必要がある
         if (firstChildNode.pathType === 'relative') {
           line._text = firstChildNode.href
           line._embed = true
