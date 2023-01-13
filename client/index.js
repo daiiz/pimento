@@ -233,7 +233,7 @@ window.onmessage = async function ({ origin, data }) {
 
       if (isInFrame()) {
         // upload, buildともに向こうに任せる
-        console.log('I am in frames.')
+        console.log('I am in frames.', payload)
         window.parent.postMessage(payload, pimentFrontendOrigin)
       } else {
         // ローカルツール向け
