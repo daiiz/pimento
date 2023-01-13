@@ -1,5 +1,19 @@
 // Scrapbox記法の変換に必要不可欠なものはシステム側で定義しておく
 const appTemplateHeadLines = `% [by pimento] BEGIN
+% ベーシックな設定
+\\usepackage{hyperref}
+\\usepackage[font=small]{caption}
+\\usepackage[most]{tcolorbox}
+\\usepackage{url}
+\\usepackage{listings}
+\\usepackage{bm}
+\\usepackage{amsmath}
+
+\\let\\maketitle\\relax
+\\usepackage{mytitle}
+\\usepackage{titlesec}
+\\usepackage{luatexja-fontspec}
+
 % 行内にアイコン画像を表示するための設定
 % https://tex.stackexchange.com/questions/258299/embed-small-image-within-a-line-of-text
 \\usepackage{calc}

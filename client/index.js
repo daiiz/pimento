@@ -136,10 +136,14 @@ window.onmessage = async function ({ origin, data }) {
   received = true
   window.clearInterval(timerForApiReady)
 
+  // Replace variables
   if (template.headLines) {
     template.headLines = template.headLines.flatMap(x => {
       if (x === '% =====pimento-system-defs=====') {
         return ['', ...appTemplateHeadLines, '']
+      }
+      if (x === '% =====pimento-book-title=====') {
+        return ['\\title{Pimentobook} % placeholder']
       }
       return x
     })
