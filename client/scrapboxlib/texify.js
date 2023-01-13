@@ -6,6 +6,14 @@ const getHeadingNumberInfo = () => {
   return { omitLevel: global.pimentoConfigs['heading-number-omit-level'] }
 }
 
+// /daiiz/foo/bar -> foo/bar
+const extractProjectNameAndPageTitle = (rootPath) => {
+  const toks = rootPath.replace(/^\//, '').split('/')
+  const projectName = toks.shift()
+  const pageTitle = toks.join('/')
+  return [projectName, pageTitle]
+}
+
 const Texify = node => {
   if (typeof node === 'string') return node
   if (node instanceof Array) {
@@ -95,14 +103,18 @@ const Texify = node => {
     }
     case 'link': {
       const pathType = node.pathType
+      let isPage = true
       let href = node.href
       if (pathType === 'root') {
-        // /daiiz/foo/bar -> foo/bar
-        const toks = href.replace(/^\//, '').split('/')
-        toks.shift()
-        href = toks.join('/')
+        const [, pageTitle] = extractProjectNameAndPageTitle(node.href)
+        if (pageTitle) {
+          href = pageTitle
+        } else {
+          // [/daiiz/] のようなpageLinkだったとき
+          isPage = false
+        }
       }
-      if (pathType === 'relative' || pathType === 'root') {
+      if (pathType === 'relative' || (pathType === 'root' && isPage)) {
         // xxxx (第N章)、xxxx (付録X) の形式を出し分ける
         // 括弧内の表現は\autorefを使うといい感じに解決される
         const hash = addToPageRefs(href)
@@ -160,5 +172,6 @@ const Texify = node => {
 }
 
 module.exports = {
-  Texify
+  Texify,
+  extractProjectNameAndPageTitle
 }
