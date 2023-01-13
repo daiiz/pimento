@@ -51,6 +51,8 @@ $ make run-bash
 
 ## DevTips: Develop client app
 
+Dockerコンテナ外で実行する。
+
 ```
 $ npm run dev
 ```
