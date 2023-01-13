@@ -148,7 +148,6 @@ window.onmessage = async function ({ origin, data }) {
       return x
     })
   }
-  console.log(".....!!!!!!2", template)
 
   applyConfigs(template)
   window.gyazoIcons = await extractGyazoIcons(icons)
