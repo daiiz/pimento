@@ -42,7 +42,8 @@ const createTexDocument = ({ pageTitle, pageTitleHash, pageText, pageTemplate, i
       // 「\title{}」行にpageTitleを挿入する
       // ここでmboxで区切る
       const parsed = jaParser.parse(formattedPageTitle)
-      pageHead[i] = '\\title{' + formattedPageTitle + '\\mbox{テスト2}}'
+      const parsedTitle = parsed.map(t => `\\mbox{${t}}`).join('')
+      pageHead[i] = '\\title{' + formattedPageTitle + '}'
     }
   }
 
