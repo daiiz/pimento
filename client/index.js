@@ -161,8 +161,10 @@ window.onmessage = async function ({ origin, data }) {
   initPageRenderCounter()
   initDependencies()
 
-  if (refs && refs.length > 0) {
-    await buildRefPages(refs)
+  if (type === 'page') {
+    if (refs && refs.length > 0) {
+      await buildRefPages(refs)
+    }
   }
 
   const previewElement = document.querySelector('#preview')
@@ -228,12 +230,13 @@ window.onmessage = async function ({ origin, data }) {
           refresh: !!refresh
         },
         // 付随情報
-        configs: window.pimentoConfigs || {}
+        configs: window.pimentoConfigs || {},
+        refs: refs || []
       }
 
       if (isInFrame()) {
         // upload, buildともに向こうに任せる
-        console.log('I am in frames.')
+        console.log('I am in frames.', payload)
         window.parent.postMessage(payload, pimentFrontendOrigin)
       } else {
         // ローカルツール向け
