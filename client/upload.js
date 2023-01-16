@@ -37,7 +37,15 @@ const createTexDocument = ({ pageTitle, pageTitleHash, pageText, pageTemplate, i
     const line = trimTexLine(pageHead[i])
     if (/\\title\{[^{}\\]+\}/.test(line)) {
       // 「\title{}」行にpageTitleを挿入する
-      pageHead[i] = '\\title{' + formattedPageTitle + '}'
+      let parsedTitle = formattedPageTitle
+      if (/\s/.test(formattedPageTitle)) {
+        // 空白で区切ってmboxで囲む
+        parsedTitle = formattedPageTitle
+          .split(/\s+/)
+          .map(t => `\\mbox{${t}}`).join(' ')
+      }
+      console.log('[createTexDocument] parsedTitle:', parsedTitle)
+      pageHead[i] = '\\title{' + parsedTitle + '}'
     }
   }
 
