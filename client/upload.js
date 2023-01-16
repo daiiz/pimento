@@ -37,7 +37,8 @@ const createTexDocument = ({ pageTitle, pageTitleHash, pageText, pageTemplate, i
     const line = trimTexLine(pageHead[i])
     if (/\\title\{[^{}\\]+\}/.test(line)) {
       // 「\title{}」行にpageTitleを挿入する
-      pageHead[i] = '\\title{' + formattedPageTitle + '}'
+      // ここでmboxで区切る
+      pageHead[i] = '\\title{' + formattedPageTitle + '\\mbox{テスト2}}'
     }
   }
 
