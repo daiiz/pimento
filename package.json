@@ -31,6 +31,7 @@
     "watchify": "^3.11.1"
   },
   "dependencies": {
-    "@progfay/scrapbox-parser": "^4.0.3"
+    "@progfay/scrapbox-parser": "^4.0.3",
+    "budoux": "^0.4.1"
   }
 }
