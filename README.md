@@ -23,7 +23,7 @@ Start the local server on port 5001.
 ```js
 // script.js
 import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js";
-setPimentoOrigin("http://localhost:5001");
+setPimentoOrigin("http://localhost:5001"); // これ今はもう不要？
 ```
 
 ## Settings
@@ -51,6 +51,8 @@ $ make run-bash
 
 ## DevTips: Develop client app
 
+Dockerコンテナ外で実行する。
+
 ```
-$ npm run watch
+$ npm run dev
 ```

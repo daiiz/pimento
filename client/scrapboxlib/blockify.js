@@ -1,4 +1,5 @@
 const { getGyazoImageId } = require('./lib')
+const { extractProjectNameAndPageTitle } = require('./texify')
 
 const isCommentLine = line => {
   return line.indent === 0 && line.nodes.length === 1 &&
@@ -201,6 +202,12 @@ const normalizeTextBlockLevels = lines => {
         if (firstChildNode.pathType === 'relative') {
           line._text = firstChildNode.href
           line._embed = true
+        } else if (firstChildNode.pathType === 'root') {
+          const [, pageTitle] = extractProjectNameAndPageTitle(firstChildNode.href)
+          if (pageTitle) {
+            line._text = pageTitle
+            line._embed = true
+          }
         }
         break
       }

@@ -1,5 +1,4 @@
 /* eslint-env browser */
-
 const { parseScrapboxPage } = require('./scrapboxlib/')
 const { getPageRefs, calcPageTitleHash, addToPageRefs, finalAdjustment, formatMarks } = require('./scrapboxlib/lib')
 const { getParsedScrapboxPages } = require('./scrapboxlib/pool/')
@@ -10,6 +9,7 @@ const { uploadTexDocument, createTexDocument } = require('./upload')
 const { initPageEmbedCounter, keepChapterHashs, getChapterHashs, getAppendixHashs, getGyazoIdsGroup } = require('./page-embed-counter')
 const { initPageRenderCounter, getRenderedPages, incrementPageRenderCounter } = require('./render-counter')
 const { initDependencies, getTableOfContents } = require('./dependencies')
+const { appTemplateHeadLines } = require('./tex')
 require('./globals')
 
 const isInFrame = () => {
@@ -136,6 +136,19 @@ window.onmessage = async function ({ origin, data }) {
   received = true
   window.clearInterval(timerForApiReady)
 
+  // Replace variables
+  if (template.headLines) {
+    template.headLines = template.headLines.flatMap(x => {
+      if (x === '% =====pimento-system-defs=====') {
+        return ['', ...appTemplateHeadLines, '']
+      }
+      if (x === '% =====pimento-book-title=====') {
+        return ['\\title{Pimentobook} % placeholder']
+      }
+      return x
+    })
+  }
+
   applyConfigs(template)
   window.gyazoIcons = await extractGyazoIcons(icons)
 
@@ -148,8 +161,10 @@ window.onmessage = async function ({ origin, data }) {
   initPageRenderCounter()
   initDependencies()
 
-  if (refs && refs.length > 0) {
-    await buildRefPages(refs)
+  if (type === 'page') {
+    if (refs && refs.length > 0) {
+      await buildRefPages(refs)
+    }
   }
 
   const previewElement = document.querySelector('#preview')
@@ -215,12 +230,13 @@ window.onmessage = async function ({ origin, data }) {
           refresh: !!refresh
         },
         // 付随情報
-        configs: window.pimentoConfigs || {}
+        configs: window.pimentoConfigs || {},
+        refs: refs || []
       }
 
       if (isInFrame()) {
         // upload, buildともに向こうに任せる
-        console.log('I am in frames.')
+        console.log('I am in frames.', payload)
         window.parent.postMessage(payload, pimentFrontendOrigin)
       } else {
         // ローカルツール向け
