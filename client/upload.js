@@ -1,9 +1,6 @@
 /* eslint-env browser */
 
-const { loadDefaultJapaneseParser } = require('budoux')
 const { texEscape, formatMarks } = require('./scrapboxlib/lib')
-
-const jaParser = loadDefaultJapaneseParser()
 
 const trimTexLine = line => {
   return line.replace(/%.+$/, '').trim()
@@ -40,10 +37,15 @@ const createTexDocument = ({ pageTitle, pageTitleHash, pageText, pageTemplate, i
     const line = trimTexLine(pageHead[i])
     if (/\\title\{[^{}\\]+\}/.test(line)) {
       // 「\title{}」行にpageTitleを挿入する
-      // ここでmboxで区切る
-      const parsed = jaParser.parse(formattedPageTitle)
-      const parsedTitle = parsed.map(t => `\\mbox{${t}}`).join('')
-      pageHead[i] = '\\title{' + formattedPageTitle + '}'
+      let parsedTitle = formattedPageTitle
+      if (/\s/.test(formattedPageTitle)) {
+        // 空白で区切ってmboxで囲む
+        parsedTitle = formattedPageTitle
+          .split(/\s+/)
+          .map(t => `\\mbox{${t}}`).join(' ')
+      }
+      console.log('[createTexDocument] parsedTitle:', parsedTitle)
+      pageHead[i] = '\\title{' + parsedTitle + '}'
     }
   }
 
