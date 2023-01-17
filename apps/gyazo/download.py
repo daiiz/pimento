@@ -24,13 +24,14 @@ def download_images(gyazo_ids, docs_dir, object_base_name = None):
     if exists_images_in_artifacts(gyazo_id, object_base_name):
       print('> Hit Gyazo in artifacts:', gyazo_id)
       continue
-    download_image(gyazo_id, docs_dir, object_base_name)
-    saved_gyazo_ids.append(gyazo_id)
+    distPath = download_image(gyazo_id, docs_dir, object_base_name)
+    if distPath:
+      saved_gyazo_ids.append(gyazo_id)
   return saved_gyazo_ids
 
 
 def download_image(gyazo_id, docs_dir, object_base_name = None):
-  if (len(gyazo_id) != 32):
+  if (not gyazo_id or len(gyazo_id) != 32):
     return ''
 
   url = 'https://gyazo.com/' + gyazo_id + '/raw'
