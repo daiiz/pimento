@@ -174,6 +174,7 @@ const normalizeTextBlockLevels = lines => {
     // 最外側がdecorationでない行は無視
     const { nodes } = line
     if (nodes[0].type !== 'decoration') continue
+    // TODO: ここを見直す
     // 無関係な装飾行は無視
     const decos = nodes[0].decos.filter(deco => deco.match(/^\*-\d+$/))
     if (decos.length === 0) continue
