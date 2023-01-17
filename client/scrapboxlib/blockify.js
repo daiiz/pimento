@@ -172,9 +172,9 @@ const normalizeTextBlockLevels = lines => {
     if (line.indent > 0 || line.type !== 'line') continue
     if (!line.nodes || line.nodes.length === 0) continue
     // TODO: ここを見直す
-    // XXX: nodes.length===1の場合に限定していいはず？
+    // XXX: nodes.length===1の場合に限定していいはず？ e.g. `[* [foo]]について` の形式を無視したい
     if (line.nodes.length > 1) continue
-    // XXX: nodes[0]の中身についても要素は1つだけであるべき？ e.g. [* [foo]について] の形式を無視したい
+    // XXX: nodes[0]の中身についても要素は1つだけであるべき？ e.g. `[* [foo]について]` の形式を無視したい
     // 最外側がdecorationでない行は無視
     const { nodes } = line
     if (nodes[0].type !== 'decoration') continue
