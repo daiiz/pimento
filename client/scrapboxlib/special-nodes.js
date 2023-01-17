@@ -79,7 +79,7 @@ const handleSpecialLine = (line, title) => {
       }
 
       if (!line._gyazoImageId) {
-        console.error('This is not a Gyazo image.')
+        console.warn('skip: This is not a Gyazo image.', line._srcUrl)
         return []
       }
 
