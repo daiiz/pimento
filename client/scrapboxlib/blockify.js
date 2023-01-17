@@ -171,10 +171,11 @@ const normalizeTextBlockLevels = lines => {
     // インデントレベル0な行だけ確認すればよい
     if (line.indent > 0 || line.type !== 'line') continue
     if (!line.nodes || line.nodes.length === 0) continue
+    // TODO: ここを見直す
+    // XXX: nodes.length===1の場合に限定していいはず？
     // 最外側がdecorationでない行は無視
     const { nodes } = line
     if (nodes[0].type !== 'decoration') continue
-    // TODO: ここを見直す
     // 無関係な装飾行は無視
     const decos = nodes[0].decos.filter(deco => deco.match(/^\*-\d+$/))
     if (decos.length === 0) continue
@@ -183,6 +184,7 @@ const normalizeTextBlockLevels = lines => {
     if (num > maxNum) {
       maxNum = num
     }
+    console.log("......>", line)
     line._type = 'textBlockHead'
     line._num = num
   }
