@@ -37,7 +37,7 @@ const handleSpecialLine = (line, title) => {
         addToTextBlockDependencies(calcPageTitleHash(title), hash)
         return [`\$\{window.funcs.page_${hash}(level + 1 + ${line._level})\}`]
       } else {
-        return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${line._text}}`]
+        return [`\$\{window.textBlockName(level + 1 + ${line._level}, showNumber)\}${texEscape(line._text)}}`]
       }
     }
 
@@ -79,7 +79,7 @@ const handleSpecialLine = (line, title) => {
       }
 
       if (!line._gyazoImageId) {
-        console.error('This is not a Gyazo image.')
+        console.warn('skip: This is not a Gyazo image.', line._srcUrl)
         return []
       }
 

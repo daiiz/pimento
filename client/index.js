@@ -287,7 +287,7 @@ window.addEventListener('load', () => {
         console.log('[ready] timeout')
         window.clearInterval(timerForApiReady)
       } else {
-        console.log(`[ready] ${intervalTime}ms`, runCounter)
+        console.log(`[ready] ${intervalTime}ms`)
         window.parent.postMessage({ pimentoApiReady: true }, pimentFrontendOrigin)
       }
     }, intervalTime)

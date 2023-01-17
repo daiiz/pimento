@@ -119,7 +119,7 @@ const addBlockInfo = lines => {
       // その他のケースでは、画像行のindentよりもキャプション行の方が深い
       // また、キャプションは無かプレーンテキストであるべき
       const deeper = (prevLine.indent === 0 && currentIndent === 0) || currentIndent > prevLine.indent
-      if (deeper && (currentLine.nodes.length === 0 || currentLine.nodes[0].type === 'plain')) {
+      if (deeper && currentLine.nodes && (currentLine.nodes.length === 0 || currentLine.nodes[0].type === 'plain')) {
         prevLine._captionNodes = currentLine.nodes
         continue
       } else {
