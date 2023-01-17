@@ -186,7 +186,7 @@ const normalizeTextBlockLevels = lines => {
       // この場合は`[* fooについて]`と解釈して見出しとして扱う
       const newText = nodes[0].nodes.map(node => node.href || node.text).join('')
       nodes[0].nodes = [{ type: 'plain', text: newText }]
-      console.log('[normalizeTextBlockLevels] Interpreted as textBlockHead:', newText)
+      console.warn('[normalizeTextBlockLevels] Interpreted as textBlockHead:', newText)
     }
 
     // 無関係な装飾行は無視
