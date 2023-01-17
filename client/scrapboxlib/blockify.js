@@ -171,7 +171,6 @@ const normalizeTextBlockLevels = lines => {
     // インデントレベル0な行だけ確認すればよい
     if (line.indent > 0 || line.type !== 'line') continue
     if (!line.nodes || line.nodes.length === 0) continue
-    // TODO: ここを見直す
     // e.g. `[* [foo]]について`
     if (line.nodes.length > 1) continue
     // 最外側がdecorationでない行は無視
