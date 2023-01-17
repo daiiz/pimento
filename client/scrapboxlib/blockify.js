@@ -180,7 +180,7 @@ const normalizeTextBlockLevels = lines => {
     // e.g. `[* [foo]について]`
     if (nodes[0].nodes && nodes[0].nodes.length > 1) {
       const nodeTypes = nodes[0].nodes.map(node => node.pathType ? `${node.type}.${node.pathType}` : node.type)
-      if (!nodeTypes.every(type => ['plain', 'link.relative'])) {
+      if (!nodeTypes.every(type => ['plain', 'link.relative'].includes(type))) {
         continue
       }
       // この場合は`[* fooについて]`と解釈して見出しとして扱う
