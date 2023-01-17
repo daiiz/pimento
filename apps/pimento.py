@@ -80,6 +80,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
   isWhole = build_options.get('whole', False)
   insertIndex = build_options.get('index', False)
   refresh = build_options.get('refresh', False)
+  print("insertIndex: " + str(insertIndex))
 
   prefix = 'book_' if isWhole else 'page_'
   texFileName = prefix + page_title_hash

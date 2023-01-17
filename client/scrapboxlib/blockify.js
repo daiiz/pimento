@@ -171,9 +171,24 @@ const normalizeTextBlockLevels = lines => {
     // インデントレベル0な行だけ確認すればよい
     if (line.indent > 0 || line.type !== 'line') continue
     if (!line.nodes || line.nodes.length === 0) continue
+    // e.g. `[* [foo]]について`
+    if (line.nodes.length > 1) continue
     // 最外側がdecorationでない行は無視
     const { nodes } = line
     if (nodes[0].type !== 'decoration') continue
+
+    // e.g. `[* [foo]について]`
+    if (nodes[0].nodes && nodes[0].nodes.length > 1) {
+      const nodeTypes = nodes[0].nodes.map(node => node.pathType ? `${node.type}.${node.pathType}` : node.type)
+      if (!nodeTypes.every(type => ['plain', 'link.relative'].includes(type))) {
+        continue
+      }
+      // この場合は`[* fooについて]`と解釈して見出しとして扱う
+      const newText = nodes[0].nodes.map(node => node.href || node.text).join('')
+      nodes[0].nodes = [{ type: 'plain', text: newText }]
+      console.warn('[normalizeTextBlockLevels] Interpreted as textBlockHead:', newText)
+    }
+
     // 無関係な装飾行は無視
     const decos = nodes[0].decos.filter(deco => deco.match(/^\*-\d+$/))
     if (decos.length === 0) continue
