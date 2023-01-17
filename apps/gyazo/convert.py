@@ -14,7 +14,7 @@ def converter(gyazo_id, dirname, docs_dir, object_base_name, gray = False):
   image_path = docs_dir + '/tex/gyazo-images/' + gyazo_id
   # RGBA -> RGB
   rawImg = Image.open(image_path)
-  if rawImg.mode is not 'RGB':
+  if rawImg.mode != 'RGB':
     rawImg = rawImg.convert('RGBA')
     rawImg.load()
     im = Image.new('RGBA', rawImg.size, (255, 255, 255))
