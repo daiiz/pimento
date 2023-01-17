@@ -179,9 +179,13 @@ const normalizeTextBlockLevels = lines => {
     if (nodes[0].type !== 'decoration') continue
 
     // e.g. `[* [foo]について]`
-    // この場合は`[* fooについて]`と解釈して見出しとして扱うべき
     if (nodes[0].nodes && nodes[0].nodes.length > 1) {
-      console.log('!||||||', nodes[0])
+      const nodeTypes = nodes[0].nodes.map(node => node.pathType ? `${node.type}.${node.pathType}` : node.type)
+      if (!nodeTypes.every(type => ['plain', 'link.relative'])) {
+        continue
+      }
+      // この場合は`[* fooについて]`と解釈して見出しとして扱う
+      console.log('!||||~||', nodes[0])
     }
 
     // 無関係な装飾行は無視
