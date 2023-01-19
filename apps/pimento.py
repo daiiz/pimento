@@ -112,7 +112,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
   try:
     # TeX文書内の参照番号解決のため、二度実行する
     if isWhole:
-      run_command(['lualatex', '-shell-escape', '-interaction', 'batchmode', texFileName], workDir)
+      run_command(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], workDir)
     run_command(['cp', workDir + texFileName + '.pdf', pdf_file_path])
   except Exception as e:
     print(e)
