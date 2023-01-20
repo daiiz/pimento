@@ -127,7 +127,9 @@ const handleSpecialLine = (line, title) => {
         }
 
         // const srcUrl = './cmyk-gray-gyazo-images/retina_pancake.jpg'
-        const srcUrl = `./${imageDirName}/${line._gyazoImageId}.jpg`
+        // _gyazoImageIdは、`teamName/imageId`、または、`imageId`の形式で与えられる
+        const gImageId = line._gyazoImageId.split('/').pop()
+        const srcUrl = `./${imageDirName}/${gImageId}.jpg`
         if (options.length > 0) {
           return `${backSlash}includegraphics[${options.join(',')}]{${srcUrl}}`
         } else {
