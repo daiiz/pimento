@@ -53,7 +53,12 @@ const Texify = node => {
       }
       // 無視する装飾
       if (decos.includes('>')) {
-        return ''
+        const fNode = node.nodes && node.nodes[0]
+        const isHashTag = fNode.type === 'plain' && fNode.text.startsWith('#')
+        const isPageLink = fNode.type === 'link' && fNode.pathType === 'relative'
+        if (isHashTag || isPageLink) {
+          return ''
+        }
       }
       console.warn('Unknown decorations:', decos)
       return `(${decos}${Texify(node.nodes)})`
