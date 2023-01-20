@@ -1,0 +1,3 @@
+openin_any = r
+openout_any = p
+parse_first_line = f

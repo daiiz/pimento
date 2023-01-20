@@ -14,6 +14,22 @@ def get_user_dir_path(user_id):
   return '/tmp/user_' + uid
 
 
+def create_safe_tex_cmd(cmd_heads=[], cmd_tails=[]):
+  if len(cmd_heads) == 0 or len(cmd_tails) == 0:
+    raise Exception('Invalid cmd_heads or cmd_tails')
+  cmd_list = []
+  for c in cmd_heads:
+    cmd_list.append(c)
+
+  cmd_list.append('--nosocket')
+  cmd_list.append('--no-shell-escape')
+
+  print('|', ' '.join(cmd_list))
+  for c in cmd_tails:
+    cmd_list.append(c)
+
+  return cmd_list
+
 # docsDirのパスを返す。なければ作る。
 def create_user_docs_dir(user):
   if is_local_tools_mode():
@@ -69,6 +85,7 @@ def run_command(cmd_list = [], workDir = None):
     raise Exception('Invalid command!')
   new_env = dict()
   new_env['PATH'] = os.environ['PATH']
+  new_env['TEXMFCNF'] = os.environ['TEXMFCNF']
   subprocess.run(cmd_list, shell=False, cwd=workDir, env=new_env, check=True)
 
 
@@ -93,17 +110,17 @@ def build_page_or_book(page_title_hash, build_options, docDir):
     os.remove(auxFilePath)
   try:
     if is_local_tools_mode():
-      run_command(['lualatex', '-no-shell-escape', texFileName], workDir)
+      run_command(create_safe_tex_cmd(['lualatex'], [texFileName]), workDir)
     else:
-      run_command(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], workDir)
+      run_command(create_safe_tex_cmd(['lualatex'], ['--interaction', 'batchmode', texFileName]), workDir)
   except Exception as e:
     pass
 
   # 索引を作る
   if insertIndex:
     try:
-      run_command(['upmendex', '-no-shell-escape', '-g', texFileName], workDir)
-      run_command(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], workDir)
+      run_command(create_safe_tex_cmd(['upmendex'], ['-g', texFileName]), workDir)
+      run_command(create_safe_tex_cmd(['lualatex'], ['--interaction', 'batchmode', texFileName]), workDir)
     except Exception as e:
       print(e)
       return ''
@@ -112,7 +129,7 @@ def build_page_or_book(page_title_hash, build_options, docDir):
   try:
     # TeX文書内の参照番号解決のため、二度実行する
     if isWhole:
-      run_command(['lualatex', '-no-shell-escape', '-interaction', 'batchmode', texFileName], workDir)
+      run_command(create_safe_tex_cmd(['lualatex'], ['--interaction', 'batchmode', texFileName]), workDir)
     run_command(['cp', workDir + texFileName + '.pdf', pdf_file_path])
   except Exception as e:
     print(e)
