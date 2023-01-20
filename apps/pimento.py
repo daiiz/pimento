@@ -85,6 +85,7 @@ def run_command(cmd_list = [], workDir = None):
     raise Exception('Invalid command!')
   new_env = dict()
   new_env['PATH'] = os.environ['PATH']
+  new_env['TEXMFCNF'] = os.environ['TEXMFCNF']
   subprocess.run(cmd_list, shell=False, cwd=workDir, env=new_env, check=True)
 
 
