@@ -51,6 +51,10 @@ const Texify = node => {
       if (decos.includes('_')) {
         return `${backSlash}underline{${Texify(node.nodes)}}`
       }
+      // 無視する装飾
+      if (decos.includes('>')) {
+        return ''
+      }
       console.warn('Unknown decorations:', decos)
       return `(${decos}${Texify(node.nodes)})`
     }
