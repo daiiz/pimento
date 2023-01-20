@@ -15,8 +15,8 @@ def get_user_dir_path(user_id):
 
 
 def create_safe_tex_cmd(cmd_heads=[], cmd_tails=[]):
-  if len(cmd_heads) == 0:
-    raise Exception('Invalid cmd_heads')
+  if len(cmd_heads) == 0 or len(cmd_tails) == 0:
+    raise Exception('Invalid cmd_heads or cmd_tails')
   cmd_list = []
   for c in cmd_heads:
     cmd_list.append(c)
