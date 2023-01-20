@@ -3,6 +3,13 @@ import urllib.request
 import os
 from gcs_helpers import exists_object, upload_to_gcs
 
+def is_valid_gyazo_team_name(gyazo_team_name):
+  if not gyazo_team_name:
+    return False
+  if not re.match(r'^[a-zA-Z0-9]+$', gyazo_team_name):
+    return False
+  return True
+
 # 原画と変換後のすべての画像がGCSに存在することを確かめる
 def exists_images_in_artifacts(gyazo_id, object_base_name):
   if not object_base_name:
@@ -24,17 +31,20 @@ def download_images(gyazo_ids, docs_dir, object_base_name = None):
     if exists_images_in_artifacts(gyazo_id, object_base_name):
       print('> Hit Gyazo in artifacts:', gyazo_id)
       continue
-    distPath = download_image(gyazo_id, docs_dir, object_base_name)
+    distPath = download_image(gyazo_id, '', docs_dir, object_base_name)
     if distPath:
       saved_gyazo_ids.append(gyazo_id)
   return saved_gyazo_ids
 
 
-def download_image(gyazo_id, docs_dir, object_base_name = None):
+def download_image(gyazo_id, gyazo_team_name, docs_dir, object_base_name = None):
   if (not gyazo_id or len(gyazo_id) != 32):
     return ''
 
   url = 'https://gyazo.com/' + gyazo_id + '/raw'
+  if is_valid_gyazo_team_name(gyazo_team_name):
+    url = 'https://' + gyazo_team_name + '.gyazo.com/' + gyazo_id + '/raw'
+
   distPath = docs_dir + '/tex/gyazo-images/' + gyazo_id
 
   if (os.path.exists(distPath)):
