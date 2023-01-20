@@ -64,8 +64,13 @@ const decorateIconNodes = (lines, title) => {
 
 const getGyazoImageId = srcUrl => {
   const gyazoOrigin = /^https?:\/\/(i\.)?gyazo\.com\//
-  if (!gyazoOrigin.test(srcUrl)) {
+  const gyazoTeamsOrigin = /^https?:\/\/(t\.)?gyazo\.com\/teams\//
+  if (!gyazoOrigin.test(srcUrl) && !gyazoTeamsOrigin.test(srcUrl)) {
     return null
+  }
+  if (gyazoTeamsOrigin.test(srcUrl)) {
+    const [teamName, imageId] = srcUrl.replace(gyazoTeamsOrigin, '').split('/')
+    return (teamName && imageId) ? `${teamName}/${imageId}` : null
   }
   return srcUrl.replace(gyazoOrigin, '').split(/[/.]/)[0]
 }

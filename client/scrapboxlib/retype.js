@@ -1,15 +1,16 @@
 const retypeAbsLinksToGyazoTeamsImages = (lines) => {
-  const gTeamUrlPattern = /^https?:\/\/([a-zA-Z0-9]+)\.gyazo\.com\/([a-f0-9]{32})/
+  const gyazoTeamsUrlPattern = /^https?:\/\/([a-zA-Z0-9]+)\.gyazo\.com\/([a-f0-9]{32})/
   for (const line of lines) {
     if (!line.nodes || line.nodes.length !== 1) continue
     const node = line.nodes[0]
     if (node.type !== 'link' || node.pathType !== 'absolute') continue
-    if (!gTeamUrlPattern.test(node.href)) continue
-    const [, teamName, imageId] = node.href.match(gTeamUrlPattern)
+    if (!gyazoTeamsUrlPattern.test(node.href)) continue
+    const [, teamName, imageId] = node.href.match(gyazoTeamsUrlPattern)
     if (teamName && imageId) {
+      const srcUrl = `https://t.gyazo.com/teams/${teamName}/${imageId}`
       // Retype to "image"
       node.type = 'image'
-      node.src = node.href // XXX: thumbsかrawにしたほうがいい？
+      node.src = srcUrl
       node.link = '' // XXX: リンク先を持っている可能性はあるのであとで再検討
       delete node.content
       delete node.pathType
