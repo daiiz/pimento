@@ -1,6 +1,6 @@
 import urllib.error
 import urllib.request
-import os
+import os, re
 from gcs_helpers import exists_object, upload_to_gcs
 
 def is_valid_gyazo_team_name(gyazo_team_name):
@@ -27,18 +27,28 @@ def download_images(gyazo_ids, docs_dir, object_base_name = None):
   if len(gyazo_ids) > 0:
     print('Gyazo image nums:', len(gyazo_ids))
   for gyazo_id in gyazo_ids:
+    g_image_id = gyazo_id
+    g_team_name = ''
+    # `teamName/imageId`の形式の場合
+    if '/' in gyazo_id:
+      t_name, i_id = gyazo_id.split('/')
+      if t_name and i_id:
+        g_image_id = i_id
+        g_team_name = t_name
+    # print("~~~~~", g_image_id, g_team_name)
     # すでにartifactsに存在する場合はダウンロード処理をスキップする
-    if exists_images_in_artifacts(gyazo_id, object_base_name):
-      print('> Hit Gyazo in artifacts:', gyazo_id)
+    if exists_images_in_artifacts(g_image_id, object_base_name):
+      print('> Hit Gyazo in artifacts:', g_image_id)
       continue
-    distPath = download_image(gyazo_id, '', docs_dir, object_base_name)
+    distPath = download_image(g_image_id, g_team_name, docs_dir, object_base_name)
     if distPath:
-      saved_gyazo_ids.append(gyazo_id)
+      saved_gyazo_ids.append(g_image_id)
   return saved_gyazo_ids
 
 
 def download_image(gyazo_id, gyazo_team_name, docs_dir, object_base_name = None):
   if (not gyazo_id or len(gyazo_id) != 32):
+    print('> Invalid Gyazo ID!')
     return ''
 
   url = 'https://gyazo.com/' + gyazo_id + '/raw'
