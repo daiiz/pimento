@@ -56,7 +56,6 @@ const parseScrapboxPage = ({ title, lines }) => {
   decorateIconNodes(lineObjects, title)
   normalizeTextBlockLevels(lineObjects)
   lineObjects = addBlockInfo(lineObjects)
-  // console.log(".................~~~~~", lineObjects)
 
   const texts = []
   for (const line of lineObjects) {

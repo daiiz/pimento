@@ -35,7 +35,6 @@ def download_images(gyazo_ids, docs_dir, object_base_name = None):
       if t_name and i_id:
         g_image_id = i_id
         g_team_name = t_name
-    # print("~~~~~", g_image_id, g_team_name)
     # すでにartifactsに存在する場合はダウンロード処理をスキップする
     if exists_images_in_artifacts(g_image_id, object_base_name):
       print('> Hit Gyazo in artifacts:', g_image_id)
