@@ -2,6 +2,7 @@ const { parse } = require('@progfay/scrapbox-parser')
 const { decorateImageNodes, decorateIconNodes, indentStr, backSlash } = require('./lib')
 const { separateAbstractFromTexts } = require('./abstract')
 const { addBlockInfo, normalizeTextBlockLevels } = require('./blockify')
+const { retypeAbsLinksToGyazoTeamsImages } = require('./retype')
 const { Texify } = require('./texify')
 const { handleScrapboxBlockNode } = require('./block-nodes')
 const { handleSpecialLine } = require('./special-nodes')
@@ -53,7 +54,9 @@ const parseScrapboxPage = ({ title, lines }) => {
   decorateImageNodes(lineObjects, title)
   decorateIconNodes(lineObjects, title)
   normalizeTextBlockLevels(lineObjects)
+  retypeAbsLinksToGyazoTeamsImages(lineObjects)
   lineObjects = addBlockInfo(lineObjects)
+  console.log(".................~~~~~", lineObjects)
 
   const texts = []
   for (const line of lineObjects) {
