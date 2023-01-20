@@ -51,6 +51,7 @@ const Texify = node => {
       if (decos.includes('_')) {
         return `${backSlash}underline{${Texify(node.nodes)}}`
       }
+      console.warn('Unknown decorations:', decos)
       return `(${decos}${Texify(node.nodes)})`
     }
     case 'blank': {
