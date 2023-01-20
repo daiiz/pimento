@@ -51,11 +51,11 @@ const Texify = node => {
       if (decos.includes('_')) {
         return `${backSlash}underline{${Texify(node.nodes)}}`
       }
-      // 無視する装飾
       if (decos.includes('>')) {
         const fNode = node.nodes && node.nodes[0]
-        const isHashTag = fNode.type === 'plain' && fNode.text.startsWith('#')
-        const isPageLink = fNode.type === 'link' && fNode.pathType === 'relative'
+        const isHashTag = fNode && fNode.type === 'plain' && fNode.text.startsWith('#')
+        const isPageLink = fNode && fNode.type === 'link' && fNode.pathType === 'relative'
+        // 無視する特殊タグ
         if (isHashTag || isPageLink) {
           return ''
         }
