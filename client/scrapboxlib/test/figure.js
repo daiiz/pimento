@@ -435,6 +435,22 @@ const cases = [
     ]
   },
   {
+    name: 'strong image with caption and width',
+    source: [
+      '[[https://gyazo.com/54f4b18d87b2b6aff8a40fb9615ee26d]]',
+      'Cafe morning set [/ width=0.95]'
+    ],
+    expect: [
+      '\\begin{figure}[h]',
+      '  \\begin{center}',
+      '     \\includegraphics[width=0.95\\linewidth]{./cmyk-gray-gyazo-images/54f4b18d87b2b6aff8a40fb9615ee26d.jpg}',
+      '     \\caption{Cafe morning set}',
+      '     \\label{fig:gyazo-id-54f4b18d87b2b6aff8a40fb9615ee26d}',
+      '  \\end{center}',
+      '\\end{figure}'
+    ]
+  },
+  {
     name: 'strong image with caption (Gyazo Teams)',
     source: [
       '[[https://example.gyazo.com/54f4b18d87b2b6aff8a40fb9615ee26d]]',
@@ -449,7 +465,23 @@ const cases = [
       '  \\end{center}',
       '\\end{figure}'
     ]
-  }
+  },
+  {
+    name: 'strong image with caption and width (Gyazo Teams)',
+    source: [
+      '[[https://example.gyazo.com/54f4b18d87b2b6aff8a40fb9615ee26d]]',
+      'Cafe morning set [/ width=0.95]'
+    ],
+    expect: [
+      '\\begin{figure}[h]',
+      '  \\begin{center}',
+      '     \\includegraphics[width=0.95\\linewidth]{./cmyk-gray-gyazo-images/54f4b18d87b2b6aff8a40fb9615ee26d.jpg}',
+      '     \\caption{Cafe morning set}',
+      '     \\label{fig:gyazo-id-54f4b18d87b2b6aff8a40fb9615ee26d}',
+      '  \\end{center}',
+      '\\end{figure}'
+    ]
+  },
 ]
 
 runTest('Convert to figure', cases)
