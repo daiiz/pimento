@@ -114,6 +114,7 @@ const addBlockInfo = lines => {
       prevLine._srcUrl = prevLine.nodes[0].src
       prevLine._gyazoImageId = getGyazoImageId(prevLine._srcUrl)
       prevLine._type = 'image'
+      prevLine._isStrong = prevLine.nodes[0].originalType === 'strongImage'
 
       // 画像行のindent=0の場合に限り、indent=0のキャプション行があり得る
       // その他のケースでは、画像行のindentよりもキャプション行の方が深い

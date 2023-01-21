@@ -10,6 +10,7 @@ const retypeAbsLinksToGyazoTeamsImages = (lines) => {
       const srcUrl = `https://t.gyazo.com/teams/${teamName}/${imageId}`
       // Retype to "image"
       node.type = 'image'
+      node.originalType = 'link'
       node.src = srcUrl
       node.link = '' // XXX: リンク先を持っている可能性はあるのであとで再検討
       delete node.content
@@ -26,7 +27,7 @@ const retypeStrongImagesToImages = (lines) => {
     if (node.type !== 'strongImage') continue
     // Retype to "image"
     node.type = 'image'
-    node._isStrong = true
+    node.originalType = 'strongImage'
   }
 }
 
