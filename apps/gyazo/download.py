@@ -46,8 +46,8 @@ def download_images(gyazo_ids, docs_dir, object_base_name = None):
 
 
 def download_image(gyazo_id, gyazo_team_name, docs_dir, object_base_name = None):
-  if (not gyazo_id or len(gyazo_id) != 32):
-    print('> Invalid Gyazo ID!')
+  if not gyazo_id or (not re.match(r'^[a-z0-9]{32}$', gyazo_id)):
+    print('Invalid Gyazo ID!')
     return ''
 
   url = 'https://gyazo.com/' + gyazo_id + '/raw'
