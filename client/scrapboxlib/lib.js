@@ -1,5 +1,9 @@
 const crypto = require('crypto')
 
+const getGyazoTeamsUrlPattern = () => {
+  return /^https?:\/\/([a-zA-Z0-9]+)\.gyazo\.com\/([a-f0-9]{32})(?:\/|$)/
+}
+
 const pageRefs = Object.create(null)
 
 const backSlash = '---TEX-BACKSLASH---'
@@ -64,12 +68,13 @@ const decorateIconNodes = (lines, title) => {
 
 const getGyazoImageId = srcUrl => {
   const gyazoOrigin = /^https?:\/\/(i\.)?gyazo\.com\//
-  const gyazoTeamsOrigin = /^https?:\/\/(t\.)?gyazo\.com\/teams\//
+  const gyazoTeamsOrigin = getGyazoTeamsUrlPattern()
   if (!gyazoOrigin.test(srcUrl) && !gyazoTeamsOrigin.test(srcUrl)) {
     return null
   }
   if (gyazoTeamsOrigin.test(srcUrl)) {
-    const [teamName, imageId] = srcUrl.replace(gyazoTeamsOrigin, '').split('/')
+    // const [teamName, imageId] = srcUrl.replace(gyazoTeamsOrigin, '').split('/')
+    const [, teamName, imageId] = srcUrl.match(gyazoTeamsOrigin)
     return (teamName && imageId) ? `${teamName}/${imageId}` : null
   }
   return srcUrl.replace(gyazoOrigin, '').split(/[/.]/)[0]
@@ -184,5 +189,6 @@ module.exports = {
   finalAdjustment,
   formatMarks,
   toTitleLc,
-  backSlash
+  backSlash,
+  getGyazoTeamsUrlPattern
 }
