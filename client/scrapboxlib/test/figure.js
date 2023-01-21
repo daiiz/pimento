@@ -400,6 +400,23 @@ const cases = [
       '  \\end{itemize}', // 2
       '\\end{itemize}' // 1
     ]
+  },
+  // Strong image
+  {
+    name: 'strong image with caption',
+    source: [
+      '[[https://gyazo.com/54f4b18d87b2b6aff8a40fb9615ee26d]]',
+      'Cafe morning set'
+    ],
+    expect: [
+      '\\begin{figure}[h]',
+      '  \\begin{center}',
+      '     \\includegraphics[width=0.8\\linewidth]{./cmyk-gray-gyazo-images/54f4b18d87b2b6aff8a40fb9615ee26d.jpg}',
+      '     \\caption{Cafe morning set}',
+      '     \\label{fig:gyazo-id-54f4b18d87b2b6aff8a40fb9615ee26d}',
+      '  \\end{center}',
+      '\\end{figure}'
+    ]
   }
 ]
 
