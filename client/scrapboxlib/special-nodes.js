@@ -74,14 +74,18 @@ const handleSpecialLine = (line, title) => {
     case 'image': {
       let captionText = ''
       const defaultWidth = line._isStrong ? 0.8 : 0.5
-      const info = {
-        width: `${defaultWidth}${backSlash}linewidth`,
-        ref: `gyazo-id-${line._gyazoImageId}`
-      }
 
       if (!line._gyazoImageId) {
         console.warn('skip: This is not a Gyazo image.', line._srcUrl)
         return []
+      }
+
+      // _gyazoImageIdは、`teamName/imageId`、または、`imageId`の形式で与えられる
+      const gImageId = line._gyazoImageId.split('/').pop()
+
+      const info = {
+        width: `${defaultWidth}${backSlash}linewidth`,
+        ref: `gyazo-id-${gImageId}`
       }
 
       switch (line._captionNodes.length) {
@@ -128,8 +132,6 @@ const handleSpecialLine = (line, title) => {
         }
 
         // const srcUrl = './cmyk-gray-gyazo-images/retina_pancake.jpg'
-        // _gyazoImageIdは、`teamName/imageId`、または、`imageId`の形式で与えられる
-        const gImageId = line._gyazoImageId.split('/').pop()
         const srcUrl = `./${imageDirName}/${gImageId}.jpg`
         if (options.length > 0) {
           return `${backSlash}includegraphics[${options.join(',')}]{${srcUrl}}`
