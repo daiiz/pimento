@@ -19,6 +19,10 @@ const retypeAbsLinksToGyazoTeamsImages = (lines) => {
   }
 }
 
+const retypeStrongImagesToImages = (lines) => {
+}
+
 module.exports = {
-  retypeAbsLinksToGyazoTeamsImages
+  retypeAbsLinksToGyazoTeamsImages,
+  retypeStrongImagesToImages
 }
