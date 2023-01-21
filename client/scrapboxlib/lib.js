@@ -73,7 +73,6 @@ const getGyazoImageId = srcUrl => {
     return null
   }
   if (gyazoTeamsOrigin.test(srcUrl)) {
-    // const [teamName, imageId] = srcUrl.replace(gyazoTeamsOrigin, '').split('/')
     const [, teamName, imageId] = srcUrl.match(gyazoTeamsOrigin)
     return (teamName && imageId) ? `${teamName}/${imageId}` : null
   }
