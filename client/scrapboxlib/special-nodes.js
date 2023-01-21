@@ -73,8 +73,9 @@ const handleSpecialLine = (line, title) => {
 
     case 'image': {
       let captionText = ''
+      const defaultWidth = line._isStrong ? 0.8 : 0.5
       const info = {
-        width: `0.5${backSlash}linewidth`,
+        width: `${defaultWidth}${backSlash}linewidth`,
         ref: `gyazo-id-${line._gyazoImageId}`
       }
 
