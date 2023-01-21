@@ -20,6 +20,14 @@ const retypeAbsLinksToGyazoTeamsImages = (lines) => {
 }
 
 const retypeStrongImagesToImages = (lines) => {
+  for (const line of lines) {
+    if (!line.nodes || line.nodes.length !== 1) continue
+    const node = line.nodes[0]
+    if (node.type !== 'strongImage') continue
+    // Retype to "image"
+    node.type = 'image'
+    node._isStrong = true
+  }
 }
 
 module.exports = {
