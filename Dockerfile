@@ -42,17 +42,17 @@ RUN tlmgr list --only-installed
 
 # gentombow v0.9kやカスタムstyを追加する
 RUN rm /usr/share/texlive/texmf-dist/tex/latex/gentombow/gentombow.sty
-COPY sty /usr/share/texlive/texmf-dist/tex/latex/pimento_sty
+COPY --chown=nobody:nogroup sty /usr/share/texlive/texmf-dist/tex/latex/pimento_sty
 RUN texhash
 
 RUN rm /etc/nginx/sites-enabled/default
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY --chown=nobody:nogroup default.conf /etc/nginx/conf.d/default.conf
 
 COPY apps /var/apps
 RUN rm -f /var/apps/app.sock
 
 # 手元で追加したフォントをコピーする
-COPY otf /usr/share/fonts/otf
+COPY --chown=nobody:nogroup otf /usr/share/fonts/otf
 
 # Googleフォントをダウンロードする
 RUN cd /usr/share/fonts/otf && \
@@ -70,6 +70,7 @@ RUN mkdir -p /var/apps/static/js
 # Node.js
 COPY client /var/apps/client
 COPY package.json package-lock.json /var/apps/
+RUN chown -R nobody:nogroup /var/apps/
 
 WORKDIR /var/apps
 RUN node --version
@@ -80,4 +81,5 @@ RUN npm run build
 ENV PORT 8080
 ENV TEXMFCNF /var/apps:
 
+USER nobody
 CMD exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0 app:app
