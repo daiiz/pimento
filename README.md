@@ -19,7 +19,7 @@ $ make run-server
 ## Environment variables
 
 ### Local tools mode
-```env
+```sh
 # .env
 PIMENTO_API_ORIGIN=http://localhost:5001
 LOCAL_TOOLS_MODE=true
