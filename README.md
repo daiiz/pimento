@@ -10,13 +10,11 @@ $ make build
 
 ## Run local server on docker
 
+Start the local server on port 5001.
+
 ```
 $ make run-server
-# or
-$ make run-server-dev
 ```
-
-Start the local server on port 5001.
 
 ## Environment variables
 
@@ -54,6 +52,12 @@ initPimento([], "http://localhost:5001");
 ```
 
 ## For developers
+
+### Run local dev server on docker
+
+```sh
+$ make run-server-dev
+```
 
 ### Build TeX documents manually
 
