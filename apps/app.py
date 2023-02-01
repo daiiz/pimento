@@ -28,6 +28,11 @@ def index():
   now = datetime.datetime.now().strftime('%H:%M:%S.%f')
   return render_template('page.html', time=now)
 
+@app.route('/new', methods=["GET"])
+@only_for_local_tools
+def index_new():
+  now = datetime.datetime.now().strftime('%H:%M:%S.%f')
+  return render_template('page.html', time=now)
 
 @app.route('/frame', methods=["GET"])
 def index_frame():
