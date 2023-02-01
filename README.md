@@ -40,6 +40,9 @@ initPimento([], "http://localhost:5001");
 1. Create a page `_pimento` in your Scrapbox project.
 2. Copy a sample code https://scrapbox.io/pimento/B5_標準 (template.tex) to the page `_pimento`.
 
+Examples
+-  https://scrapbox.io/daiiz/_pimento
+
 ### Options (WIP)
 
 ```tex
