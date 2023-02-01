@@ -12,6 +12,7 @@ docs/tex/pdf/*.pdf
 docs/tex/*.pdf
 docs/tex/*.xmpdata
 docs/tex/*.ist
+docs/tex/.texlive2018/*
 
 tmp/*
 !tmp/.gitkeep
