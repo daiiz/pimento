@@ -18,6 +18,15 @@ $ make run-server-dev
 
 Start the local server on port 5001.
 
+## Environment variables
+
+### Local tools mode
+```env
+# .env
+PIMENTO_API_ORIGIN=http://localhost:5001
+LOCAL_TOOLS_MODE=true
+```
+
 ## Scrapbox UserScript
 
 ### Local tools mode
@@ -33,7 +42,7 @@ initPimento([], "http://localhost:5001");
 1. Create a page `_pimento` in your Scrapbox project.
 2. Copy a sample code https://scrapbox.io/pimento/B5_標準 (template.tex) to the page `_pimento`.
 
-### Options
+### Options (WIP)
 
 ```tex
 % =====pimento-options=====
@@ -44,7 +53,9 @@ initPimento([], "http://localhost:5001");
 % index=true // true, false*
 ```
 
-## DevTips: Build TeX documents
+## For developers
+
+### Build TeX documents manually
 
 ```
 $ make run-bash
@@ -52,9 +63,9 @@ $ make run-bash
 # lualatex tex/sample.tex
 ```
 
-## DevTips: Develop client app
+### Build client JavaScript code
 
-Dockerコンテナ外で実行する。
+Note: Run outside a Docker container.
 
 ```
 $ npm run dev
