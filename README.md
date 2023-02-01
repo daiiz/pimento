@@ -10,27 +10,40 @@ $ make build
 
 ## Run local server on docker
 
+Start the local server on port 5001.
+
 ```
 $ make run-server
-# or
-$ make run-server-dev
 ```
 
-Start the local server on port 5001.
+## Environment variables
+
+### Local tools mode
+```sh
+# .env
+PIMENTO_API_ORIGIN=http://localhost:5001
+LOCAL_TOOLS_MODE=true
+```
 
 ## Scrapbox UserScript
 
+### Local tools mode
+
 ```js
 // script.js
-import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js";
-setPimentoOrigin("http://localhost:5001"); // これ今はもう不要？
+import { initPimento } from "/api/code/daiiz-codes/pimento-build/script.js";
+initPimento([], "http://localhost:5001");
 ```
 
-## Settings
+## Bookbinding global settings
 
-See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
+1. Create a page `_pimento` in your Scrapbox project.
+2. Copy a sample code https://scrapbox.io/pimento/B5_標準 (template.tex) to the page `_pimento`.
 
-### Options
+Examples
+-  https://scrapbox.io/daiiz/_pimento
+
+### Options (WIP)
 
 ```tex
 % =====pimento-options=====
@@ -41,7 +54,15 @@ See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
 % index=true // true, false*
 ```
 
-## DevTips: Build TeX documents
+## For developers
+
+### Run local dev server on docker
+
+```sh
+$ make run-server-dev
+```
+
+### Build TeX documents manually
 
 ```
 $ make run-bash
@@ -49,9 +70,9 @@ $ make run-bash
 # lualatex tex/sample.tex
 ```
 
-## DevTips: Develop client app
+### Build client JavaScript code
 
-Dockerコンテナ外で実行する。
+Note: Run outside a Docker container.
 
 ```
 $ npm run dev
