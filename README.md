@@ -20,10 +20,12 @@ Start the local server on port 5001.
 
 ## Scrapbox UserScript
 
+### Local tools mode
+
 ```js
 // script.js
 import { initPimento } from "/api/code/daiiz-codes/pimento-build/script.js";
-initPimento([], "http://localhost:5001"); // Local tools mode
+initPimento([], "http://localhost:5001");
 ```
 
 ## Settings
