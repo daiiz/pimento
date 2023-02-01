@@ -22,8 +22,8 @@ Start the local server on port 5001.
 
 ```js
 // script.js
-import "https://scrapbox.io/api/code/daiiz-pimento/build/script.js";
-setPimentoOrigin("http://localhost:5001"); // これ今はもう不要？
+import { initPimento } from "/api/code/daiiz-codes/pimento-build/script.js";
+initPimento([], "http://localhost:5001"); // Local tools mode
 ```
 
 ## Settings
