@@ -28,9 +28,10 @@ import { initPimento } from "/api/code/daiiz-codes/pimento-build/script.js";
 initPimento([], "http://localhost:5001");
 ```
 
-## Settings
+## Bookbinding global settings
 
-See https://scrapbox.io/daiiz-pimento/_pimento (template.tex)
+1. Create a page `_pimento` in your Scrapbox project.
+2. Copy a sample code https://scrapbox.io/pimento/B5_標準 (template.tex) to the page `_pimento`.
 
 ### Options
 
